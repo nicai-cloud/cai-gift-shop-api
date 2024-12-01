@@ -1,2 +1,0 @@
-DATABASE_URL: "postgresql+asyncpg://caini:@localhost/caini"
-signup_cors_allowed_origins: http://localhost:5173
