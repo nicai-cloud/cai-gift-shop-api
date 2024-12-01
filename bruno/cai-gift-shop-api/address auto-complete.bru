@@ -1,0 +1,15 @@
+meta {
+  name: address auto-complete
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api}}/address/auto-complete?address=3+Drues+Avenue
+  body: none
+  auth: none
+}
+
+params:query {
+  address: 3 Drues Avenue
+}

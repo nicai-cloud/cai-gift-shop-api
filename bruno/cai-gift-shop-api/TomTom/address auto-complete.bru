@@ -1,0 +1,19 @@
+meta {
+  name: address auto-complete
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://api.tomtom.com/search/2/search/suggest.json?key=wMoyTDPcLDh11c0liYYLxkPjfdWtHuCV&query=123+Main+St&countrySet=AU&limit=5&typeahead=true
+  body: none
+  auth: none
+}
+
+params:query {
+  key: wMoyTDPcLDh11c0liYYLxkPjfdWtHuCV
+  query: 123 Main St
+  countrySet: AU
+  limit: 5
+  typeahead: true
+}

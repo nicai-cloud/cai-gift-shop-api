@@ -8,6 +8,7 @@ import simplejson
 from falcon import MEDIA_JSON, asgi, CORSMiddleware, media
 
 from core.api.health_check import HealthCheckRequestHandler
+from core.api.address import AddressRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
 
@@ -46,6 +47,11 @@ def create_api():
     app.add_sink(
         HealthCheckRequestHandler(),
         prefix=re.compile("^/health-check(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        AddressRequestHandler(),
+        prefix=re.compile("^/address(?P<path>/?.*)$"),
     )
 
     return app
