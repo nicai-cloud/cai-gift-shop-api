@@ -1,0 +1,13 @@
+import falcon
+
+from core.api.base import RequestHandler, route
+
+
+class HealthCheckRequestHandler(RequestHandler):
+    def __init__(self):
+        super().__init__()
+
+    @route.get("/", auth_exempt=True)
+    async def health_check(self, req, resp):
+        resp.media = {"message": "Hello world!"}
+        resp.status = falcon.HTTP_OK

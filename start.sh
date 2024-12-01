@@ -1,1 +1,1 @@
-uvicorn app:app --host 0.0.0.0 --port 8080 --reload
+uvicorn --host 0.0.0.0 --port 8080 --reload core.main:create_api
