@@ -5,11 +5,13 @@ meta {
 }
 
 get {
-  url: {{api}}/address/auto-complete?address=3+Drues+Avenue
-  body: none
+  url: {{api}}/address/auto-complete
+  body: json
   auth: none
 }
 
-params:query {
-  address: 3 Drues Avenue
+body:json {
+  {
+    "search": "3 Drues Avenue"
+  }
 }

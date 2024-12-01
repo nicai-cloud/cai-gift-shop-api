@@ -15,7 +15,12 @@ class AddressRequestHandler(RequestHandler):
     @route.get("/auto-complete", auth_exempt=True)
     async def auto_complete(self, req, resp):
         api_key = get('TOM_TOM_API_KEY')
-        query = req.params.get("address")
+        
+        request_body = await req.get_media()
+        if "search" not in request_body:
+            raise falcon.HTTPInternalServerError(description="Missing search")
+        
+        query = request_body["search"]
         url = f"https://api.tomtom.com/search/2/search/suggest.json?key={api_key}&query={query}&countrySet=AU&typeahead=true&limit=5"
 
         ssl_context = ssl.create_default_context(cafile=certifi.where())
