@@ -29,27 +29,15 @@ class AddressRequestHandler(RequestHandler):
             try:
                 response = await session.get(url=url)
                 response.raise_for_status()
+                addresses = []
                 if response.status == 200:
-                    resp_json = await response.json()
-                    print(f"resp_json: {resp_json}")
-                    return resp_json
-                    # return await response.json()
+                    suggestions = (await response.json())['results']
+                    for suggestion in suggestions:
+                        addresses.append(suggestion['address']['freeformAddress'])
+
+                    resp.media = {"addresses": addresses}
+                    resp.status = falcon.HTTP_OK
                 else:
-                    return {}
+                    resp.media = {}
             except json.JSONDecodeError:
-                print(
-                    "Invalid JSON response from PM server calling telco/user/{suid}. If on local, make sure your VPN is on."
-                )
-                return {}
-
-        
-        response = requests.get(url)
-        if response.status_code == 200:
-            suggestions = response.json()['results']
-            for suggestion in suggestions:
-                print(suggestion['address']['freeformAddress'])
-
-            resp.media = {"message": "Hello world!"}
-            resp.status = falcon.HTTP_OK
-        else:
-            print("Error:", response.status_code, response.text)
+                resp.media = {}
