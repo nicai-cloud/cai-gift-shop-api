@@ -11,8 +11,8 @@ class OrderItemModel(Base):
     suid = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     quantity = Column(Integer, nullable=False)
 
-    bag_id = Column(UUID(as_uuid=True), ForeignKey("bag.id"), nullable=False)
-    item_id = Column(UUID(as_uuid=True), ForeignKey("item.id"), nullable=False)
+    bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
+    item_id = Column(Integer, ForeignKey("item.id"), nullable=False)
 
     created_at = Column(DateTime, default=datetime.timezone.utc)
     updated_at = Column(DateTime, default=datetime.timezone.utc, onupdate=datetime.now(timezone.utc))
