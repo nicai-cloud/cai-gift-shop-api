@@ -12,7 +12,7 @@ class AddressRequestHandler(RequestHandler):
     def __init__(self):
         super().__init__()
 
-    @route.get("/auto-complete", auth_exempt=True)
+    @route.post("/auto-complete", auth_exempt=True)
     async def auto_complete(self, req, resp):
         api_key = get('TOM_TOM_API_KEY')
         
