@@ -1,0 +1,20 @@
+meta {
+  name: Local auto-complete search
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:8080/addresses?q=3 drues avenue
+  body: none
+  auth: none
+}
+
+params:query {
+  q: 3 drues avenue
+}
+
+headers {
+  Accept: */*
+  User-Agent: Mozilla/5.0
+}
