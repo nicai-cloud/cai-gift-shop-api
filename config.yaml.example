@@ -1,3 +1,4 @@
 DATABASE_URL: "postgresql+asyncpg://caini:@localhost/caini"
 signup_cors_allowed_origins: https://gorgeous-lily-0bd3a9.netlify.app;http://localhost:5173;
-TOM_TOM_API_KEY: check-in-notes
+TOM_TOM_API_KEY: ask-for-it
+STRIPE_SECRET_KEY: ask-for-it

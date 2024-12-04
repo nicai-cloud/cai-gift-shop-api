@@ -1,0 +1,17 @@
+meta {
+  name: complete order
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{api}}/complete-order
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "payment_method_id": "pm_1QSOkrDHKkihrujYtlhUVjog"
+  }
+}
