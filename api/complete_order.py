@@ -1,11 +1,8 @@
-import stripe
 from api.base import RequestHandler, route
 from features.user import User
+from features.payment_method import PaymentMethod
 from infrastructure.work_management import WorkManager
 from infrastructure.user import UserRepo
-from utils.config import get
-
-stripe.api_key = get("STRIPE_SECRET_KEY")
 
 
 class CompleteOrderRequestHandler(RequestHandler):
@@ -13,6 +10,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         super().__init__()
         user_repo = work_manager.get(UserRepo)
         self.user_feature = User(user_repo)
+        self.payment_method = PaymentMethod()
 
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
@@ -21,24 +19,5 @@ class CompleteOrderRequestHandler(RequestHandler):
         payment_method_id = request_body["payment_method_id"]
         amount = 1000
 
-        try:
-            # Create and confirm a PaymentIntent
-            payment_intent = stripe.PaymentIntent.create(
-                amount=amount,  # Amount in the smallest currency unit, e.g., cents
-                currency="aud",
-                payment_method=payment_method_id,
-                payment_method_types=["card"],
-                confirm=True,  # Confirm immediately
-            )
-            if payment_intent["status"] == "succeeded":
-                print(f"Payment succeeded: {payment_intent['id']}")
-                return payment_intent["id"]
-            else:
-                print(f"Payment not successful: {payment_intent['status']}")
-                return ""
-        except stripe.error.CardError as e:
-            # Handle declined card or 3D Secure required
-            return {"error": str(e)}
-        except Exception as e:
-            # Handle other errors
-            return {"error": str(e)}
+        await self.payment_method.create_payment_intent(payment_method_id, amount)
+        
