@@ -8,7 +8,7 @@ from models.base import Base
 class OrderItemModel(Base):
     __tablename__ = "order_item"
 
-    suid = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     quantity = Column(Integer, nullable=False)
 
     bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)

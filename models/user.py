@@ -8,7 +8,7 @@ from models.base import Base
 class UserModel(Base):
     __tablename__ = "user"
 
-    suid = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     mobile = Column(String, nullable=False, unique=True)
