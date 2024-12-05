@@ -1,6 +1,6 @@
 import falcon
 
-from core.api.base import RequestHandler, route
+from api.base import RequestHandler, route
 
 
 class HealthCheckRequestHandler(RequestHandler):

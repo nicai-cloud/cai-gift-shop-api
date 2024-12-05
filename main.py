@@ -7,10 +7,10 @@ from utils.config import get
 import simplejson
 from falcon import MEDIA_JSON, asgi, CORSMiddleware, media
 
-from core.api.health_check import HealthCheckRequestHandler
-from core.api.address import AddressRequestHandler
-from core.api.complete_order import CompleteOrderRequestHandler
-from core.api.payment_method import PaymentMethodRequestHandler
+from api.health_check import HealthCheckRequestHandler
+from api.address import AddressRequestHandler
+from api.complete_order import CompleteOrderRequestHandler
+from api.payment_method import PaymentMethodRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable

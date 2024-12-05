@@ -1,1 +1,1 @@
-uvicorn --host 0.0.0.0 --port 8888 --reload core.main:create_api
+uvicorn --host 0.0.0.0 --port 8888 --reload main:create_api

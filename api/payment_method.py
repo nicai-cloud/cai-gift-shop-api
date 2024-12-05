@@ -1,5 +1,5 @@
 import stripe
-from core.api.base import RequestHandler, route
+from api.base import RequestHandler, route
 from utils.config import get
 
 stripe.api_key = get("STRIPE_SECRET_KEY")

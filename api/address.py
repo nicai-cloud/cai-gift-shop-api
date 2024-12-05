@@ -6,7 +6,7 @@ import certifi
 from urllib.parse import quote_plus
 from utils.config import get
 
-from core.api.base import RequestHandler, route
+from api.base import RequestHandler, route
 
 
 class AddressRequestHandler(RequestHandler):
