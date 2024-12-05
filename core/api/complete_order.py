@@ -1,13 +1,18 @@
 import stripe
 from core.api.base import RequestHandler, route
+from features.user import User
+from infrastructure.work_management import WorkManager
+from infrastructure.user import UserRepo
 from utils.config import get
 
 stripe.api_key = get("STRIPE_SECRET_KEY")
 
 
 class CompleteOrderRequestHandler(RequestHandler):
-    def __init__(self):
+    def __init__(self, work_manager: WorkManager):
         super().__init__()
+        user_repo = work_manager.get(UserRepo)
+        self.user_feature = User(user_repo)
 
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
@@ -27,10 +32,10 @@ class CompleteOrderRequestHandler(RequestHandler):
             )
             if payment_intent["status"] == "succeeded":
                 print(f"Payment succeeded: {payment_intent['id']}")
-                return True, payment_intent["id"]
+                return payment_intent["id"]
             else:
                 print(f"Payment not successful: {payment_intent['status']}")
-                return False, ""
+                return ""
         except stripe.error.CardError as e:
             # Handle declined card or 3D Secure required
             return {"error": str(e)}

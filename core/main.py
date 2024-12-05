@@ -13,6 +13,10 @@ from core.api.complete_order import CompleteOrderRequestHandler
 from core.api.payment_method import PaymentMethodRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
+from infrastructure.postgres import PostgresTransactable
+from infrastructure.user import UserRepo, construct_postgres_user_repo
+from infrastructure.work_management import WorkManager
+
 
 # Add in falcon setup here
 def create_api():
@@ -22,7 +26,9 @@ def create_api():
     if not database_url:
         raise ValueError("DATABASE_URL is not set")
 
-
+    work_manager = WorkManager(PostgresTransactable(database_url))
+    work_manager.register(UserRepo, construct_postgres_user_repo)
+    
     cors_allowed_origins = get("signup_cors_allowed_origins").split(";")
 
     app = asgi.App(
@@ -57,7 +63,7 @@ def create_api():
     )
 
     app.add_sink(
-        CompleteOrderRequestHandler(),
+        CompleteOrderRequestHandler(work_manager),
         prefix=re.compile("^/complete-order(?P<path>/?.*)$"),
     )
 

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from uuid import UUID
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from models.base import Base
 
@@ -14,5 +14,5 @@ class OrderItemModel(Base):
     bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
     item_id = Column(Integer, ForeignKey("item.id"), nullable=False)
 
-    created_at = Column(DateTime, default=datetime.timezone.utc)
-    updated_at = Column(DateTime, default=datetime.timezone.utc, onupdate=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=timezone.utc)
+    updated_at = Column(DateTime, default=timezone.utc, onupdate=datetime.now(timezone.utc))

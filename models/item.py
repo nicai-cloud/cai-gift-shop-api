@@ -11,5 +11,5 @@ class ItemModel(Base):
     description = Column(String, nullable=False)
     size = Column(String, nullable=False)
 
-    created_at = Column(DateTime, default=datetime.timezone.utc)
-    updated_at = Column(DateTime, default=datetime.timezone.utc, onupdate=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=timezone.utc)
+    updated_at = Column(DateTime, default=timezone.utc, onupdate=datetime.now(timezone.utc))
