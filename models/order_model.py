@@ -10,7 +10,6 @@ class OrderModel(Base):
     __tablename__ = "order"
 
     id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False, default=uuid.uuid4)
-    order_timestamp = Column(DateTime, nullable=False)
 
     customer_id = Column(UUID(as_uuid=True), ForeignKey("customer.id"), nullable=False)
     order_item_id = Column(UUID(as_uuid=True), ForeignKey("order_item.id"), nullable=False)
