@@ -2,7 +2,6 @@ import logging
 from uuid import UUID
 from infrastructure.customer import CustomerRepo
 from infrastructure.work_management import WorkManager
-from model_types.types import Customer
 
 LOG = logging.getLogger(__name__)
 
