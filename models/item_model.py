@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import Column, DateTime, Float, Integer, String
 from models.base import Base
@@ -12,5 +12,5 @@ class ItemModel(Base):
     title = Column(String, nullable=False)
     price = Column(Float, nullable=False)
 
-    created_at = Column(DateTime, default=timezone.utc)
-    updated_at = Column(DateTime, default=timezone.utc, onupdate=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
