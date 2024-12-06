@@ -1,6 +1,7 @@
 from api.base import RequestHandler, route
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
+from features.order_feature import OrderFeature
 from infrastructure.work_management import WorkManager
 
 
@@ -8,6 +9,7 @@ class CompleteOrderRequestHandler(RequestHandler):
     def __init__(self, work_manager: WorkManager):
         super().__init__()
         self.customer_feature = CustomerFeature(work_manager)
+        self.order_feature = OrderFeature(work_manager)
         self.payment_method_feature = PaymentMethodFeature()
 
     @route.post("/", auth_exempt=True)
@@ -31,3 +33,4 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('!! created customer id: ', customer_id)
 
         # Create an order against the customer
+        await self.order_feature.create_order()
