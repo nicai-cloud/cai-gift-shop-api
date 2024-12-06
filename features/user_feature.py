@@ -4,7 +4,7 @@ from infrastructure.user import UserRepo
 LOG = logging.getLogger(__name__)
 
 
-class User:
+class UserFeature:
     def __init__(self, user_repo: UserRepo):
         self.user_repo = user_repo
     

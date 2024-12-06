@@ -1,12 +1,12 @@
 from api.base import RequestHandler, route
-from features.payment_method import PaymentMethod
+from features.payment_method_feature import PaymentMethodFeature
 
 
 class PaymentMethodRequestHandler(RequestHandler):
     def __init__(self):
         super().__init__()
-        self.payment_method = PaymentMethod()
+        self.payment_method_feature = PaymentMethodFeature()
 
     @route.post("/", auth_exempt=True)
     async def create_payment_method(self, req, resp):
-        resp.media = await self.payment_method.create_payment_method()
+        resp.media = await self.payment_method_feature.create_payment_method()

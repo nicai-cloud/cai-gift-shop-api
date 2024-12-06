@@ -11,8 +11,6 @@ from falcon.asgi import Request, Response
 
 LOG = logging.getLogger(__name__)
 
-LOG = logging.getLogger(__name__)
-
 current_request_task = ContextVar("current_request_task", default=None)
 
 

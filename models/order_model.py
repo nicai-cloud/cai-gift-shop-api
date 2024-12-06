@@ -1,18 +1,18 @@
 from datetime import datetime, timezone
-
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, DateTime, ForeignKey
+
 from models.base import Base
 
 
-class OrderItemModel(Base):
-    __tablename__ = "order_item"
+class OrderModel(Base):
+    __tablename__ = "order"
 
     id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
-    quantity = Column(Integer, nullable=False)
+    order_timestamp = Column(DateTime, nullable=False)
 
-    bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
-    item_id = Column(Integer, ForeignKey("item.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    order_item_id = Column(UUID(as_uuid=True), ForeignKey("order_item.id"), nullable=False)
 
     created_at = Column(DateTime, default=timezone.utc)
     updated_at = Column(DateTime, default=timezone.utc, onupdate=datetime.now(timezone.utc))

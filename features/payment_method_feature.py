@@ -7,7 +7,7 @@ LOG = logging.getLogger(__name__)
 stripe.api_key = get("STRIPE_SECRET_KEY")
 
 
-class PaymentMethod:
+class PaymentMethodFeature:
     def __init__(self):
         pass
     

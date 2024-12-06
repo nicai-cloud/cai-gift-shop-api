@@ -1,10 +1,9 @@
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import async_scoped_session
 
+from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
-from models.user import UserModel
-
-from .postgres import PostgresTransactable
+from models.user_model import UserModel
 
 
 class UserRepo(BaseRepository):
@@ -12,8 +11,8 @@ class UserRepo(BaseRepository):
         self.session = session
 
     async def create(self, user):
-        user_stmt = insert(UserModel).values(user)
-        await self.session.execute(user_stmt)
+        create_user_stmt = insert(UserModel).values(user)
+        await self.session.execute(create_user_stmt)
 
 
 def construct_postgres_user_repo(transactable: PostgresTransactable) -> UserRepo:
