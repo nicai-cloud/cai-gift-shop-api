@@ -27,6 +27,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         await self.payment_method_feature.create_payment_intent(payment_method_id, amount)
 
         # Create customer
-        customer = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
+        customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
+        print('!! created customer id: ', customer_id)
 
         # Create an order against the customer
