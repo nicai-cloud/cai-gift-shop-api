@@ -12,7 +12,8 @@ class CustomerRepo(BaseRepository):
 
     async def create(self, customer: dict):
         create_customer_stmt = insert(CustomerModel).values(**customer)
-        await self.session.execute(create_customer_stmt)
+        customer_entry = await self.session.execute(create_customer_stmt)
+        return customer_entry
 
 
 def construct_postgres_customer_repo(transactable: PostgresTransactable) -> CustomerRepo:

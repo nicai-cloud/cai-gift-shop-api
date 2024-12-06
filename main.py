@@ -15,7 +15,7 @@ from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable
 from infrastructure.customer import CustomerRepo, construct_postgres_customer_repo
-from infrastructure.work_management import WorkManager
+from infrastructure.work_management import WorkManager, WorkManagementMiddleware
 
 
 # Add in falcon setup here
@@ -36,7 +36,8 @@ def create_api():
             CORSMiddleware(
                 allow_origins=cors_allowed_origins,
                 allow_credentials=cors_allowed_origins,
-            )
+            ),
+            WorkManagementMiddleware(work_manager)
         ]
     )
 
