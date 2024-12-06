@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from datetime import datetime, timezone
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from models.base import Base
@@ -14,3 +15,6 @@ class PreselectionModel(Base):
 
     bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
     item_ids = Column(ARRAY(Integer), nullable=False)
+
+    created_at = Column(DateTime, default=timezone.utc)
+    updated_at = Column(DateTime, default=timezone.utc, onupdate=datetime.now(timezone.utc))

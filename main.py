@@ -14,7 +14,7 @@ from api.payment_method import PaymentMethodRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable
-from infrastructure.user import UserRepo, construct_postgres_user_repo
+from infrastructure.customer import CustomerRepo, construct_postgres_customer_repo
 from infrastructure.work_management import WorkManager
 
 
@@ -27,7 +27,7 @@ def create_api():
         raise ValueError("DATABASE_URL is not set")
 
     work_manager = WorkManager(PostgresTransactable(database_url))
-    work_manager.register(UserRepo, construct_postgres_user_repo)
+    work_manager.register(CustomerRepo, construct_postgres_customer_repo)
     
     cors_allowed_origins = get("signup_cors_allowed_origins").split(";")
 
