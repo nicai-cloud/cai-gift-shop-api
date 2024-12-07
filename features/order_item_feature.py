@@ -10,11 +10,16 @@ class OrderItemFeature:
     def __init__(self, work_manager: WorkManager):
         self.order_item_repo = work_manager.get(OrderItemRepo)
     
-    async def create_order_item(self, customer_id, order_item_id) -> UUID:
+    async def create_order_item(self, quantity, preselection_id, bag_id, item_ids) -> UUID:
         try:
             order_item = {
-                "customer_id": customer_id,
-                "order_item_id": order_item_id
+                "quantity": quantity
+            }
+            if (preselection_id) {
+                order_item["preselection_id"] = preselection_id
+            } else if (bag_id and item_ids) {
+                order_item["bag_id"] = bag_id
+                order_item["item_ids"] = item_ids
             }
             return await self.order_item_repo.create(order_item)
         except Exception as e:
