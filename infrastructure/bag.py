@@ -9,7 +9,7 @@ class BagRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
     
-    async def get(self, bag_id):
+    async def get(self, bag_id: int):
         bag_query = await self.get_filtered_query(BagModel)
         result = await self.session.execute(bag_query.where(BagModel.id == bag_id))
             

@@ -11,7 +11,7 @@ class PaymentMethodFeature:
     def __init__(self):
         pass
     
-    async def create_payment_intent(self, payment_method_id, amount):
+    async def create_payment_intent(self, payment_method_id: str, amount: float):
         try:
             # Create and confirm a PaymentIntent
             payment_intent = stripe.PaymentIntent.create(

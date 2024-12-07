@@ -37,10 +37,10 @@ class CompleteOrderRequestHandler(RequestHandler):
         mobile = customer_info["mobile"]
         address = customer_info["address"]
         
-        amount = 1000
+        total_cost = await self.order_feature.calculate_total_cost(order_items)
 
         # Make the payment
-        await self.payment_method_feature.create_payment_intent(payment_method_id, amount)
+        await self.payment_method_feature.create_payment_intent(payment_method_id, total_cost)
 
         # Create customer
         customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
@@ -59,5 +59,5 @@ class CompleteOrderRequestHandler(RequestHandler):
             print('!! created order item id: ', order_item_id)
 
         # Create an order against the customer
-        order_id = await self.order_feature.create_order(customer_id=customer_id, order_item_ids=order_item_ids)
+        order_id = await self.order_feature.create_order(customer_id=customer_id, order_item_ids=order_item_ids, amount=total_cost)
         print('!! created order id: ', order_id)

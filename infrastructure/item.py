@@ -9,7 +9,7 @@ class ItemRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
 
-    async def get(self, item_id):
+    async def get(self, item_id: int):
         item_query = await self.get_filtered_query(ItemModel)
         result = await self.session.execute(item_query.where(ItemModel.id == item_id))
             

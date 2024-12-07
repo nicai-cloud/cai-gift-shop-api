@@ -10,7 +10,7 @@ class CustomerFeature:
     def __init__(self, work_manager: WorkManager):
         self.customer_repo = work_manager.get(CustomerRepo)
     
-    async def create_customer(self, first_name, last_name, email, mobile, address) -> UUID:
+    async def create_customer(self, first_name: str, last_name: str, email: str, mobile: str, address: str) -> UUID:
         try:
             customer = {
                 "first_name": first_name,

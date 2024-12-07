@@ -16,7 +16,7 @@ class PreselectionRepo(BaseRepository):
         preselections = result.scalars().all()
         return preselections
     
-    async def get(self, preselection_id):
+    async def get(self, preselection_id: int):
         preselection_query = await self.get_filtered_query(PreselectionModel)
         result = await self.session.execute(preselection_query.where(PreselectionModel.id == preselection_id))
             

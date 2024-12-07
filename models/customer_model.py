@@ -12,8 +12,8 @@ class CustomerModel(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False, default=uuid.uuid4)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    mobile = Column(String, nullable=False, unique=True)
-    email = Column(String, nullable=False, unique=True)
+    mobile = Column(String, nullable=False)
+    email = Column(String, nullable=False)
     address = Column(String, nullable=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
