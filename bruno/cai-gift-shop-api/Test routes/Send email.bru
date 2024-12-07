@@ -1,0 +1,18 @@
+meta {
+  name: Send email
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{api}}/email/send
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "to_email": "nicai.msn@gmail.com",
+    "order_id": "bb6bd4e0-3995-4a29-bbc7-c7daba2dac0d"
+  }
+}

@@ -1,6 +1,7 @@
 from api.base import RequestHandler, route
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
+from features.email_feature import EmailFeature
 from features.order_feature import OrderFeature
 from features.order_item_feature import OrderItemFeature
 from infrastructure.work_management import WorkManager
@@ -13,6 +14,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         self.order_item_feature = OrderItemFeature(work_manager)
         self.order_feature = OrderFeature(work_manager)
         self.payment_method_feature = PaymentMethodFeature()
+        self.email_feature = EmailFeature()
 
     @route.post("/calculate-total-cost", auth_exempt=True)
     async def calculate_total_cost(self, req, resp):
@@ -61,3 +63,6 @@ class CompleteOrderRequestHandler(RequestHandler):
         # Create an order against the customer
         order_id = await self.order_feature.create_order(customer_id=customer_id, order_item_ids=order_item_ids, amount=total_cost)
         print('!! created order id: ', order_id)
+
+        # Send the successful order email
+        await self.email_feature.send_email(email, order_id)

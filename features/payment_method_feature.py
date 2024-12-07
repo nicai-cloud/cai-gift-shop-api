@@ -9,7 +9,7 @@ stripe.api_key = get("STRIPE_SECRET_KEY")
 
 class PaymentMethodFeature:
     def __init__(self):
-        pass
+        super().__init__()
     
     async def create_payment_intent(self, payment_method_id: str, amount: float):
         try:

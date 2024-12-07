@@ -10,6 +10,7 @@ from falcon import MEDIA_JSON, asgi, CORSMiddleware, media
 from api.health_check import HealthCheckRequestHandler
 from api.address import AddressRequestHandler
 from api.complete_order import CompleteOrderRequestHandler
+from api.email import EmailRequestHandler
 from api.payment_method import PaymentMethodRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
@@ -81,6 +82,11 @@ def create_api():
     app.add_sink(
         PaymentMethodRequestHandler(),
         prefix=re.compile("^/payment-method(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        EmailRequestHandler(),
+        prefix=re.compile("^/email(?P<path>/?.*)$"),
     )
 
     return app
