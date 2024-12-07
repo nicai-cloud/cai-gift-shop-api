@@ -1,0 +1,29 @@
+meta {
+  name: Calculate total cost
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{api}}/complete-order/calculate-total-cost
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "order_items": [
+      {
+        "quantity": 1,
+        "preselection_id": 1
+      },
+      {
+        "quantity": 1,
+        "bag_id": 1,
+        "item_ids": [
+          1, 2, 3
+        ]
+      }
+    ]
+  }
+}

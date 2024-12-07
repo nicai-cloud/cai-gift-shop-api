@@ -5,7 +5,7 @@ from models.base import BaseRepository
 from models.preselection_model import PreselectionModel
 
 
-class PreSelectItemRepo(BaseRepository):
+class PreselectionRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
 
@@ -15,7 +15,14 @@ class PreSelectItemRepo(BaseRepository):
             
         preselections = result.scalars().all()
         return preselections
+    
+    async def get(self, preselection_id):
+        preselection_query = await self.get_filtered_query(PreselectionModel)
+        result = await self.session.execute(preselection_query.where(PreselectionModel.id == preselection_id))
+            
+        preselection = result.scalars().first()
+        return preselection
 
 
-def construct_postgres_preselection_repo(transactable: PostgresTransactable) -> PreSelectItemRepo:
-    return PreSelectItemRepo(transactable.session)
+def construct_postgres_preselection_repo(transactable: PostgresTransactable) -> PreselectionRepo:
+    return PreselectionRepo(transactable.session)

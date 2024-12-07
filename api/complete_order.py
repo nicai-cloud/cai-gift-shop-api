@@ -14,19 +14,29 @@ class CompleteOrderRequestHandler(RequestHandler):
         self.order_feature = OrderFeature(work_manager)
         self.payment_method_feature = PaymentMethodFeature()
 
+    @route.post("/calculate-total-cost", auth_exempt=True)
+    async def calculate_total_cost(self, req, resp):
+        request_body = await req.get_media()
+        print('request_body', request_body)
+
+        order_items = request_body["order_items"]
+        resp.media = await self.order_feature.calculate_total_cost(order_items=order_items)
+
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
         request_body = await req.get_media()
         print('request_body', request_body)
 
         customer_info = request_body["customer_info"]
+        order_items = request_body["order_items"]
+        payment_method_id = request_body["payment_method_id"]
+
         first_name = customer_info["first_name"]
         last_name = customer_info["last_name"]
         email = customer_info["email"]
         mobile = customer_info["mobile"]
         address = customer_info["address"]
-
-        payment_method_id = request_body["payment_method_id"]
+        
         amount = 1000
 
         # Make the payment
@@ -37,7 +47,6 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('!! created customer id: ', customer_id)
 
         # Create each of the order items
-        order_items = request_body["order_items"]
         order_item_ids = []
         for order_item in order_items:
             quantity = order_item["quantity"]
