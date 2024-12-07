@@ -12,11 +12,26 @@ post {
 
 body:json {
   {
-    "first_name": "customer1",
-    "last_name": "Ni",
-    "email": "test@abc.com",
-    "mobile": "0400123456",
-    "address": "123 King Street, Sydney, NSW",
-    "payment_method_id": "pm_1QT7h3DHKkihrujYo8ldldpn"
+    "customer_info": {
+      "first_name": "customer1",
+      "last_name": "Ni",
+      "email": "test@abc.com",
+      "mobile": "0400123456",
+      "address": "123 King Street, Sydney, NSW"
+    },
+    "order_items": [
+      {
+        "quantity": 1,
+        "preselection_id": 1
+      },
+      {
+        "quantity": 1,
+        "bag_id": 1,
+        "item_ids": [
+          1, 2, 3
+        ]
+      }
+    ],
+    "payment_method_id": "pm_1QT9qRDHKkihrujY3TDQFJh8"
   }
 }

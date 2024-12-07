@@ -15,6 +15,11 @@ from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable
 from infrastructure.customer import CustomerRepo, construct_postgres_customer_repo
+from infrastructure.order import OrderRepo, construct_postgres_order_repo
+from infrastructure.order_item import OrderItemRepo, construct_postgres_order_item_repo
+from infrastructure.preselection import PreSelectItemRepo, construct_postgres_preselection_repo
+from infrastructure.bag import BagRepo, construct_postgres_bag_repo
+from infrastructure.item import ItemRepo, construct_postgres_item_repo
 from infrastructure.work_management import WorkManager, WorkManagementMiddleware
 
 
@@ -28,6 +33,11 @@ def create_api():
 
     work_manager = WorkManager(PostgresTransactable(database_url))
     work_manager.register(CustomerRepo, construct_postgres_customer_repo)
+    work_manager.register(OrderItemRepo, construct_postgres_order_item_repo)
+    work_manager.register(OrderRepo, construct_postgres_order_repo)
+    work_manager.register(PreSelectItemRepo, construct_postgres_preselection_repo)
+    work_manager.register(BagRepo, construct_postgres_bag_repo)
+    work_manager.register(ItemRepo, construct_postgres_item_repo)
     
     cors_allowed_origins = get("signup_cors_allowed_origins").split(";")
 

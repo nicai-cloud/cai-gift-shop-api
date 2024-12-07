@@ -19,11 +19,13 @@ class CompleteOrderRequestHandler(RequestHandler):
         request_body = await req.get_media()
         print('request_body', request_body)
 
-        first_name = request_body["first_name"]
-        last_name = request_body["last_name"]
-        email = request_body["email"]
-        mobile = request_body["mobile"]
-        address = request_body["address"]
+        customer_info = request_body["customer_info"]
+        first_name = customer_info["first_name"]
+        last_name = customer_info["last_name"]
+        email = customer_info["email"]
+        mobile = customer_info["mobile"]
+        address = customer_info["address"]
+
         payment_method_id = request_body["payment_method_id"]
         amount = 1000
 
@@ -34,13 +36,19 @@ class CompleteOrderRequestHandler(RequestHandler):
         customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
         print('!! created customer id: ', customer_id)
 
-        # Create order item
-        quantity = request_body["quantity"]
-        preselection_id = request_body.get("preselection_id", None)
-        bag_id = request_body.get("bag_id", None)
-        item_ids = request_body.get("item_ids", None)
-        order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids)
-        print('!! created order item id: ', order_item_id)
+        # Create each of the order items
+        order_items = request_body["order_items"]
+        print("!! order_items", order_items)
+        # order_item_ids = []
+        # for order_item in order_items:
+        #     quantity = order_item["quantity"]
+        #     preselection_id = order_item.get("preselection_id", None)
+        #     bag_id = order_item.get("bag_id", None)
+        #     item_ids = order_item.get("item_ids", None)
+        #     order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids)
+        #     order_item_ids.append(order_item_id)
+        #     print('!! created order item id: ', order_item_id)
 
-        # Create an order against the customer
-        await self.order_feature.create_order(customer_id=customer_id, order_item_id=order_item_id)
+        # # Create an order against the customer
+        # order_id = await self.order_feature.create_order(customer_id=customer_id, order_item_ids=order_item_ids)
+        # print('!! created order id: ', order_id)

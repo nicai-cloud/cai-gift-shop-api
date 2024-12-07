@@ -15,12 +15,16 @@ class OrderItemFeature:
             order_item = {
                 "quantity": quantity
             }
-            if (preselection_id) {
-                order_item["preselection_id"] = preselection_id
-            } else if (bag_id and item_ids) {
-                order_item["bag_id"] = bag_id
-                order_item["item_ids"] = item_ids
-            }
+
+            if preselection_id:
+                order_item.update({
+                    "preselection_id": preselection_id
+                })
+            elif bag_id and item_ids:
+                order_item.update({
+                    "bag_id": bag_id,
+                    "item_ids": item_ids
+                })
             return await self.order_item_repo.create(order_item)
         except Exception as e:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
