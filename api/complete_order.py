@@ -35,6 +35,7 @@ class CompleteOrderRequestHandler(RequestHandler):
 
         first_name = customer_info["first_name"]
         last_name = customer_info["last_name"]
+        # TODO: sanitisation on email and mobile
         email = customer_info["email"]
         mobile = customer_info["mobile"]
         address = customer_info["address"]
@@ -65,4 +66,4 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('!! created order id: ', order_id)
 
         # Send the successful order email
-        await self.email_feature.send_email(email, order_id)
+        # await self.email_feature.send_email(email, order_id)

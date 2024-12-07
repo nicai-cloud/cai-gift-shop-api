@@ -1,3 +1,4 @@
+import falcon
 import logging
 import stripe
 from utils.config import get
@@ -27,6 +28,10 @@ class PaymentMethodFeature:
             else:
                 print(f"Payment not successful: {payment_intent['status']}")
                 return ""
+        except stripe.error.StripeError as e:
+            # Log and raise an error to be handled in the main flow
+            LOG.error(f"Stripe error during payment confirmation: {str(e)}")
+            raise falcon.HTTPError(status="402 Payment Required", description="Insufficient funds")
         except stripe.error.CardError as e:
             # Handle declined card or 3D Secure required
             return {"error": str(e)}
