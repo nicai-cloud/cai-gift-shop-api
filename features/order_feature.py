@@ -10,11 +10,11 @@ class OrderFeature:
     def __init__(self, work_manager: WorkManager):
         self.order_repo = work_manager.get(OrderRepo)
     
-    async def create_order(self, customer_id, order_item_id) -> UUID:
+    async def create_order(self, customer_id, order_item_ids) -> UUID:
         try:
             order = {
                 "customer_id": customer_id,
-                "order_item_id": order_item_id
+                "order_item_ids": order_item_ids
             }
             return await self.order_repo.create(order)
         except Exception as e:

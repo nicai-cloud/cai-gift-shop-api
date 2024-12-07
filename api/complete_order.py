@@ -38,17 +38,17 @@ class CompleteOrderRequestHandler(RequestHandler):
 
         # Create each of the order items
         order_items = request_body["order_items"]
-        print("!! order_items", order_items)
-        # order_item_ids = []
-        # for order_item in order_items:
-        #     quantity = order_item["quantity"]
-        #     preselection_id = order_item.get("preselection_id", None)
-        #     bag_id = order_item.get("bag_id", None)
-        #     item_ids = order_item.get("item_ids", None)
-        #     order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids)
-        #     order_item_ids.append(order_item_id)
-        #     print('!! created order item id: ', order_item_id)
+        order_item_ids = []
+        for order_item in order_items:
+            quantity = order_item["quantity"]
+            preselection_id = order_item.get("preselection_id", None)
+            bag_id = order_item.get("bag_id", None)
+            item_ids = order_item.get("item_ids", None)
 
-        # # Create an order against the customer
-        # order_id = await self.order_feature.create_order(customer_id=customer_id, order_item_ids=order_item_ids)
-        # print('!! created order id: ', order_id)
+            order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids)
+            order_item_ids.append(order_item_id)
+            print('!! created order item id: ', order_item_id)
+
+        # Create an order against the customer
+        order_id = await self.order_feature.create_order(customer_id=customer_id, order_item_ids=order_item_ids)
+        print('!! created order id: ', order_id)

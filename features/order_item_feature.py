@@ -27,4 +27,4 @@ class OrderItemFeature:
                 })
             return await self.order_item_repo.create(order_item)
         except Exception as e:
-            LOG.exception("Unable to create order due to unexpected error", exc_info=e)
+            LOG.exception("Unable to create order item due to unexpected error", exc_info=e)
