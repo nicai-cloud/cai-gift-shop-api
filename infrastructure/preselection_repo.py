@@ -10,9 +10,9 @@ class PreselectionRepo(BaseRepository):
         self.session = session
 
     async def get_all(self):
-        preselection_query = await self.get_filtered_query(PreselectionModel)
-        result = await self.session.execute(preselection_query)
-            
+        preselections_query = await self.get_filtered_query(PreselectionModel)
+        result = await self.session.execute(preselections_query)
+        
         preselections = result.scalars().all()
         return preselections
     

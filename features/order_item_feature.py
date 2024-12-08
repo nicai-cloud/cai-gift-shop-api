@@ -1,6 +1,6 @@
 import logging
 from uuid import UUID
-from infrastructure.order_item import OrderItemRepo
+from infrastructure.order_item_repo import OrderItemRepo
 from infrastructure.work_management import WorkManager
 
 LOG = logging.getLogger(__name__)

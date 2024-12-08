@@ -11,16 +11,18 @@ from api.health_check import HealthCheckRequestHandler
 from api.address import AddressRequestHandler
 from api.complete_order import CompleteOrderRequestHandler
 from api.email import EmailRequestHandler
+from api.item import ItemRequestHandler
 from api.payment_method import PaymentMethodRequestHandler
+from api.preselection import PreselectionRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable
-from infrastructure.customer import CustomerRepo, construct_postgres_customer_repo
-from infrastructure.order import OrderRepo, construct_postgres_order_repo
-from infrastructure.order_item import OrderItemRepo, construct_postgres_order_item_repo
-from infrastructure.preselection import PreselectionRepo, construct_postgres_preselection_repo
-from infrastructure.bag import BagRepo, construct_postgres_bag_repo
-from infrastructure.item import ItemRepo, construct_postgres_item_repo
+from infrastructure.customer_repo import CustomerRepo, construct_postgres_customer_repo
+from infrastructure.order_repo import OrderRepo, construct_postgres_order_repo
+from infrastructure.order_item_repo import OrderItemRepo, construct_postgres_order_item_repo
+from infrastructure.preselection_repo import PreselectionRepo, construct_postgres_preselection_repo
+from infrastructure.bag_repo import BagRepo, construct_postgres_bag_repo
+from infrastructure.item_repo import ItemRepo, construct_postgres_item_repo
 from infrastructure.work_management import WorkManager, WorkManagementMiddleware
 
 
@@ -87,6 +89,16 @@ def create_api():
     app.add_sink(
         EmailRequestHandler(),
         prefix=re.compile("^/email(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        PreselectionRequestHandler(work_manager),
+        prefix=re.compile("^/preselection(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        ItemRequestHandler(work_manager),
+        prefix=re.compile("^/item(?P<path>/?.*)$"),
     )
 
     return app

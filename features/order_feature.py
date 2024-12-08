@@ -1,9 +1,9 @@
 import logging
 from uuid import UUID
-from infrastructure.order import OrderRepo
-from infrastructure.preselection import PreselectionRepo
-from infrastructure.bag import BagRepo
-from infrastructure.item import ItemRepo
+from infrastructure.order_repo import OrderRepo
+from infrastructure.preselection_repo import PreselectionRepo
+from infrastructure.bag_repo import BagRepo
+from infrastructure.item_repo import ItemRepo
 from infrastructure.work_management import WorkManager
 
 LOG = logging.getLogger(__name__)
