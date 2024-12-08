@@ -14,3 +14,8 @@ class ItemRequestHandler(RequestHandler):
     async def get_items(self, req, resp):
         resp.media = await self.item_feature.get_items()
         resp.status = falcon.HTTP_OK
+
+    @route.get("/{item_id}", auth_exempt=True)
+    async def get_item(self, req, resp, item_id):
+        resp.media = await self.item_feature.get_item(int(item_id))
+        resp.status = falcon.HTTP_OK
