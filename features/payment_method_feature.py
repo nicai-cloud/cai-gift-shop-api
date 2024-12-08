@@ -12,11 +12,11 @@ class PaymentMethodFeature:
     def __init__(self):
         super().__init__()
     
-    async def create_payment_intent(self, payment_method_id: str, amount: float):
+    async def create_payment_intent(self, payment_method_id: str, amount_in_dollars: float):
         try:
             # Create and confirm a PaymentIntent
             payment_intent = stripe.PaymentIntent.create(
-                amount=amount,  # Amount in the smallest currency unit, e.g., cents
+                amount=int(amount_in_dollars * 100),  # Amount in the smallest currency unit, e.g., cents
                 currency="aud",
                 payment_method=payment_method_id,
                 payment_method_types=["card"],
