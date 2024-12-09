@@ -14,6 +14,7 @@ class Preselection:
     id: int
     image_src: str
     title: str
+    description: str
     price: float
     bag_id: int
     item_ids: list[int]

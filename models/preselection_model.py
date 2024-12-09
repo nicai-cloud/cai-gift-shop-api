@@ -11,6 +11,7 @@ class PreselectionModel(Base):
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     image_src = Column(String, nullable=False)
     title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
     price = Column(Float, nullable=False)
 
     bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)

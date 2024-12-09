@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 6cb125a330cb
+Revision ID: 6de2848a10ec
 Revises: 
-Create Date: 2024-12-07 15:53:56.712823
+Create Date: 2024-12-10 06:37:19.191678
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '6cb125a330cb'
+revision: str = '6de2848a10ec'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -73,6 +73,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_src', sa.String(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('bag_id', sa.Integer(), nullable=False),
     sa.Column('item_ids', postgresql.ARRAY(sa.Integer()), nullable=False),
