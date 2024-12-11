@@ -12,18 +12,21 @@ class PreselectionFeature:
     
     async def get_preselections(self) -> list[Preselection]:
         try:
-            return await self.preselection_repo.get_all()
+            preselections = await self.preselection_repo.get_all()
+            return [preselection.to_dict() for preselection in preselections]
         except Exception as e:
             LOG.exception("Unable to get preselections due to unexpected error", exc_info=e)
 
     async def get_preselection_by_id(self, preselection_id: int) -> Preselection:
         try:
-            return await self.preselection_repo.get_by_id(preselection_id)
+            preselection = await self.preselection_repo.get_by_id(preselection_id)
+            return preselection.to_dict()
         except Exception as e:
             LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
 
     async def get_preselection_by_name(self, preselection_name: str) -> Preselection:
         try:
-            return await self.preselection_repo.get_by_name(preselection_name)
+            preselection = await self.preselection_repo.get_by_name(preselection_name)
+            return preselection.to_dict()
         except Exception as e:
             LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)

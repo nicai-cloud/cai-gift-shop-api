@@ -3,7 +3,6 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy_serializer import SerializerMixin
 
-
 from models.base import Base
 
 
@@ -21,3 +20,5 @@ class PreselectionModel(Base, SerializerMixin):
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    serialize_rules = ("-deleted_at", "-created_at", "-updated_at")

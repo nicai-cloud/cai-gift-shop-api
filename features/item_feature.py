@@ -12,12 +12,14 @@ class ItemFeature:
     
     async def get_items(self) -> list[Item]:
         try:
-            return await self.item_repo.get_all()
+            items = await self.item_repo.get_all()
+            return [item.to_dict() for item in items]
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
 
     async def get_item(self, item_id: int) -> Item:
         try:
-            return await self.item_repo.get(item_id)
+            item = await self.item_repo.get(item_id)
+            return item.to_dict()
         except Exception as e:
             LOG.exception("Unable to get item due to unexpected error", exc_info=e)

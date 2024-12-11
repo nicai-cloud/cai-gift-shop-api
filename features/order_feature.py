@@ -34,7 +34,7 @@ class OrderFeature:
             price = 0
             if "preselection_id" in order_item:
                 preselection_id = order_item["preselection_id"]
-                preselection = await self.preselection_repo.get(preselection_id)
+                preselection = await self.preselection_repo.get_by_id(preselection_id)
                 price = preselection.price
             elif "bag_id" in order_item and "item_ids" in order_item:
                 bag_id = order_item["bag_id"]
