@@ -20,9 +20,17 @@ class PreselectionRepo(BaseRepository):
         return preselections
     
     @map_to_dataclass(Preselection)
-    async def get(self, preselection_id: int) -> Preselection:
+    async def get_by_id(self, preselection_id: int) -> Preselection:
         preselection_query = await self.get_filtered_query(PreselectionModel)
         result = await self.session.execute(preselection_query.where(PreselectionModel.id == preselection_id))
+            
+        preselection = result.scalars().first()
+        return preselection
+
+    @map_to_dataclass(Preselection)
+    async def get_by_name(self, preselection_name: str) -> Preselection:
+        preselection_query = await self.get_filtered_query(PreselectionModel)
+        result = await self.session.execute(preselection_query.where(PreselectionModel.name == preselection_name))
             
         preselection = result.scalars().first()
         return preselection

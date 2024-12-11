@@ -16,8 +16,14 @@ class PreselectionFeature:
         except Exception as e:
             LOG.exception("Unable to get preselections due to unexpected error", exc_info=e)
 
-    async def get_preselection(self, preselection_id: int) -> Preselection:
+    async def get_preselection_by_id(self, preselection_id: int) -> Preselection:
         try:
-            return await self.preselection_repo.get(preselection_id)
+            return await self.preselection_repo.get_by_id(preselection_id)
+        except Exception as e:
+            LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
+
+    async def get_preselection_by_name(self, preselection_name: str) -> Preselection:
+        try:
+            return await self.preselection_repo.get_by_name(preselection_name)
         except Exception as e:
             LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
