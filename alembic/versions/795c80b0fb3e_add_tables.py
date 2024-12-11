@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 6de2848a10ec
+Revision ID: 795c80b0fb3e
 Revises: 
-Create Date: 2024-12-10 06:37:19.191678
+Create Date: 2024-12-11 22:18:01.396536
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '6de2848a10ec'
+revision: str = '795c80b0fb3e'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,6 +24,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_src', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
     sa.Column('color', sa.String(), nullable=False),
     sa.Column('size', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
@@ -49,7 +50,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_src', sa.String(), nullable=False),
-    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -72,7 +73,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_src', sa.String(), nullable=False),
-    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('bag_id', sa.Integer(), nullable=False),

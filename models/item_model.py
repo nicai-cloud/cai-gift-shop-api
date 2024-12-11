@@ -9,7 +9,7 @@ class ItemModel(Base):
 
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     image_src = Column(String, nullable=False)
-    title = Column(String, nullable=False)
+    name = Column(String, nullable=False)
     price = Column(Float, nullable=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)

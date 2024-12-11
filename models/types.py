@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class Item:
     id: int
     image_src: str
-    title: str
+    name: str
     price: float
 
 
@@ -13,7 +13,7 @@ class Item:
 class Preselection:
     id: int
     image_src: str
-    title: str
+    name: str
     description: str
     price: float
     bag_id: int

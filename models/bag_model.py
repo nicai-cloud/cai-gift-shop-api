@@ -9,6 +9,7 @@ class BagModel(Base):
 
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     image_src = Column(String, nullable=False)
+    name = Column(String, nullable=False)
     color = Column(String, nullable=False)
     size = Column(String, nullable=False)
     price = Column(Float, nullable=False)
