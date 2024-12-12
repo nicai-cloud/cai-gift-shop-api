@@ -22,4 +22,4 @@ INSERT INTO item (id, image_src, name, price) VALUES (5, '/item5', 'stationary',
 INSERT INTO preselection (id, image_src, name, description, price, bag_id, item_ids) VALUES (1, '/images/preselections/preselection1.webp', 'preselection1', 'Celebration Gift Pack (Person-alised)', 59, 1, '{1, 2, 3}');
 INSERT INTO preselection (id, image_src, name, description, price, bag_id, item_ids) VALUES (2, '/images/preselections/preselection2.webp', 'preselection2', 'LOL OMG Gift Pack', 109, 1, '{3, 4, 5}');
 INSERT INTO preselection (id, image_src, name, description, price, bag_id, item_ids) VALUES (3, '/images/preselections/preselection3.webp', 'preselection3', 'Fun Surprises Gift Pack', 109, 2, '{1, 2, 3}');
-INSERT INTO preselection (id, image_src, name, description, price, bag_id, item_ids) VALUES (4, '/images/preselections/preselection4.png', 'preselection4', 'preseleSquishmallow Surprise Gift Packction4', 89, 2, '{1, 3, 5}');
+INSERT INTO preselection (id, image_src, name, description, price, bag_id, item_ids) VALUES (4, '/images/preselections/preselection4.png', 'preselection4', 'Squishmallow Surprise Gift Pack', 89, 2, '{1, 3, 5}');
