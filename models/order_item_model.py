@@ -2,6 +2,7 @@ from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, CheckConstraint
+from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
@@ -16,6 +17,10 @@ class OrderItemModel(Base, SerializerMixin):
     preselection_id = Column(Integer, ForeignKey("preselection.id"))
     bag_id = Column(Integer, ForeignKey("bag.id"))
     item_ids = Column(ARRAY(Integer))
+
+    order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)
+
+    order = relationship("OrderModel", back_populates="order_item")
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

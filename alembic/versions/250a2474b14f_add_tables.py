@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 22bea97eb85e
+Revision ID: 250a2474b14f
 Revises: 
-Create Date: 2024-12-12 06:37:44.469586
+Create Date: 2024-12-13 07:07:42.951835
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '22bea97eb85e'
+revision: str = '250a2474b14f'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -61,7 +61,6 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('customer_id', postgresql.UUID(as_uuid=True), nullable=False),
-    sa.Column('order_item_ids', postgresql.ARRAY(postgresql.UUID(as_uuid=True)), nullable=False),
     sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -70,6 +69,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('id')
     )
     op.create_table('preselection',
+    sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_src', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
@@ -79,7 +79,6 @@ def upgrade() -> None:
     sa.Column('item_ids', postgresql.ARRAY(sa.Integer()), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['bag_id'], ['bag.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
@@ -92,10 +91,12 @@ def upgrade() -> None:
     sa.Column('preselection_id', sa.Integer(), nullable=True),
     sa.Column('bag_id', sa.Integer(), nullable=True),
     sa.Column('item_ids', postgresql.ARRAY(sa.Integer()), nullable=True),
+    sa.Column('order_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.CheckConstraint('preselection_id IS NOT NULL OR (bag_id IS NOT NULL AND item_ids IS NOT NULL)', name='check_preselection_id_or_bag_id_and_item_ids_not_null'),
     sa.ForeignKeyConstraint(['bag_id'], ['bag.id'], ),
+    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
     sa.ForeignKeyConstraint(['preselection_id'], ['preselection.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
