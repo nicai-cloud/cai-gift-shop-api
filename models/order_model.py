@@ -2,11 +2,12 @@ from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import Column, DateTime, Float, ForeignKey
+from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
 
 
-class OrderModel(Base):
+class OrderModel(Base, SerializerMixin):
     __tablename__ = "order"
 
     id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False, default=uuid.uuid4)
@@ -17,3 +18,5 @@ class OrderModel(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    serialize_rules = ("-deleted_at", "-created_at", "-updated_at")

@@ -2,11 +2,12 @@ from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, CheckConstraint
+from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
 
 
-class OrderItemModel(Base):
+class OrderItemModel(Base, SerializerMixin):
     __tablename__ = "order_item"
 
     id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False, default=uuid.uuid4)
@@ -18,6 +19,8 @@ class OrderItemModel(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    serialize_rules = ("-deleted_at", "-created_at", "-updated_at")
 
     # Adding the CheckConstraint
     __table_args__ = (
