@@ -16,11 +16,10 @@ class OrderFeature:
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
     
-    async def create_order(self, customer_id: UUID, order_item_ids: list[UUID], amount: float) -> UUID:
+    async def create_order(self, customer_id: UUID, amount: float) -> UUID:
         try:
             order = {
                 "customer_id": customer_id,
-                "order_item_ids": order_item_ids,
                 "amount": amount
             }
             return await self.order_repo.create(order)

@@ -1,9 +1,8 @@
 SELECT * FROM customer;
-SELECT * FROM order_item;
 SELECT * FROM public.order;
+SELECT * FROM order_item;
 
 DELETE FROM customer;
-DELETE FROM order_item;
 DELETE FROM public.order;
 
 SELECT * FROM bag;

@@ -20,7 +20,7 @@ class OrderItemModel(Base, SerializerMixin):
 
     order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)
 
-    order = relationship("OrderModel", back_populates="order_item")
+    order = relationship("OrderModel", back_populates="order_items")
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

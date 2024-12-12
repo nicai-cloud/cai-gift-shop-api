@@ -10,9 +10,10 @@ class OrderItemFeature:
     def __init__(self, work_manager: WorkManager):
         self.order_item_repo = work_manager.get(OrderItemRepo)
     
-    async def create_order_item(self, quantity: int, preselection_id: int, bag_id: int, item_ids: list[int]) -> UUID:
+    async def create_order_item(self, quantity: int, preselection_id: int, bag_id: int, item_ids: list[int], order_id: UUID) -> UUID:
         try:
             order_item = {
+                "order_id": order_id,
                 "quantity": quantity
             }
 
