@@ -24,9 +24,10 @@ class BaseModel:
         """
         result = {}
         for column in self.__table__.columns:
-            snake_key = column.name
-            camel_key = to_camel_case(snake_key)
-            result[camel_key] = getattr(self, snake_key)
+            if column.name not in ('deleted_at', 'created_at', 'updated_at'):
+                snake_key = column.name
+                camel_key = to_camel_case(snake_key)
+                result[camel_key] = getattr(self, snake_key)
         return result
 
 

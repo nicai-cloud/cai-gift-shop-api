@@ -18,5 +18,3 @@ class OrderModel(Base, SerializerMixin):
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    serialize_rules = ("-deleted_at", "-created_at", "-updated_at")
