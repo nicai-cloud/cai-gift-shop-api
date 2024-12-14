@@ -16,6 +16,6 @@ class BagRequestHandler(RequestHandler):
         resp.status = falcon.HTTP_OK
 
     @route.get("/{bag_id}", auth_exempt=True)
-    async def get_preselection(self, req, resp, bag_id):
+    async def get_bag(self, req, resp, bag_id):
         resp.media = await self.bag_feature.get_bag_by_id(int(bag_id))
         resp.status = falcon.HTTP_OK
