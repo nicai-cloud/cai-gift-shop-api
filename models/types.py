@@ -26,4 +26,5 @@ class Bag:
     image_url: str
     name: str
     description: str
+    size: str
     price: float
