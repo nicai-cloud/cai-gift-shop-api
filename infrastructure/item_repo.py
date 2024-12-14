@@ -15,7 +15,7 @@ class ItemRepo(BaseRepository):
         
         return result.scalars().all()
 
-    async def get(self, item_id: int):
+    async def get_by_id(self, item_id: int):
         item_query = await self.get_filtered_query(ItemModel)
         result = await self.session.execute(item_query.where(ItemModel.id == item_id))
             

@@ -19,7 +19,7 @@ class ItemFeature:
 
     async def get_item(self, item_id: int) -> Item:
         try:
-            item = await self.item_repo.get(item_id)
+            item = await self.item_repo.get_by_id(item_id)
             return item.to_dict()
         except Exception as e:
             LOG.exception("Unable to get item due to unexpected error", exc_info=e)

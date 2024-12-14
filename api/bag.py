@@ -1,0 +1,21 @@
+import falcon
+
+from api.base import RequestHandler, route
+from features.bag_feature import BagFeature
+from infrastructure.work_management import WorkManager
+
+
+class BagRequestHandler(RequestHandler):
+    def __init__(self, work_manager: WorkManager):
+        super().__init__()
+        self.bag_feature = BagFeature(work_manager)
+
+    @route.get("/all", auth_exempt=True)
+    async def get_bags(self, req, resp):
+        resp.media = await self.bag_feature.get_bags()
+        resp.status = falcon.HTTP_OK
+
+    @route.get("/{bag_id}", auth_exempt=True)
+    async def get_preselection(self, req, resp, bag_id):
+        resp.media = await self.bag_feature.get_bag_by_id(int(bag_id))
+        resp.status = falcon.HTTP_OK

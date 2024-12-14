@@ -10,7 +10,7 @@ class PreselectionModel(Base, SerializerMixin):
     __tablename__ = "preselection"
 
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
-    image_src = Column(String, nullable=False)
+    image_url = Column(String, nullable=False)
     name = Column(String, nullable=False, index=True)
     description = Column(String, nullable=False)
     price = Column(Float, nullable=False)

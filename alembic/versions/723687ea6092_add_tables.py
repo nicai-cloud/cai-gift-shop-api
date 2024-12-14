@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 250a2474b14f
+Revision ID: 723687ea6092
 Revises: 
-Create Date: 2024-12-13 07:07:42.951835
+Create Date: 2024-12-14 20:25:40.086791
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '250a2474b14f'
+revision: str = '723687ea6092'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,9 +23,9 @@ def upgrade() -> None:
     op.create_table('bag',
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('image_src', sa.String(), nullable=False),
+    sa.Column('image_url', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('color', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
     sa.Column('size', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -49,8 +49,9 @@ def upgrade() -> None:
     op.create_table('item',
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('image_src', sa.String(), nullable=False),
+    sa.Column('image_url', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -71,7 +72,7 @@ def upgrade() -> None:
     op.create_table('preselection',
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('image_src', sa.String(), nullable=False),
+    sa.Column('image_url', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),

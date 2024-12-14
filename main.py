@@ -9,6 +9,7 @@ from falcon import MEDIA_JSON, asgi, CORSMiddleware, media
 
 from api.health_check import HealthCheckRequestHandler
 from api.address import AddressRequestHandler
+from api.bag import BagRequestHandler
 from api.complete_order import CompleteOrderRequestHandler
 from api.email import EmailRequestHandler
 from api.item import ItemRequestHandler
@@ -94,6 +95,11 @@ def create_api():
     app.add_sink(
         PreselectionRequestHandler(work_manager),
         prefix=re.compile("^/preselection(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        BagRequestHandler(work_manager),
+        prefix=re.compile("^/bag(?P<path>/?.*)$"),
     )
 
     app.add_sink(
