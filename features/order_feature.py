@@ -37,12 +37,12 @@ class OrderFeature:
                 price = preselection.price
             elif "bag_id" in order_item and "item_ids" in order_item:
                 bag_id = order_item["bag_id"]
-                bag = await self.bag_repo.get(bag_id)
+                bag = await self.bag_repo.get_by_id(bag_id)
                 price = bag.price
 
                 item_ids = order_item["item_ids"]
                 for item_id in item_ids:
-                    item = await self.item_repo.get(item_id)
+                    item = await self.item_repo.get_by_id(item_id)
                     price += item.price
             total_cost += price * quantity
         return total_cost
