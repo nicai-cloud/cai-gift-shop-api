@@ -15,7 +15,12 @@ class PreselectionRequestHandler(RequestHandler):
         resp.media = await self.preselection_feature.get_preselections()
         resp.status = falcon.HTTP_OK
 
+    @route.get("/id/{preselection_id}", auth_exempt=True)
+    async def get_preselection_by_id(self, req, resp, preselection_id):
+        resp.media = await self.preselection_feature.get_preselection_by_id(int(preselection_id))
+        resp.status = falcon.HTTP_OK
+
     @route.get("/{preselection_name}", auth_exempt=True)
-    async def get_preselection(self, req, resp, preselection_name):
+    async def get_preselection_by_name(self, req, resp, preselection_name):
         resp.media = await self.preselection_feature.get_preselection_by_name(preselection_name)
         resp.status = falcon.HTTP_OK
