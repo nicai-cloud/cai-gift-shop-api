@@ -1,5 +1,5 @@
 import os
-import yaml
+from dotenv import dotenv_values
 
 
 __config_file_cache = None
@@ -15,7 +15,7 @@ def get(key):
 
     Looks at the following sources in order:
     1. The environment variables..
-    2. A config.yaml file in the current working directory.
+    2. A .env file in the current working directory.
 
     Keys are in all lowercase separated by underscores, for example, database_url. When
     looking for environment variables, the key will be converted to all uppercase, DATABASE_URL.
@@ -34,8 +34,7 @@ def get(key):
 
     if __config_file_cache is None:
         try:
-            with open("config.yaml", "r") as CONFIG_FILE:
-                __config_file_cache = yaml.full_load(CONFIG_FILE)
+            __config_file_cache = dotenv_values(".env")
         except FileNotFoundError:
             __config_file_cache = {}
 
