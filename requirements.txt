@@ -8,6 +8,5 @@ sendgrid==6.11.0
 simplejson==3.19.2
 stripe==11.3.0
 uvicorn==0.24.0
-PyYAML==6.0.1
 SQLAlchemy[asyncio]==1.4.39
 SQLAlchemy-serializer==1.4.1
