@@ -66,4 +66,4 @@ class CompleteOrderRequestHandler(RequestHandler):
             print('!! created order item id: ', order_item_id)
 
         # Send the successful order email
-        # await self.email_feature.send_email(email, order_id)
+        await self.email_feature.send_email(email, order_id)
