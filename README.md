@@ -1,5 +1,15 @@
 Useful notes:
 
+To make the hosted API inside docker container accessible, the network mode
+of the ECS task definition has to be host, cannot be awsvpc, and port mapping
+is also required to to make the API inside docker container accessible from
+EC2's public IP address.
+
+It is also worth nothing that the task definition's CPU and Memory hard/soft limit
+has to be less than that of EC2's, since the EC2 is almost guaranteed to have run
+something that consumes a bit of CPU and memory. (for example, 0.8 CPU and 0.8 memory
+for task definition with 1 CPU and 1 memory for EC2, t2.micro).
+
 1. To run the backend API in http mode, docker build with Dockerfile
 2. To run the backend API in https mode, docker build with Dockerfile_aws
 
