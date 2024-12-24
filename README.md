@@ -1,0 +1,45 @@
+Useful notes:
+
+1. To run the backend API in http mode, docker build with Dockerfile
+2. To run the backend API in https mode, docker build with Dockerfile_aws
+
+Running frontend locally doesn't need backend with http, but
+running frontend in netlify does need backend with https, so
+to make backend https, we need to add certs to the certs running on EC2.
+
+Since backend doesn't currently have its own domain, I've used DuckDNS (Dynamic DNS (DDNS) service)
+to register a subdomain, and linked EC2's public IP address to that subdomain,
+then I was able to generate certs for the subdomain.
+
+To generate certs for the domain on EC2:
+sudo certbot certonly --standalone -d goodyhub.duckdns.org
+
+By default, when the certs are generated, they are located on EC2:
+/etc/letsencrypt/live/goodyhub.duckdns.org/fullchain.pem and
+/etc/letsencrypt/live/goodyhub.duckdns.org/privkey.pem
+
+which are symbolic linked to /etc/letsencrypt/archive/goodyhub.duckdns.org/fullchain1.pem and /etc/letsencrypt/archive/goodyhub.duckdns.org/privkey1.pem
+
+Symbolic linked files won't work for volumn mounts, the docker container will error out with file not found. To make it work, the certs files will need to be copied from /etc/letsencrypt/archive/goodyhub.duckdns.org/ to /etc/certs/
+
+change permission of certs files so that they can be read:
+sudo chmod 644 /etc/certs/fullchain.pem
+sudo chmod 644 /etc/certs/privkey.pem
+
+and then mount them like:
+-v /etc/certs/:/app/certs/
+
+To check a docker container's configuration, including mounts and networking (it works even for a stopped container):
+sudo docker inspect <container_id> and volume mounts can be seen from the "Mounts" section
+
+To run commands from a docker container's bash inside EC2 using a docker image:
+sudo docker run -it --rm -v /etc/certs/:/app/certs/ 940482453018.dkr.ecr.ap-southeast-2.amazonaws.com/cai-gift-shop-api:1.0 /bin/bash
+
+Tail docker container logs inside EC2:
+sudo docker logs -f <container_id>
+
+To see the list of running docker containers inside EC2:
+sudo docker ps
+
+To see the entire list of docker containers EC2, including stopped ones:
+sudo docker ps -a
