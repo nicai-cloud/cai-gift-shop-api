@@ -43,7 +43,7 @@ def create_api():
     work_manager.register(BagRepo, construct_postgres_bag_repo)
     work_manager.register(ItemRepo, construct_postgres_item_repo)
     
-    cors_allowed_origins = get("signup_cors_allowed_origins").split(";")
+    cors_allowed_origins = get("fe_cors_allowed_origins").split(";")
 
     app = asgi.App(
         middleware=[
