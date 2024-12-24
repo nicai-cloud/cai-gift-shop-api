@@ -1,5 +1,18 @@
 Useful notes:
 
+To build and run docker container locally:
+docker build -t cai-gift-shop-api .
+docker run --env-file .env -p 8888:8080 cai-gift-shop-api
+
+To build docker container for aws:
+docker build --platform linux/amd64 -f Dockerfile_aws -t cai-gift-shop-api .
+
+Commands to push a docker image to ECR (Remember to delete existing docker image before pushing a new one so it is always within the storage limit):
+1. aws ecr create-repository --repository-name cai-gift-shop-api (once-off)
+2. aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 940482453018.dkr.ecr.ap-southeast-2.amazonaws.com
+3. docker tag cai-gift-shop-api:1.0 940482453018.dkr.ecr.ap-southeast-2.amazonaws.com/cai-gift-shop-api:1.0
+4. docker push 940482453018.dkr.ecr.ap-southeast-2.amazonaws.com/cai-gift-shop-api:1.0
+
 To make the hosted API inside docker container accessible, the network mode
 of the ECS task definition has to be host, cannot be awsvpc, and port mapping
 is also required to to make the API inside docker container accessible from
