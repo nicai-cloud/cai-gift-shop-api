@@ -5,7 +5,7 @@ docker build -t cai-gift-shop-api .
 docker run --env-file .env -p 8888:8080 cai-gift-shop-api
 
 To build docker container for aws:
-docker build --platform linux/amd64 -f Dockerfile_aws -t cai-gift-shop-api .
+docker build --platform linux/amd64 -f Dockerfile_aws -t cai-gift-shop-api:1.0 .
 
 Commands to push a docker image to ECR (Remember to delete existing docker image before pushing a new one so it is always within the storage limit):
 1. aws ecr create-repository --repository-name cai-gift-shop-api (once-off)
