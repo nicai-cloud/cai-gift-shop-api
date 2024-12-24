@@ -26,6 +26,7 @@ class PostgresTransactable(Transactable):
                 database_url,
                 echo=log_database_queries,
                 pool_recycle=3600,
+                pool_pre_ping=True,
                 pool_size=10,
                 max_overflow=20,
             )
