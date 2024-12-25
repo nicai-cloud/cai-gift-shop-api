@@ -3,7 +3,6 @@ import boto3
 # Initialize the Location Service client
 client = boto3.client('location', region_name='ap-southeast-2')  # Australia region
 
-# Place Index name (replace with your Place Index resource name)
 PLACE_INDEX_NAME = "AustraliaAddressIndex"
 
 class AddressFeature:

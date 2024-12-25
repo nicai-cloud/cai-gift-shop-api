@@ -1,5 +1,14 @@
 Useful notes:
 
+To use Amazon Location Service to address auto-complete:
+1. Log into AWS console
+2. Go to Amazon Location Service
+3. On the left menu, click on "Maps, places, routes"
+4. Click on the "Places" tab
+5. Click on the "Create place index" button and name it "AustraliaAddressIndex" and select "HERE" as Data Provider and create the place index
+6. After the index is created, reference it in the python code
+7. Attach an inline-policy to EC2 role so that it is allowed for Action "geo:SearchPlaceIndexForSuggestions" on the above created resource "arn:aws:geo:ap-southeast-2:940482453018:place-index/AustraliaAddressIndex"
+
 To build and run docker container locally:
 docker build -t cai-gift-shop-api .
 docker run --env-file .env -p 8888:8080 cai-gift-shop-api
