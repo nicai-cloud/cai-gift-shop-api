@@ -4,46 +4,17 @@ import json
 import ssl
 import certifi
 from urllib.parse import quote_plus
-from utils.config import get
 
 from api.base import RequestHandler, route
+from features.address_feature import AddressFeature
 
 
 class AddressRequestHandler(RequestHandler):
     def __init__(self):
         super().__init__()
+        self.address_feature = AddressFeature()
 
-    @route.post("/auto-complete/tomtom", auth_exempt=True)
-    async def auto_complete_tomtom(self, req, resp):
-        api_key = get('TOM_TOM_API_KEY')
-        
-        request_body = await req.get_media()
-        if "search" not in request_body:
-            raise falcon.HTTPInternalServerError(description="Missing search")
-        
-        query = request_body["search"]
-        url = f"https://api.tomtom.com/search/2/search/suggest.json?key={api_key}&query={query}&countrySet=AU&typeahead=true&limit=5"
-
-        ssl_context = ssl.create_default_context(cafile=certifi.where())
-
-        async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-            try:
-                response = await session.get(url=url)
-                response.raise_for_status()
-                addresses = []
-                if response.status == 200:
-                    suggestions = (await response.json())['results']
-                    for suggestion in suggestions:
-                        addresses.append(suggestion['address']['freeformAddress'])
-
-                    resp.media = {"addresses": addresses}
-                    resp.status = falcon.HTTP_OK
-                else:
-                    resp.media = {}
-            except json.JSONDecodeError:
-                resp.media = {}
-
-    @route.post("/auto-complete", auth_exempt=True)
+    @route.post("/auto-complete/local", auth_exempt=True)
     async def auto_complete(self, req, resp):
         request_body = await req.get_media()
         if "search" not in request_body:
@@ -72,3 +43,14 @@ class AddressRequestHandler(RequestHandler):
                     resp.media = {}
             except json.JSONDecodeError:
                 resp.media = {}
+
+    @route.post("/auto-complete", auth_exempt=True)
+    async def auto_complete_amazon(self, req, resp):
+        request_body = await req.get_media()
+        if "search" not in request_body:
+            raise falcon.HTTPInternalServerError(description="Missing search")
+        
+        query = request_body["search"]
+        suggestions = self.address_feature.get_address_suggestions(partial_text=query, max_results=10)
+        print('!!suggestions', suggestions)
+        resp.media = {"addresses": suggestions}
