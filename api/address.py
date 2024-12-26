@@ -52,5 +52,4 @@ class AddressRequestHandler(RequestHandler):
         
         query = request_body["search"]
         suggestions = self.address_feature.get_address_suggestions(partial_text=query, max_results=10)
-        print('!!suggestions', suggestions)
         resp.media = {"addresses": suggestions}

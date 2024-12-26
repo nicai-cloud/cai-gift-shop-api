@@ -1,7 +1,9 @@
+from collections import defaultdict
 import logging
+
+from api.types import Item
 from infrastructure.item_repo import ItemRepo
 from infrastructure.work_management import WorkManager
-from models.types import Item
 
 LOG = logging.getLogger(__name__)
 
@@ -13,13 +15,24 @@ class ItemFeature:
     async def get_items(self) -> list[Item]:
         try:
             items = await self.item_repo.get_all()
-            return [item.to_dict() for item in items]
+            return [Item(**item.to_dict()) for item in items]
+        except Exception as e:
+            LOG.exception("Unable to get items due to unexpected error", exc_info=e)
+    
+    async def get_items_by_sub_category(self) -> dict[str, list[Item]]:
+        try:
+            items = await self.item_repo.get_all()
+            items_dict = defaultdict(list)
+            for item in items:
+                item_dict = item.to_dict()
+                items_dict[item_dict["sub_category"]].append(Item(**item_dict))
+            return dict(items_dict)
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
 
     async def get_item(self, item_id: int) -> Item:
         try:
             item = await self.item_repo.get_by_id(item_id)
-            return item.to_dict()
+            return Item(**item.to_dict())
         except Exception as e:
             LOG.exception("Unable to get item due to unexpected error", exc_info=e)

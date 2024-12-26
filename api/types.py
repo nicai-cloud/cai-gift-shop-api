@@ -6,7 +6,9 @@ class Item:
     id: int
     image_url: str
     name: str
+    description: str
     price: float
+    sub_category: str
 
 
 @dataclass
