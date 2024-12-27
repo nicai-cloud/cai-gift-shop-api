@@ -19,7 +19,7 @@ INSERT INTO item (id, image_url, name, description, price, category) VALUES (3, 
 INSERT INTO item (id, image_url, name, description, price, category) VALUES (4, '/images/custom/item4.jpg', 'pen', 'item4 description', 1, 'study');
 INSERT INTO item (id, image_url, name, description, price, category) VALUES (5, '/images/custom/item5.webp', 'pen', 'item5 description', 2, 'study');
 INSERT INTO item (id, image_url, name, description, price, category) VALUES (6, '/images/custom/item6.webp', 'pen', 'item6 description', 2, 'study');
-INSERT INTO item (id, image_url, name, description, price, category) VALUES (7, '/images/custom/item7.webp', 'hairclip', 'item7 description', 1, 'wear');
+INSERT INTO item (id, image_url, name, description, price, category) VALUES (7, '/images/custom/item7.webp', 'hairclip', 'item7 description', 1, 'dress-up');
 INSERT INTO item (id, image_url, name, description, price, category) VALUES (8, '/images/custom/item8.jpg', 'toy', 'item8 description', 3, 'entertainment');
 INSERT INTO item (id, image_url, name, description, price, category) VALUES (9, '/images/custom/item9.jpg', 'toy', 'item9 description', 1, 'entertainment');
 
