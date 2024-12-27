@@ -14,7 +14,7 @@ class ItemModel(Base, SerializerMixin):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     price = Column(Float, nullable=False)
-    sub_category = Column(String, nullable=False)
+    category = Column(String, nullable=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

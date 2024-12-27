@@ -19,13 +19,13 @@ class ItemFeature:
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
     
-    async def get_items_with_sub_category(self) -> dict[str, list[Item]]:
+    async def get_items_with_category(self) -> dict[str, list[Item]]:
         try:
             items = await self.item_repo.get_all()
             items_dict = defaultdict(list)
             for item in items:
                 item_dict = item.to_dict()
-                items_dict[item_dict["sub_category"]].append(Item(**item_dict))
+                items_dict[item_dict["category"]].append(Item(**item_dict))
             return dict(items_dict)
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
