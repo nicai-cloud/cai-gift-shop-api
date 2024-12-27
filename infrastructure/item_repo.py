@@ -14,6 +14,13 @@ class ItemRepo(BaseRepository):
         result = await self.session.execute(items_query)
         
         return result.scalars().all()
+    
+    async def get_all_with_sorting(self):
+        items_query = await self.get_filtered_query(ItemModel)
+        items_query = items_query.order_by(ItemModel.category, ItemModel.name)
+        result = await self.session.execute(items_query)
+        
+        return result.scalars().all()
 
     async def get_by_id(self, item_id: int):
         item_query = await self.get_filtered_query(ItemModel)

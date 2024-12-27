@@ -21,7 +21,7 @@ class ItemFeature:
     
     async def get_items_with_category(self) -> dict[str, list[Item]]:
         try:
-            items = await self.item_repo.get_all()
+            items = await self.item_repo.get_all_with_sorting()
             items_dict = defaultdict(list)
             for item in items:
                 item_dict = item.to_dict()
