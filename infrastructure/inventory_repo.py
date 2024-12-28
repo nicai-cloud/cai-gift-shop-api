@@ -35,6 +35,10 @@ class InventoryRepo(BaseRepository):
             and_(InventoryModel.entity_type == "item", InventoryModel.entity_id == item_id)))
         
         return result.scalars().first()
+    
+    async def update(self, inventory_id: int, new_inventory: dict):
+        update_query = update(InventoryModel).where(InventoryModel.id == inventory_id).values(**new_inventory)
+        await self.session.execute(update_query)
 
 
 def construct_postgres_inventory_repo(transactable: PostgresTransactable) -> InventoryRepo:
