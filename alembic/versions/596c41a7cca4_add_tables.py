@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 86c460da36e5
+Revision ID: 596c41a7cca4
 Revises: 
-Create Date: 2024-12-27 21:00:11.656233
+Create Date: 2024-12-29 07:19:04.458458
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '86c460da36e5'
+revision: str = '596c41a7cca4'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -40,6 +40,29 @@ def upgrade() -> None:
     sa.Column('mobile', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('address', sa.String(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
+    )
+    op.create_table('inventory',
+    sa.Column('deleted_at', sa.DateTime(), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('entity_type', sa.String(), nullable=False),
+    sa.Column('entity_id', sa.Integer(), nullable=False),
+    sa.Column('current_stock', sa.Integer(), nullable=False),
+    sa.Column('low_stock_threshold', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
+    )
+    op.create_table('inventory_transaction',
+    sa.Column('deleted_at', sa.DateTime(), nullable=True),
+    sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('inventory_id', sa.Integer(), nullable=False),
+    sa.Column('transaction_type', sa.String(), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -112,6 +135,8 @@ def downgrade() -> None:
     op.drop_table('preselection')
     op.drop_table('order')
     op.drop_table('item')
+    op.drop_table('inventory_transaction')
+    op.drop_table('inventory')
     op.drop_table('customer')
     op.drop_table('bag')
     # ### end Alembic commands ###

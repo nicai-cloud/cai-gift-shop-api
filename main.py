@@ -15,6 +15,7 @@ from api.email import EmailRequestHandler
 from api.item import ItemRequestHandler
 from api.payment_method import PaymentMethodRequestHandler
 from api.preselection import PreselectionRequestHandler
+from api.inventory import InventoryRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable
@@ -24,6 +25,8 @@ from infrastructure.order_item_repo import OrderItemRepo, construct_postgres_ord
 from infrastructure.preselection_repo import PreselectionRepo, construct_postgres_preselection_repo
 from infrastructure.bag_repo import BagRepo, construct_postgres_bag_repo
 from infrastructure.item_repo import ItemRepo, construct_postgres_item_repo
+from infrastructure.inventory_repo import InventoryRepo, construct_postgres_inventory_repo
+from infrastructure.inventory_transaction_repo import InventoryTransactionRepo, construct_postgres_inventory_transaction_repo
 from infrastructure.work_management import WorkManager, WorkManagementMiddleware
 
 
@@ -42,6 +45,8 @@ def create_api():
     work_manager.register(PreselectionRepo, construct_postgres_preselection_repo)
     work_manager.register(BagRepo, construct_postgres_bag_repo)
     work_manager.register(ItemRepo, construct_postgres_item_repo)
+    work_manager.register(InventoryRepo, construct_postgres_inventory_repo)
+    work_manager.register(InventoryTransactionRepo, construct_postgres_inventory_transaction_repo)
     
     cors_allowed_origins = get("fe_cors_allowed_origins").split(";")
 
@@ -105,6 +110,11 @@ def create_api():
     app.add_sink(
         ItemRequestHandler(work_manager),
         prefix=re.compile("^/item(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        InventoryRequestHandler(work_manager),
+        prefix=re.compile("^/inventory(?P<path>/?.*)$"),
     )
 
     return app

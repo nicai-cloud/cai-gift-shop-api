@@ -27,3 +27,16 @@ INSERT INTO preselection (id, image_url, name, description, price, bag_id, item_
 INSERT INTO preselection (id, image_url, name, description, price, bag_id, item_ids) VALUES (2, '/images/preselections/preselection2.webp', 'preselection2', 'LOL OMG Gift Pack', 109, 1, '{1, 3, 4}');
 INSERT INTO preselection (id, image_url, name, description, price, bag_id, item_ids) VALUES (3, '/images/preselections/preselection3.webp', 'preselection3', 'Fun Surprises Gift Pack', 109, 2, '{1, 2, 3}');
 INSERT INTO preselection (id, image_url, name, description, price, bag_id, item_ids) VALUES (4, '/images/preselections/preselection4.png', 'preselection4', 'Squishmallow Surprise Gift Pack', 89, 2, '{2, 3, 4}');
+
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (1, 'bag', 1, 500, 50);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (2, 'bag', 2, 500, 50);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (3, 'bag', 3, 500, 50);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (4, 'item', 1, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (5, 'item', 2, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (6, 'item', 3, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (7, 'item', 4, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (8, 'item', 5, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (9, 'item', 6, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (10, 'item', 7, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (11, 'item', 8, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (12, 'item', 9, 100, 10);
