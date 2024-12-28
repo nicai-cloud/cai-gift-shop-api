@@ -29,3 +29,8 @@ class Item:
     description: str
     price: float
     category: str
+
+
+@dataclass
+class PublishableKeyResponse:
+    publishable_key: str

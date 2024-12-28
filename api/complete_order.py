@@ -1,10 +1,12 @@
 from api.base import RequestHandler, route
+from api.types import PublishableKeyResponse
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
 from features.email_feature import EmailFeature
 from features.order_feature import OrderFeature
 from features.order_item_feature import OrderItemFeature
 from infrastructure.work_management import WorkManager
+from utils.config import get
 
 
 class CompleteOrderRequestHandler(RequestHandler):
@@ -23,6 +25,12 @@ class CompleteOrderRequestHandler(RequestHandler):
 
         order_items = request_body["order_items"]
         resp.media = await self.order_feature.calculate_total_cost(order_items=order_items)
+    
+    @route.get("/publishable-key", auth_exempt=True)
+    async def get_publishable_key(self, req, resp):
+        resp.media = PublishableKeyResponse(
+            publishable_key=get("STRIPE_PUBLISHABLE_KEY"),
+        )
 
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
