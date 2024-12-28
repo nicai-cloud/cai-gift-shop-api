@@ -36,7 +36,7 @@ class CompleteOrderRequestHandler(RequestHandler):
             publishable_key=get("STRIPE_PUBLISHABLE_KEY"),
         )
 
-    async def _check_stock_availability(self, order_items):
+    async def _check_stock_availability(self, order_items) -> bool:
         bag_quantities = {}
         item_quantities = {}
         for order_item in order_items:
@@ -58,14 +58,25 @@ class CompleteOrderRequestHandler(RequestHandler):
                     item_quantities[preselection_item_id] = item_quantities.get(preselection_item_id, 0) + quantity
 
         inventories = await self.inventory_feature.get_inventories()
-        print('!!inventories', inventories)
+        bag_inventory = inventories["bag"]
+        item_inventory = inventories["item"]
 
         print('!!bag_quantities', bag_quantities)
-        
+        print('!!bag_inventory', bag_inventory)
         print('!!item_quantities', item_quantities)
-        # bag_inventory = inventories["bag"]
-        # items_inventory = inventories["item"]
+        print('!!item_inventory', item_inventory)
 
+        # Check for bag availability
+        for bag_id, bag_quantity in bag_quantities.items():
+            if bag_id not in bag_inventory or bag_quantity > bag_inventory[bag_id]:
+                return False
+        
+        # Check for items availability
+        for item_id, item_quantity in item_quantities.items():
+            if item_id not in item_inventory or item_quantity > item_inventory[item_id]:
+                return False
+        
+        return True
 
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
@@ -84,7 +95,8 @@ class CompleteOrderRequestHandler(RequestHandler):
         address = customer_info["address"]
 
         # Check there is enough stock
-        await self._check_stock_availability(order_items)
+        stocks_available = await self._check_stock_availability(order_items)
+        print('!!stocks_available', stocks_available)
         
         # total_cost = await self.order_feature.calculate_total_cost(order_items)
 

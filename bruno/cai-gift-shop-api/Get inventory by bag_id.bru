@@ -1,0 +1,15 @@
+meta {
+  name: Get inventory by bag_id
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{api}}/inventory?bagId=2
+  body: none
+  auth: none
+}
+
+params:query {
+  bagId: 2
+}

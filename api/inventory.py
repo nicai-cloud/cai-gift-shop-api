@@ -16,6 +16,16 @@ class InventoryRequestHandler(RequestHandler):
         resp.status = falcon.HTTP_OK
 
     @route.get("/{inventory_id}", auth_exempt=True)
-    async def get_inventory(self, req, resp, inventory_id):
-        resp.media = await self.inventory_feature.get_inventory(int(inventory_id))
+    async def get_inventory_by_id(self, req, resp, inventory_id):
+        resp.media = await self.inventory_feature.get_inventory_by_id(int(inventory_id))
+        resp.status = falcon.HTTP_OK
+
+    @route.get("/", auth_exempt=True)
+    async def get_inventory_by_bag_or_item_id(self, req, resp):
+        bag_id = req.params.get('bagId')
+        item_id = req.params.get('itemId')
+        if bag_id:
+            resp.media = await self.inventory_feature.get_inventory_by_bag_id(int(bag_id))
+        elif item_id:
+            resp.media = await self.inventory_feature.get_inventory_by_item_id(int(item_id))
         resp.status = falcon.HTTP_OK

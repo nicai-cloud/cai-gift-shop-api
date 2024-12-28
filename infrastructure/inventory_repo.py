@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import async_scoped_session
+from sqlalchemy import update, and_
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -19,6 +20,20 @@ class InventoryRepo(BaseRepository):
         inventory_query = await self.get_filtered_query(InventoryModel)
         result = await self.session.execute(inventory_query.where(InventoryModel.id == inventory_id))
             
+        return result.scalars().first()
+    
+    async def get_by_bag_id(self, bag_id: int):
+        inventory_query = await self.get_filtered_query(InventoryModel)
+        result = await self.session.execute(inventory_query.where(
+            and_(InventoryModel.entity_type == "bag", InventoryModel.entity_id == bag_id)))
+        
+        return result.scalars().first()
+
+    async def get_by_item_id(self, item_id: int):
+        inventory_query = await self.get_filtered_query(InventoryModel)
+        result = await self.session.execute(inventory_query.where(
+            and_(InventoryModel.entity_type == "item", InventoryModel.entity_id == item_id)))
+        
         return result.scalars().first()
 
 

@@ -15,17 +15,31 @@ class InventoryFeature:
     async def get_inventories(self) -> list[Inventory]:
         try:
             inventories = await self.inventory_repo.get_all()
-            inventories_dict = defaultdict(dict[str, dict])
+            inventories_dict = defaultdict(dict[str, int])
             for inventory in inventories:
                 inventory_dict = inventory.to_dict()
-                inventories_dict[inventory_dict["entity_type"]].update({inventory_dict["entity_id"]: inventory_dict})
+                inventories_dict[inventory_dict["entity_type"]].update({inventory_dict["entity_id"]: inventory_dict["current_stock"]})
             return dict(inventories_dict)
         except Exception as e:
             LOG.exception("Unable to get inventories due to unexpected error", exc_info=e)
 
-    async def get_inventory(self, inventory_id: int) -> Inventory:
+    async def get_inventory_by_id(self, inventory_id: int) -> Inventory:
         try:
             inventory = await self.inventory_repo.get_by_id(inventory_id)
+            return Inventory(**inventory.to_dict())
+        except Exception as e:
+            LOG.exception("Unable to get inventory due to unexpected error", exc_info=e)
+
+    async def get_inventory_by_bag_id(self, bag_id: int):
+        try:
+            inventory = await self.inventory_repo.get_by_bag_id(bag_id)
+            return Inventory(**inventory.to_dict())
+        except Exception as e:
+            LOG.exception("Unable to get inventory due to unexpected error", exc_info=e)
+
+    async def get_inventory_by_item_id(self, item_id: int):
+        try:
+            inventory = await self.inventory_repo.get_by_item_id(item_id)
             return Inventory(**inventory.to_dict())
         except Exception as e:
             LOG.exception("Unable to get inventory due to unexpected error", exc_info=e)
