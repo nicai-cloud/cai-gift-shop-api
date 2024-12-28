@@ -1,3 +1,4 @@
+from collections import defaultdict
 import logging
 
 from api.types import Inventory
@@ -14,7 +15,11 @@ class InventoryFeature:
     async def get_inventories(self) -> list[Inventory]:
         try:
             inventories = await self.inventory_repo.get_all()
-            return [Inventory(**inventory.to_dict()) for inventory in inventories]
+            inventories_dict = defaultdict(dict[str, dict])
+            for inventory in inventories:
+                inventory_dict = inventory.to_dict()
+                inventories_dict[inventory_dict["entity_type"]].update({inventory_dict["entity_id"]: inventory_dict})
+            return dict(inventories_dict)
         except Exception as e:
             LOG.exception("Unable to get inventories due to unexpected error", exc_info=e)
 
