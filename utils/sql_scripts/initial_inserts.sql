@@ -8,6 +8,7 @@ DELETE FROM public.order;
 SELECT * FROM bag;
 SELECT * FROM item;
 SELECT * FROM preselection;
+SELECT * FROM inventory ORDER BY id;
 
 INSERT INTO bag (id, image_url, name, description, price) VALUES (1, '/images/custom/bag1.jpeg', 'bag1', 'bag1 description', 10);
 INSERT INTO bag (id, image_url, name, description, price) VALUES (2, '/images/custom/bag2.jpeg', 'bag2', 'bag2 description', 15);

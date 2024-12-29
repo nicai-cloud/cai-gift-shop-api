@@ -16,13 +16,29 @@ class EmailFeature:
     def __init__(self):
         super().__init__()
     
-    async def send_email(self, to_email: str, order_id: UUID):
+    async def send_email_to_customer(self, to_email: str, order_id: UUID):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
             to_emails=to_email,
             subject='Successful order',
             html_content=f"<strong>Thanks for your purchase, your order id is {order_id}!</strong>"
+        )
+
+        # Send the email
+        try:
+            response = sg.send(email)
+            print(f"Email sent! Status code: {response.status_code}")
+        except Exception as e:
+            print(f"Error: {e}")
+
+    async def send_email_to_me(self, customer_id: UUID, order_id: UUID):
+        # Create the email
+        email = Mail(
+            from_email=get("FROM_EMAIL"),
+            to_emails=get("FROM_EMAIL"),
+            subject='Successful order',
+            html_content=f"<strong>Customer {customer_id} has made an order with order id {order_id}!</strong>"
         )
 
         # Send the email
