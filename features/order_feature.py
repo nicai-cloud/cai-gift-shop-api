@@ -26,7 +26,7 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
 
-    async def calculate_total_cost(self, order_items: list[dict]) -> float:
+    async def calculate_order_cost(self, order_items: list[dict]) -> float:
         total_cost = 0
         for order_item in order_items:
             quantity = order_item["quantity"]
@@ -46,3 +46,25 @@ class OrderFeature:
                     price += item.price
             total_cost += price * quantity
         return total_cost
+
+    async def calculate_order_quantities(self, order_items: list[dict]) -> tuple[dict, dict]:
+        bag_quantities = {}
+        item_quantities = {}
+        for order_item in order_items:
+            quantity = order_item["quantity"]
+
+            bag_id = order_item.get("bag_id", None)
+            item_ids = order_item.get("item_ids", None)
+            if bag_id and item_ids:
+                bag_quantities[bag_id] = bag_quantities.get(bag_id, 0) + quantity
+                for item_id in item_ids:
+                    item_quantities[item_id] = item_quantities.get(item_id, 0) + quantity
+
+            preselection_id = order_item.get("preselection_id", None)
+            if preselection_id:
+                preselection = await self.preselection_repo.get_by_id(preselection_id)
+                bag_quantities[preselection.bag_id] = bag_quantities.get(preselection.bag_id, 0) + quantity
+                for preselection_item_id in preselection.item_ids:
+                    item_quantities[preselection_item_id] = item_quantities.get(preselection_item_id, 0) + quantity
+        
+        return bag_quantities, item_quantities

@@ -22,61 +22,19 @@ class CompleteOrderRequestHandler(RequestHandler):
         self.payment_method_feature = PaymentMethodFeature()
         self.email_feature = EmailFeature()
 
-    @route.post("/calculate-total-cost", auth_exempt=True)
-    async def calculate_total_cost(self, req, resp):
+    @route.post("/calculate-order-cost", auth_exempt=True)
+    async def calculate_order_cost(self, req, resp):
         request_body = await req.get_media()
         print('request_body', request_body)
 
         order_items = request_body["order_items"]
-        resp.media = await self.order_feature.calculate_total_cost(order_items=order_items)
+        resp.media = await self.order_feature.calculate_order_cost(order_items=order_items)
     
     @route.get("/publishable-key", auth_exempt=True)
     async def get_publishable_key(self, req, resp):
         resp.media = PublishableKeyResponse(
             publishable_key=get("STRIPE_PUBLISHABLE_KEY"),
         )
-
-    async def _check_stock_availability(self, order_items) -> bool:
-        bag_quantities = {}
-        item_quantities = {}
-        for order_item in order_items:
-            quantity = order_item["quantity"]
-            bag_id = order_item.get("bag_id", None)
-            item_ids = order_item.get("item_ids", None)
-            if bag_id and item_ids:
-                bag_quantities[bag_id] = bag_quantities.get(bag_id, 0) + quantity
-                for item_id in item_ids:
-                    item_quantities[item_id] = item_quantities.get(item_id, 0) + quantity
-
-            preselection_id = order_item.get("preselection_id", None)
-            if preselection_id:
-                preselection = await self.preselection_feature.get_preselection_by_id(preselection_id)
-                preselection_bag_id = preselection.bag_id
-                preselection_item_ids = preselection.item_ids
-                bag_quantities[preselection_bag_id] = bag_quantities.get(preselection_bag_id, 0) + quantity
-                for preselection_item_id in preselection_item_ids:
-                    item_quantities[preselection_item_id] = item_quantities.get(preselection_item_id, 0) + quantity
-
-        inventories = await self.inventory_feature.get_inventories()
-        bag_inventory = inventories["bag"]
-        item_inventory = inventories["item"]
-
-        print('!!bag_quantities', bag_quantities)
-        print('!!bag_inventory', bag_inventory)
-        print('!!item_quantities', item_quantities)
-        print('!!item_inventory', item_inventory)
-
-        # Check for bag availability
-        for bag_id, bag_quantity in bag_quantities.items():
-            if bag_id not in bag_inventory or bag_quantity > bag_inventory[bag_id]:
-                return False
-        
-        # Check for items availability
-        for item_id, item_quantity in item_quantities.items():
-            if item_id not in item_inventory or item_quantity > item_inventory[item_id]:
-                return False
-        
-        return True
 
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
@@ -94,15 +52,19 @@ class CompleteOrderRequestHandler(RequestHandler):
         mobile = customer_info["mobile"]
         address = customer_info["address"]
 
-        # Check there is enough stock
-        stocks_available = await self._check_stock_availability(order_items)
-        print('!!stocks_available', stocks_available)
+        # Check if there are enough stocks
+        bag_quantities, item_quantities = await self.order_feature.calculate_order_quantities(order_items)
+        stocks_available = await self.inventory_feature.check_stock_availability(bag_quantities, item_quantities)
+        if not stocks_available:
+            return
         
-        # total_cost = await self.order_feature.calculate_total_cost(order_items)
+        # Calculate total cost and make the payment
+        total_cost = await self.order_feature.calculate_order_cost(order_items)
+        await self.payment_method_feature.create_payment_intent(payment_method_id, total_cost)
 
-        # # Make the payment
-        # await self.payment_method_feature.create_payment_intent(payment_method_id, total_cost)
-
+        # If the code reaches here, it means the payment is successful, then we update inventories
+        await self.inventory_feature.update_inventories(bag_quantities, item_quantities)
+        
         # # Create customer
         # customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
         # print('!! created customer id: ', customer_id)
