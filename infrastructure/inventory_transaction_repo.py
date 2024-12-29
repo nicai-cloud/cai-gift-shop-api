@@ -1,3 +1,4 @@
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import async_scoped_session
 
 from infrastructure.postgres import PostgresTransactable
@@ -20,6 +21,11 @@ class InventoryTransactionRepo(BaseRepository):
         result = await self.session.execute(inventory_transaction_query.where(InventoryTransactionRepo.id == inventory_transaction_id))
             
         return result.scalars().first()
+    
+    async def create(self, inventory_transaction: dict):
+        create_inventory_transaction_stmt = insert(InventoryTransactionModel).values(inventory_transaction)
+        inventory_transaction_entry = await self.session.execute(create_inventory_transaction_stmt)
+        return inventory_transaction_entry.inserted_primary_key[0]
 
 
 def construct_postgres_inventory_transaction_repo(transactable: PostgresTransactable) -> InventoryTransactionRepo:

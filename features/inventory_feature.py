@@ -3,6 +3,7 @@ import logging
 
 from api.types import Inventory
 from infrastructure.inventory_repo import InventoryRepo
+from infrastructure.inventory_transaction_repo import InventoryTransactionRepo
 from infrastructure.work_management import WorkManager
 
 LOG = logging.getLogger(__name__)
@@ -11,6 +12,7 @@ LOG = logging.getLogger(__name__)
 class InventoryFeature:
     def __init__(self, work_manager: WorkManager):
         self.inventory_repo = work_manager.get(InventoryRepo)
+        self.inventory_transactoin_repo = work_manager.get(InventoryTransactionRepo)
     
     async def get_inventories(self):
         try:
@@ -51,6 +53,14 @@ class InventoryFeature:
             bag_inventory_dict = bag_inventory.to_dict()
             bag_inventory_dict["current_stock"] -= bag_quantity
             await self.inventory_repo.update(bag_inventory.id, bag_inventory_dict)
+
+            # Also create inventory_transaction record
+            inventory_transaction = {
+                "inventory_id": bag_inventory.id,
+                "transaction_type": "sale",
+                "quantity": bag_quantity
+            }
+            await self.inventory_transactoin_repo.create(inventory_transaction)
         
         # Update item inventories
         for item_id, item_quantity in item_quantities.items():
@@ -58,6 +68,15 @@ class InventoryFeature:
             item_inventory_dict = item_inventory.to_dict()
             item_inventory_dict["current_stock"] -= item_quantity
             await self.inventory_repo.update(item_inventory.id, item_inventory_dict)
+
+            # Also create inventory_transaction record
+            inventory_transaction = {
+                "inventory_id": item_inventory.id,
+                "transaction_type": "sale",
+                "quantity": item_quantity
+            }
+            await self.inventory_transactoin_repo.create(inventory_transaction)
+
 
     async def check_stock_availability(self, bag_quantities, item_quantities):
         inventories = await self.get_inventories()
