@@ -1,0 +1,18 @@
+meta {
+  name: Refill items
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{api}}/inventory/refill-items
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "item_id": 1,
+    "quantity": 2
+  }
+}

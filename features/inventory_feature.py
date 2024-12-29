@@ -46,6 +46,40 @@ class InventoryFeature:
         except Exception as e:
             LOG.exception("Unable to get inventory due to unexpected error", exc_info=e)
     
+    async def refill_bags(self, bag_id: int, quantity: int):
+        try:
+            bag_inventory = await self.inventory_repo.get_by_bag_id(bag_id)
+            bag_inventory_dict = bag_inventory.to_dict()
+            bag_inventory_dict["current_stock"] += quantity
+            await self.inventory_repo.update(bag_inventory.id, bag_inventory_dict)
+
+            # Also create inventory_transaction record
+            inventory_transaction = {
+                "inventory_id": bag_inventory.id,
+                "transaction_type": "refill",
+                "quantity": quantity
+            }
+            await self.inventory_transactoin_repo.create(inventory_transaction)
+        except Exception as e:
+            LOG.exception("Unable to refill bags due to unexpected error", exc_info=e)
+    
+    async def refill_items(self, item_id: int, quantity: int):
+        try:
+            item_inventory = await self.inventory_repo.get_by_item_id(item_id)
+            item_inventory_dict = item_inventory.to_dict()
+            item_inventory_dict["current_stock"] += quantity
+            await self.inventory_repo.update(item_inventory.id, item_inventory_dict)
+
+            # Also create inventory_transaction record
+            inventory_transaction = {
+                "inventory_id": item_inventory.id,
+                "transaction_type": "refill",
+                "quantity": quantity
+            }
+            await self.inventory_transactoin_repo.create(inventory_transaction)
+        except Exception as e:
+            LOG.exception("Unable to refill items due to unexpected error", exc_info=e)
+    
     async def update_inventories(self, bag_quantities: dict, item_quantities: dict):
          # Update bag inventories
         for bag_id, bag_quantity in bag_quantities.items():
