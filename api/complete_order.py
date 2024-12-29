@@ -39,7 +39,7 @@ class CompleteOrderRequestHandler(RequestHandler):
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
         request_body = await req.get_media()
-        # print('request_body', request_body)
+        print('request_body', request_body)
 
         customer_info = request_body["customer_info"]
         order_items = request_body["order_items"]
@@ -65,25 +65,25 @@ class CompleteOrderRequestHandler(RequestHandler):
         # If the code reaches here, it means the payment is successful, then we update inventories
         await self.inventory_feature.update_inventories(bag_quantities, item_quantities)
         
-        # # Create customer
-        # customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
-        # print('!! created customer id: ', customer_id)
+        # Create customer
+        customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
+        print('!! created customer id: ', customer_id)
 
-        # # Create an order against the customer
-        # order_id = await self.order_feature.create_order(customer_id=customer_id, amount=total_cost)
-        # print('!! created order id: ', order_id)
+        # Create an order against the customer
+        order_id = await self.order_feature.create_order(customer_id=customer_id, amount=total_cost)
+        print('!! created order id: ', order_id)
 
-        # # Create each of the order items
-        # order_item_ids = []
-        # for order_item in order_items:
-        #     quantity = order_item["quantity"]
-        #     preselection_id = order_item.get("preselection_id", None)
-        #     bag_id = order_item.get("bag_id", None)
-        #     item_ids = order_item.get("item_ids", None)
+        # Create each of the order items
+        order_item_ids = []
+        for order_item in order_items:
+            quantity = order_item["quantity"]
+            preselection_id = order_item.get("preselection_id", None)
+            bag_id = order_item.get("bag_id", None)
+            item_ids = order_item.get("item_ids", None)
 
-        #     order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids, order_id)
-        #     order_item_ids.append(order_item_id)
-        #     print('!! created order item id: ', order_item_id)
+            order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids, order_id)
+            order_item_ids.append(order_item_id)
+            print('!! created order item id: ', order_item_id)
 
-        # # Send the successful order email
-        # await self.email_feature.send_email(email, order_id)
+        # Send the successful order email
+        await self.email_feature.send_email(email, order_id)
