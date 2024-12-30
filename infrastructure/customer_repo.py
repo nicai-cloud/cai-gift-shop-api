@@ -16,6 +16,19 @@ class CustomerRepo(BaseRepository):
         customer_entry = await self.session.execute(create_customer_stmt)
         return customer_entry.inserted_primary_key[0]
 
+    async def get_all(self):
+        customers_query = await self.get_filtered_query(CustomerModel)
+        result = await self.session.execute(customers_query)
+        
+        return result.scalars().all()
+    
+    async def get_by_id(self, customer_id: str):
+        customer_query = await self.get_filtered_query(CustomerModel)
+        result = await self.session.execute(customer_query.where(CustomerModel.id == customer_id))
+            
+        customer = result.scalars().first()
+        return customer
+
 
 def construct_postgres_customer_repo(transactable: PostgresTransactable) -> CustomerRepo:
     return CustomerRepo(transactable.session)

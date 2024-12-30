@@ -49,5 +49,32 @@ class InventoryTransaction:
 
 
 @dataclass
+class Customer:
+    id: str
+    first_name: str
+    last_name: str
+    mobile: str
+    email: str
+    address: str
+
+
+@dataclass
+class Order:
+    id: str
+    customer_id: str
+    amount: float
+
+
+@dataclass
+class OrderItem:
+    id: str
+    quantity: int
+    preselection_id: int | None
+    bag_id: int | None
+    item_ids: list[int] | None
+    order_id: str
+
+
+@dataclass
 class PublishableKeyResponse:
     publishable_key: str

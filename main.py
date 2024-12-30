@@ -16,6 +16,9 @@ from api.item import ItemRequestHandler
 from api.payment_method import PaymentMethodRequestHandler
 from api.preselection import PreselectionRequestHandler
 from api.inventory import InventoryRequestHandler
+from api.customer import CustomerRequestHandler
+from api.order import OrderRequestHandler
+from api.order_item import OrderItemRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable
@@ -115,6 +118,21 @@ def create_api():
     app.add_sink(
         InventoryRequestHandler(work_manager),
         prefix=re.compile("^/inventory(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        CustomerRequestHandler(work_manager),
+        prefix=re.compile("^/customer(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        OrderRequestHandler(work_manager),
+        prefix=re.compile("^/order(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        OrderItemRequestHandler(work_manager),
+        prefix=re.compile("^/order-item(?P<path>/?.*)$"),
     )
 
     return app

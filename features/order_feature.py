@@ -1,5 +1,7 @@
 import logging
 from uuid import UUID
+
+from api.types import Order
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
@@ -68,3 +70,17 @@ class OrderFeature:
                     item_quantities[preselection_item_id] = item_quantities.get(preselection_item_id, 0) + quantity
         
         return bag_quantities, item_quantities
+
+    async def get_orders(self) -> list[Order]:
+        try:
+            orders = await self.order_repo.get_all()
+            return [Order(**order.to_dict()) for order in orders]
+        except Exception as e:
+            LOG.exception("Unable to get orders due to unexpected error", exc_info=e)
+
+    async def get_order_by_id(self, order_id: str) -> Order:
+        try:
+            order = await self.order_repo.get_by_id(order_id)
+            return Order(**order.to_dict())
+        except Exception as e:
+            LOG.exception("Unable to get order due to unexpected error", exc_info=e)

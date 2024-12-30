@@ -67,11 +67,11 @@ class CompleteOrderRequestHandler(RequestHandler):
         
         # Create customer
         customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
-        print('!! created customer id: ', customer_id)
+        print('!! created customer id:', customer_id)
 
         # Create an order against the customer
         order_id = await self.order_feature.create_order(customer_id=customer_id, amount=total_cost)
-        print('!! created order id: ', order_id)
+        print('!! created order id:', order_id)
 
         # Create each of the order items
         order_item_ids = []
@@ -83,8 +83,8 @@ class CompleteOrderRequestHandler(RequestHandler):
 
             order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids, order_id)
             order_item_ids.append(order_item_id)
-            print('!! created order item id: ', order_item_id)
+            print('!! created order item id:', order_item_id)
 
-        # Send the successful order email to customer and myself
-        await self.email_feature.send_email_to_customer(email, order_id)
-        await self.email_feature.send_email_to_me(customer_id, order_id)
+        # # Send the successful order email to customer and myself
+        # await self.email_feature.send_email_to_customer(email, order_id)
+        # await self.email_feature.send_email_to_me(customer_id, order_id)
