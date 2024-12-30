@@ -22,7 +22,7 @@ class EmailFeature:
             from_email=get("FROM_EMAIL"),
             to_emails=to_email,
             subject='Successful order',
-            html_content=f"<strong>Thanks for your purchase, your order number is {order_number}!</strong>"
+            html_content=f"<strong>Thanks for your purchase, your order number is {order_number}</strong>"
         )
 
         # Send the email
@@ -38,7 +38,7 @@ class EmailFeature:
             from_email=get("FROM_EMAIL"),
             to_emails=get("FROM_EMAIL"),
             subject='Successful order',
-            html_content=f"<strong>Customer {customer_id} has made an order with order number {order_number} and order id {order_id}!</strong>"
+            html_content=f"<strong>Customer {customer_id} has placed an order with order number {order_number} and order id {order_id}!</strong>"
         )
 
         # Send the email
