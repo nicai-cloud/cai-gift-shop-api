@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, DateTime, Float, ForeignKey
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 
@@ -15,6 +15,7 @@ class OrderModel(Base, SerializerMixin):
 
     customer_id = Column(UUID(as_uuid=True), ForeignKey("customer.id"), nullable=False)
     amount = Column(Float, nullable=False)
+    order_number = Column(String, nullable=False)
 
     order_items = relationship("OrderItemModel", back_populates="order")
 

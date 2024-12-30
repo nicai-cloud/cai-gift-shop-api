@@ -63,6 +63,7 @@ class Order:
     id: str
     customer_id: str
     amount: float
+    order_number: str
 
 
 @dataclass

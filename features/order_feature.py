@@ -7,6 +7,7 @@ from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
 from infrastructure.work_management import WorkManager
+from utils.generate_order_number import generate_order_number
 
 LOG = logging.getLogger(__name__)
 
@@ -18,13 +19,15 @@ class OrderFeature:
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
     
-    async def create_order(self, customer_id: UUID, amount: float) -> UUID:
+    async def create_order(self, customer_id: UUID, amount: float) -> tuple[UUID, str]:
         try:
+            order_number = generate_order_number()
             order = {
                 "customer_id": customer_id,
-                "amount": amount
+                "amount": amount,
+                "order_number": order_number
             }
-            return await self.order_repo.create(order)
+            return await self.order_repo.create(order), order_number
         except Exception as e:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
 

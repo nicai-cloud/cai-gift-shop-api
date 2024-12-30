@@ -1,3 +1,5 @@
+import falcon
+
 from api.base import RequestHandler, route
 from api.types import PublishableKeyResponse
 from features.payment_method_feature import PaymentMethodFeature
@@ -70,7 +72,8 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('!! created customer id:', customer_id)
 
         # Create an order against the customer
-        order_id = await self.order_feature.create_order(customer_id=customer_id, amount=total_cost)
+
+        order_id, order_number = await self.order_feature.create_order(customer_id=customer_id, amount=total_cost)
         print('!! created order id:', order_id)
 
         # Create each of the order items
@@ -88,3 +91,6 @@ class CompleteOrderRequestHandler(RequestHandler):
         # Send the successful order email to customer and myself
         await self.email_feature.send_email_to_customer(email, order_id)
         await self.email_feature.send_email_to_me(customer_id, order_id)
+
+        resp.media = {"order_number": order_number}
+        resp.status = falcon.HTTP_OK
