@@ -16,13 +16,13 @@ class EmailFeature:
     def __init__(self):
         super().__init__()
     
-    async def send_email_to_customer(self, to_email: str, order_id: UUID):
+    async def send_email_to_customer(self, to_email: str, order_number: str):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
             to_emails=to_email,
             subject='Successful order',
-            html_content=f"<strong>Thanks for your purchase, your order id is {order_id}!</strong>"
+            html_content=f"<strong>Thanks for your purchase, your order number is {order_number}!</strong>"
         )
 
         # Send the email
@@ -32,13 +32,13 @@ class EmailFeature:
         except Exception as e:
             print(f"Error: {e}")
 
-    async def send_email_to_me(self, customer_id: UUID, order_id: UUID):
+    async def send_email_to_me(self, customer_id: UUID, order_number: str, order_id: UUID):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
             to_emails=get("FROM_EMAIL"),
             subject='Successful order',
-            html_content=f"<strong>Customer {customer_id} has made an order with order id {order_id}!</strong>"
+            html_content=f"<strong>Customer {customer_id} has made an order with order number {order_number} and order id {order_id}!</strong>"
         )
 
         # Send the email

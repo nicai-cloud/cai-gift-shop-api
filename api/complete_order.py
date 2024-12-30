@@ -89,8 +89,8 @@ class CompleteOrderRequestHandler(RequestHandler):
             print('!! created order item id:', order_item_id)
 
         # Send the successful order email to customer and myself
-        await self.email_feature.send_email_to_customer(email, order_id)
-        await self.email_feature.send_email_to_me(customer_id, order_id)
+        await self.email_feature.send_email_to_customer(email, order_number)
+        await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
         resp.media = {"order_number": order_number}
         resp.status = falcon.HTTP_OK
