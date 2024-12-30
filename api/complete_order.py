@@ -85,6 +85,6 @@ class CompleteOrderRequestHandler(RequestHandler):
             order_item_ids.append(order_item_id)
             print('!! created order item id:', order_item_id)
 
-        # # Send the successful order email to customer and myself
-        # await self.email_feature.send_email_to_customer(email, order_id)
-        # await self.email_feature.send_email_to_me(customer_id, order_id)
+        # Send the successful order email to customer and myself
+        await self.email_feature.send_email_to_customer(email, order_id)
+        await self.email_feature.send_email_to_me(customer_id, order_id)
