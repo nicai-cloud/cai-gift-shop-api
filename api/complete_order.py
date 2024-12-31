@@ -58,7 +58,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         bag_quantities, item_quantities = await self.order_feature.calculate_order_quantities(order_items)
         stocks_available = await self.inventory_feature.check_stock_availability(bag_quantities, item_quantities)
         if not stocks_available:
-            return
+            raise falcon.HTTPError(status="400", description="Out of stock")
         
         # Calculate total cost and make the payment
         total_cost = await self.order_feature.calculate_order_cost(order_items)
