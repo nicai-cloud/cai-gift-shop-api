@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 4e0aa34ba87b
+Revision ID: 3d878abef22d
 Revises: 
-Create Date: 2024-12-30 15:34:00.923437
+Create Date: 2024-12-31 11:34:04.572742
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '4e0aa34ba87b'
+revision: str = '3d878abef22d'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -82,17 +82,18 @@ def upgrade() -> None:
     sa.UniqueConstraint('id')
     )
     op.create_table('order',
-    sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('customer_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('order_number', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
+    op.create_index('idx_order_number_unique_if_not_deleted', 'order', ['order_number'], unique=True, postgresql_where=False)
     op.create_table('preselection',
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
@@ -134,6 +135,7 @@ def downgrade() -> None:
     op.drop_table('order_item')
     op.drop_index(op.f('ix_preselection_name'), table_name='preselection')
     op.drop_table('preselection')
+    op.drop_index('idx_order_number_unique_if_not_deleted', table_name='order', postgresql_where=False)
     op.drop_table('order')
     op.drop_table('item')
     op.drop_table('inventory_transaction')
