@@ -29,6 +29,7 @@ class PostgresTransactable(Transactable):
                 pool_pre_ping=True,
                 pool_size=10,
                 max_overflow=20,
+                connect_args={"server_settings": {"statement_timeout": "30000"}} # Timeout of 30 seconds
             )
             self.session = async_scoped_session(
                 sessionmaker(engine, class_=AsyncSession),
