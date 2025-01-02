@@ -16,14 +16,26 @@ class EmailFeature:
     def __init__(self):
         super().__init__()
     
-    async def send_email_to_customer(self, to_email: str, html_content: dict):
+    async def send_email_to_customer(self, to_email: str, customer_info: dict, order_info: dict):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
             to_emails=to_email,
-            subject='Successful order',
-            html_content=html_content
+            subject='Successful order'
         )
+
+        email.template_id = "d-0d5368d2d8e2456a88c1f7d48b648b1e"
+
+        email.dynamic_template_data = {
+            "orderNumber": order_info["order_number"],
+            "orderTotal": order_info["total_cost"],
+            "preselectionItems": order_info["ordered_items"]["preselection_items"],
+            "customItems": order_info["ordered_items"]["custom_items"],
+            "firstName": customer_info["first_name"],
+            "lastName": customer_info["last_name"],
+            "mobile": customer_info["mobile"],
+            "email": customer_info["email"]
+        }
 
         # Send the email
         try:

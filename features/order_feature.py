@@ -88,12 +88,13 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to get order due to unexpected error", exc_info=e)
 
-    async def generate_preselection_item_payload(self, quantity: int, preselection_id: int):
+    async def generate_preselection_item_payload(self, index: int, quantity: int, preselection_id: int):
         try:
             preselection = (await self.preselection_repo.get_by_id(preselection_id)).to_dict()
             return {
+                "index": index,
                 "name": preselection["name"],
-                "price_with_quantity": preselection["price"] * quantity,
+                "price": preselection["price"] * quantity,
                 "quantity": quantity
             }
         except Exception as e:
@@ -102,18 +103,18 @@ class OrderFeature:
     async def _calculate_customer_gift_unit_price(self, bag: Bag, items: list[Item]):
         return bag["price"] + sum(item["price"] for item in items)
     
-    async def _get_custom_gift_item_names(self, items: list[Item]):
-        return [item["name"] for item in items]
+    async def _generate_custom_gift_name(self, bag: Bag, items: list[Item]):
+        return bag["name"] + ' + ' + ' + '.join([item["name"] for item in items])
 
-    async def generate_custom_item_payload(self, quantity: int, bag_id: int, item_ids: list[int]):
+    async def generate_custom_item_payload(self, index: int, quantity: int, bag_id: int, item_ids: list[int]):
         try:
             bag = (await self.bag_repo.get_by_id(bag_id)).to_dict()
             items = [(await self.item_repo.get_by_id(item_id)).to_dict() for item_id in item_ids]
             return {
-                "bag_name": bag["name"],
-                "item_names": await self._get_custom_gift_item_names(items),
+                "index": index,
+                "name": await self._generate_custom_gift_name(bag, items),
                 "quantity": quantity,
-                "price_with_quantity": (await self._calculate_customer_gift_unit_price(bag, items)) * quantity
+                "price": (await self._calculate_customer_gift_unit_price(bag, items)) * quantity
             }
         except Exception as e:
             LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
@@ -121,6 +122,7 @@ class OrderFeature:
     async def generate_order_info(self, order_number: str, order_items: dict, total_cost: float) -> dict:
         ordered_preselection_items = []
         ordered_custom_items = []
+        preselection_index, custom_index = 1, 1
         for order_item in order_items:
             quantity = order_item["quantity"]
             preselection_id = order_item.get("preselection_id", None)
@@ -128,10 +130,12 @@ class OrderFeature:
             item_ids = order_item.get("item_ids", None)
 
             if preselection_id:
-                preselection_item = await self.generate_preselection_item_payload(quantity, preselection_id)
+                preselection_item = await self.generate_preselection_item_payload(preselection_index, quantity, preselection_id)
+                preselection_index += 1
                 ordered_preselection_items.append(preselection_item)
             if bag_id and item_ids:
-                custom_item = await self.generate_custom_item_payload(quantity, bag_id, item_ids)
+                custom_item = await self.generate_custom_item_payload(custom_index, quantity, bag_id, item_ids)
+                custom_index += 1
                 ordered_custom_items.append(custom_item)
 
         order_info = {

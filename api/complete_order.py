@@ -11,7 +11,6 @@ from features.preselection_feature import PreselectionFeature
 from features.inventory_feature import InventoryFeature
 from infrastructure.work_management import WorkManager
 from utils.config import get
-from utils.generate_email_content import generate_email_html_content
 
 
 class CompleteOrderRequestHandler(RequestHandler):
@@ -90,10 +89,9 @@ class CompleteOrderRequestHandler(RequestHandler):
 
         order_info = await self.order_feature.generate_order_info(order_number, order_items, total_cost)
 
-        html_content = generate_email_html_content(customer_info, order_info)
         # Send the successful order email to customer and myself
-        await self.email_feature.send_email_to_customer(email, html_content)
-        await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
+        await self.email_feature.send_email_to_customer(email, customer_info, order_info)
+        # await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
         resp.media = {"order_number": order_number}
         resp.status = falcon.HTTP_OK
