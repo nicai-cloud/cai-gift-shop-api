@@ -20,8 +20,7 @@ class EmailFeature:
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
-            to_emails=to_email,
-            subject='Successful order'
+            to_emails=to_email
         )
 
         email.template_id = "d-0d5368d2d8e2456a88c1f7d48b648b1e"
