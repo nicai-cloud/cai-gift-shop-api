@@ -11,7 +11,6 @@ from api.health_check import HealthCheckRequestHandler
 from api.address import AddressRequestHandler
 from api.bag import BagRequestHandler
 from api.complete_order import CompleteOrderRequestHandler
-from api.email import EmailRequestHandler
 from api.item import ItemRequestHandler
 from api.payment_method import PaymentMethodRequestHandler
 from api.preselection import PreselectionRequestHandler
@@ -93,11 +92,6 @@ def create_api():
     app.add_sink(
         PaymentMethodRequestHandler(),
         prefix=re.compile("^/payment-method(?P<path>/?.*)$"),
-    )
-
-    app.add_sink(
-        EmailRequestHandler(),
-        prefix=re.compile("^/email(?P<path>/?.*)$"),
     )
 
     app.add_sink(

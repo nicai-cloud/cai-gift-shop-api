@@ -11,6 +11,7 @@ from features.preselection_feature import PreselectionFeature
 from features.inventory_feature import InventoryFeature
 from infrastructure.work_management import WorkManager
 from utils.config import get
+from utils.generate_email_content import generate_email_html_content
 
 
 class CompleteOrderRequestHandler(RequestHandler):
@@ -72,7 +73,6 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('!! created customer id:', customer_id)
 
         # Create an order against the customer
-
         order_id, order_number = await self.order_feature.create_order(customer_id=customer_id, amount=total_cost)
         print('!! created order id:', order_id)
 
@@ -88,8 +88,11 @@ class CompleteOrderRequestHandler(RequestHandler):
             order_item_ids.append(order_item_id)
             print('!! created order item id:', order_item_id)
 
+        order_info = await self.order_feature.generate_order_info(order_number, order_items, total_cost)
+
+        html_content = generate_email_html_content(customer_info, order_info)
         # Send the successful order email to customer and myself
-        await self.email_feature.send_email_to_customer(email, order_number)
+        await self.email_feature.send_email_to_customer(email, html_content)
         await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
         resp.media = {"order_number": order_number}

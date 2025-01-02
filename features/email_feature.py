@@ -16,13 +16,13 @@ class EmailFeature:
     def __init__(self):
         super().__init__()
     
-    async def send_email_to_customer(self, to_email: str, order_number: str):
+    async def send_email_to_customer(self, to_email: str, html_content: dict):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
             to_emails=to_email,
             subject='Successful order',
-            html_content=f"<strong>Thanks for your purchase, your order number is {order_number}</strong>"
+            html_content=html_content
         )
 
         # Send the email

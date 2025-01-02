@@ -1,7 +1,7 @@
 import logging
 from uuid import UUID
 
-from api.types import Order
+from api.types import Bag, Item, Order
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
@@ -87,3 +87,59 @@ class OrderFeature:
             return Order(**order.to_dict())
         except Exception as e:
             LOG.exception("Unable to get order due to unexpected error", exc_info=e)
+
+    async def generate_preselection_item_payload(self, quantity: int, preselection_id: int):
+        try:
+            preselection = (await self.preselection_repo.get_by_id(preselection_id)).to_dict()
+            return {
+                "name": preselection["name"],
+                "price_with_quantity": preselection["price"] * quantity,
+                "quantity": quantity
+            }
+        except Exception as e:
+            LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
+
+    async def _calculate_customer_gift_unit_price(self, bag: Bag, items: list[Item]):
+        return bag["price"] + sum(item["price"] for item in items)
+    
+    async def _get_custom_gift_item_names(self, items: list[Item]):
+        return [item["name"] for item in items]
+
+    async def generate_custom_item_payload(self, quantity: int, bag_id: int, item_ids: list[int]):
+        try:
+            bag = (await self.bag_repo.get_by_id(bag_id)).to_dict()
+            items = [(await self.item_repo.get_by_id(item_id)).to_dict() for item_id in item_ids]
+            return {
+                "bag_name": bag["name"],
+                "item_names": await self._get_custom_gift_item_names(items),
+                "quantity": quantity,
+                "price_with_quantity": (await self._calculate_customer_gift_unit_price(bag, items)) * quantity
+            }
+        except Exception as e:
+            LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
+
+    async def generate_order_info(self, order_number: str, order_items: dict, total_cost: float) -> dict:
+        ordered_preselection_items = []
+        ordered_custom_items = []
+        for order_item in order_items:
+            quantity = order_item["quantity"]
+            preselection_id = order_item.get("preselection_id", None)
+            bag_id = order_item.get("bag_id", None)
+            item_ids = order_item.get("item_ids", None)
+
+            if preselection_id:
+                preselection_item = await self.generate_preselection_item_payload(quantity, preselection_id)
+                ordered_preselection_items.append(preselection_item)
+            if bag_id and item_ids:
+                custom_item = await self.generate_custom_item_payload(quantity, bag_id, item_ids)
+                ordered_custom_items.append(custom_item)
+
+        order_info = {
+            "order_number": order_number,
+            "ordered_items": {
+                "preselection_items": ordered_preselection_items,
+                "custom_items": ordered_custom_items
+            },
+            "total_cost": total_cost
+        }
+        return order_info
