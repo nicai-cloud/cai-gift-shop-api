@@ -24,10 +24,3 @@ class BagFeature:
             return BagWithInventory(**bag)
         except Exception as e:
             LOG.exception("Unable to get bag due to unexpected error", exc_info=e)
-
-    async def get_out_of_stock_bags(self) -> list[int]:
-        try:
-            out_of_stock_bags = await self.bag_repo.get_out_of_stock_bags()
-            return out_of_stock_bags
-        except Exception as e:
-            LOG.exception("Unable to get out of stock bags due to unexpected error", exc_info=e)

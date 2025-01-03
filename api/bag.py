@@ -19,8 +19,3 @@ class BagRequestHandler(RequestHandler):
     async def get_bag(self, req, resp, bag_id):
         resp.media = await self.bag_feature.get_bag_by_id(int(bag_id))
         resp.status = falcon.HTTP_OK
-
-    @route.get("/out-of-stock", auth_exempt=True)
-    async def get_out_of_stock_bags(self, req, resp):
-        resp.media = await self.bag_feature.get_out_of_stock_bags()
-        resp.status = falcon.HTTP_OK

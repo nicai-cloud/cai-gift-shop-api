@@ -67,14 +67,5 @@ class ItemRepo(BaseRepository):
         return result.first()
 
 
-    async def get_out_of_stock_items(self):
-        out_of_stock_items_query = (
-            select(ItemModel.id)
-            .join(InventoryModel, ItemModel.id == InventoryModel.entity_id)
-            .where(and_(ItemModel.deleted_at.is_(None), InventoryModel.entity_type == "item", InventoryModel.current_stock == 0))
-        )
-        result = await self.session.execute(out_of_stock_items_query)
-        return result.scalars().all()
-
 def construct_postgres_item_repo(transactable: PostgresTransactable) -> ItemRepo:
     return ItemRepo(transactable.session)
