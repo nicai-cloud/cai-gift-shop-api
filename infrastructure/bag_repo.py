@@ -43,6 +43,15 @@ class BagRepo(BaseRepository):
         )
         result = await self.session.execute(bag_with_inventory_query)
         return result.first()
+    
+    async def get_out_of_stock_bags(self):
+        out_of_stock_bags_query = (
+            select(BagModel.id)
+            .join(InventoryModel, BagModel.id == InventoryModel.entity_id)
+            .where(and_(BagModel.deleted_at.is_(None), InventoryModel.entity_type == "bag", InventoryModel.current_stock == 0))
+        )
+        result = await self.session.execute(out_of_stock_bags_query)
+        return result.scalars().all()
 
 
 def construct_postgres_bag_repo(transactable: PostgresTransactable) -> BagRepo:

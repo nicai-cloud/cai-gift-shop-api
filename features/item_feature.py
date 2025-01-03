@@ -35,3 +35,10 @@ class ItemFeature:
             return ItemWithInventory(**item)
         except Exception as e:
             LOG.exception("Unable to get item due to unexpected error", exc_info=e)
+
+    async def get_out_of_stock_items(self) -> list[int]:
+        try:
+            out_of_stock_items = await self.item_repo.get_out_of_stock_items()
+            return out_of_stock_items
+        except Exception as e:
+            LOG.exception("Unable to get out of stock items due to unexpected error", exc_info=e)
