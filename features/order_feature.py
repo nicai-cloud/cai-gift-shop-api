@@ -93,6 +93,7 @@ class OrderFeature:
             preselection = (await self.preselection_repo.get_by_id(preselection_id)).to_dict()
             return {
                 "index": index,
+                "image_url": preselection["image_url"],
                 "name": preselection["name"],
                 "price": preselection["price"] * quantity,
                 "quantity": quantity
