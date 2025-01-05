@@ -1,18 +1,18 @@
 meta {
-  name: Refill items
+  name: Refill bags
   type: http
   seq: 9
 }
 
 post {
-  url: {{api}}/inventory/refill-items
+  url: {{api}}/inventory/refill-bags
   body: json
   auth: none
 }
 
 body:json {
   {
-    "item_id": 1,
+    "bag_id": 1,
     "quantity": 2
   }
 }
