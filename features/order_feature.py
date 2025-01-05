@@ -102,15 +102,15 @@ class OrderFeature:
             LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
 
     async def _calculate_customer_gift_unit_price(self, bag: Bag, items: list[Item]):
-        return bag["price"] + sum(item["price"] for item in items)
+        return bag.price + sum(item.price for item in items)
     
     async def _generate_custom_gift_name(self, bag: Bag, items: list[Item]):
-        return bag["name"] + ' + ' + ' + '.join([item["name"] for item in items])
+        return bag.name + ' + ' + ' + '.join([item.name for item in items])
 
     async def generate_custom_item_payload(self, index: int, quantity: int, bag_id: int, item_ids: list[int]):
         try:
-            bag = (await self.bag_repo.get_by_id(bag_id)).to_dict()
-            items = [(await self.item_repo.get_by_id(item_id)).to_dict() for item_id in item_ids]
+            bag = Bag(**(await self.bag_repo.get_by_id(bag_id)))
+            items = [Item(**(await self.item_repo.get_by_id(item_id))) for item_id in item_ids]
             return {
                 "index": index,
                 "name": await self._generate_custom_gift_name(bag, items),

@@ -22,16 +22,6 @@ class Bag:
 
 
 @dataclass
-class BagWithInventory:
-    id: int
-    image_url: str
-    name: str
-    description: str
-    price: float
-    current_stock: int
-
-
-@dataclass
 class Item:
     id: int
     image_url: str
@@ -39,17 +29,6 @@ class Item:
     description: str
     price: float
     category: str
-
-
-@dataclass
-class ItemWithInventory:
-    id: int
-    image_url: str
-    name: str
-    description: str
-    price: float
-    category: str
-    current_stock: int
 
 
 @dataclass

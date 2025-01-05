@@ -1,7 +1,7 @@
 from collections import defaultdict
 import logging
 
-from api.types import ItemWithInventory
+from api.types import Item
 from infrastructure.item_repo import ItemRepo
 from infrastructure.work_management import WorkManager
 
@@ -12,26 +12,26 @@ class ItemFeature:
     def __init__(self, work_manager: WorkManager):
         self.item_repo = work_manager.get(ItemRepo)
     
-    async def get_items(self) -> list[ItemWithInventory]:
+    async def get_items(self) -> list[Item]:
         try:
             items = await self.item_repo.get_all()
-            return [ItemWithInventory(**item) for item in items]
+            return [Item(**item) for item in items]
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
     
-    async def get_items_with_category(self) -> dict[str, list[ItemWithInventory]]:
+    async def get_items_with_category(self) -> dict[str, list[Item]]:
         try:
             items = await self.item_repo.get_all_with_sorting()
             items_dict = defaultdict(list)
             for item in items:
-                items_dict[item["category"]].append(ItemWithInventory(**item))
+                items_dict[item["category"]].append(Item(**item))
             return dict(items_dict)
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
 
-    async def get_item(self, item_id: int) -> ItemWithInventory:
+    async def get_item(self, item_id: int) -> Item:
         try:
             item = await self.item_repo.get_by_id(item_id)
-            return ItemWithInventory(**item)
+            return Item(**item)
         except Exception as e:
             LOG.exception("Unable to get item due to unexpected error", exc_info=e)
