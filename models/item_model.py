@@ -16,5 +16,5 @@ class ItemModel(Base, SerializerMixin):
     price = Column(Float, nullable=False)
     category = Column(String, nullable=False)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.timezone('UTC', func.now()))
     updated_at = Column(DateTime(timezone=True), default=datetime.now(UTC), onupdate=datetime.now(UTC))

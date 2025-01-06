@@ -19,7 +19,7 @@ class OrderModel(Base, SerializerMixin):
 
     order_items = relationship("OrderItemModel", back_populates="order")
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.timezone('UTC', func.now()))
     updated_at = Column(DateTime(timezone=True), default=datetime.now(UTC), onupdate=datetime.now(UTC))
     deleted_at = Column(DateTime(timezone=True), nullable=True)
 
