@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, UTC
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Index, String
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Index, String, func
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 
@@ -19,9 +19,9 @@ class OrderModel(Base, SerializerMixin):
 
     order_items = relationship("OrderItemModel", back_populates="order")
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    deleted_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), default=datetime.now(UTC), onupdate=datetime.now(UTC))
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
 
     __table_args__ = (
         Index("idx_order_number_unique_if_not_deleted", "order_number", unique=True, postgresql_where=(deleted_at is None)),

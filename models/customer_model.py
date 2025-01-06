@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, UTC
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, DateTime, String
+from sqlalchemy import Column, DateTime, String, func
 from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
@@ -17,5 +17,5 @@ class CustomerModel(Base, SerializerMixin):
     email = Column(String, nullable=False)
     address = Column(String, nullable=False)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), default=datetime.now(UTC), onupdate=datetime.now(UTC))

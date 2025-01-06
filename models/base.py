@@ -8,7 +8,7 @@ class NotDeletedQuery(Query):
 
 
 class BaseModel:
-    deleted_at = Column(DateTime, nullable=True)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
     query_class = NotDeletedQuery
 
     def to_dict(self):
