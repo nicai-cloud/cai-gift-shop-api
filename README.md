@@ -129,7 +129,7 @@ Steps to create a new backend API in AWS:
     2. Add a new profile for the new AWS account
     3. code ~/.aws/config
     4. Add the new profile account
-    5. Switch between AWS account: export AWS_PROFILE=account1
+    5. Switch between AWS account: export AWS_PROFILE=account1 (or $Env:AWS_PROFILE="account1" for Powershell and set AWS_PROFILE=account1 on Windows)
     6. Check current AWS account: aws sts get-caller-identity
 10. Get ready to work with AWS:
     1. Build docker image
