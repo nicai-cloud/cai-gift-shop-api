@@ -19,7 +19,7 @@ class EmailFeature:
     def __init__(self):
         super().__init__()
     
-    # Use SendGrid to send email to customer which has a limit of 100 email per day
+    # Use SendGrid, which has a limit of 100 email per day, to send email to customer
     async def send_email_to_customer(self, to_email: str, customer_info: dict, order_info: dict):
         # Create the email
         email = Mail(
@@ -47,7 +47,7 @@ class EmailFeature:
         except Exception as e:
             print(f"Error: {e}")
 
-    # Use SES to send email to myself which has a much larger limit of 62,000 email per month
+    # Use SES, which has a much larger limit of 62,000 email per month, to send email to myself
     async def send_email_to_me(self, customer_id: UUID, order_number: str, order_id: UUID):
         # Send the email
         try:
