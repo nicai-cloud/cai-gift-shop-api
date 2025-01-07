@@ -175,3 +175,7 @@ Steps to create a new backend API in AWS:
         13. Address auto-complete uses Amazon Location Service. To use it, from AWS console, go to Amazon Location Service, from the left panel, go to “Manage Resources” -> “Maps, Places, routes” -> “Places” tab, then click on “Create place index”, choose “HERE” as Data Provider, once it is created, add “address-lookup” policy in ec2-role in IAM.
 11. Create a Budget alert in the admin account:
     1. Go to "Billing and Cost Management" -> "Budgets" -> Click on "Create budget" -> Choose "Zero-Spend Budget"
+12. To use SES to send email:
+    1. Go to SES and create an entity with "nicai.goodyhub@gmail", verify it when receiving email
+    2. Go to IAM role ec2-role and attach AmazonSESFullAccess policy to it
+ 
