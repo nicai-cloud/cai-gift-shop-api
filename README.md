@@ -173,3 +173,5 @@ Steps to create a new backend API in AWS:
         11. Create a new service with the above task definition
         12. If the deployment failed, go to Cluster -> Cai-gift-shop-cluster -> Services -> cai-gift-shop-api -> Deployments -> See the Events at the bottom for error logs
         13. Address auto-complete uses Amazon Location Service. To use it, from AWS console, go to Amazon Location Service, from the left panel, go to “Manage Resources” -> “Maps, Places, routes” -> “Places” tab, then click on “Create place index”, choose “HERE” as Data Provider, once it is created, add “address-lookup” policy in ec2-role in IAM.
+11. Create a Budget alert in the admin account:
+    1. Go to "Billing and Cost Management" -> "Budgets" -> Click on "Create budget" -> Choose "Zero-Spend Budget"
