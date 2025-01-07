@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: db492050c097
+Revision ID: 64c9392760d5
 Revises: 
-Create Date: 2025-01-06 20:56:52.525357
+Create Date: 2025-01-07 16:22:49.364739
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'db492050c097'
+revision: str = '64c9392760d5'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,6 +24,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_url', sa.String(), nullable=False),
+    sa.Column('video_url', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
@@ -72,6 +73,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_url', sa.String(), nullable=False),
+    sa.Column('video_url', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
@@ -98,6 +100,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('image_url', sa.String(), nullable=False),
+    sa.Column('video_url', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),

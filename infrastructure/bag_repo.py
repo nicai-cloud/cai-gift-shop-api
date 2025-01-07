@@ -14,6 +14,7 @@ class BagRepo(BaseRepository):
         bags_query = select(
             BagModel.id,
             BagModel.image_url,
+            BagModel.video_url,
             BagModel.name,
             BagModel.description,
             BagModel.price
@@ -26,6 +27,7 @@ class BagRepo(BaseRepository):
         bag_query = select(
             BagModel.id,
             BagModel.image_url,
+            BagModel.video_url,
             BagModel.name,
             BagModel.description,
             BagModel.price

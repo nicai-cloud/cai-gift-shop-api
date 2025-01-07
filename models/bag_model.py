@@ -10,6 +10,7 @@ class BagModel(Base, SerializerMixin):
 
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     image_url = Column(String, nullable=False)
+    video_url = Column(String, nullable=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     price = Column(Float, nullable=False)

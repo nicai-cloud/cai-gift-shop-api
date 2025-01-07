@@ -5,6 +5,7 @@ from dataclasses import dataclass
 class Preselection:
     id: int
     image_url: str
+    video_url: str
     name: str
     description: str
     price: float
@@ -16,6 +17,7 @@ class Preselection:
 class Bag:
     id: int
     image_url: str
+    video_url: str
     name: str
     description: str
     price: float
@@ -25,6 +27,7 @@ class Bag:
 class Item:
     id: int
     image_url: str
+    video_url: str
     name: str
     description: str
     price: float

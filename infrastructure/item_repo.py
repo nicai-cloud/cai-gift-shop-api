@@ -14,6 +14,7 @@ class ItemRepo(BaseRepository):
         items_query = select(
             ItemModel.id,
             ItemModel.image_url,
+            ItemModel.video_url,
             ItemModel.name,
             ItemModel.description,
             ItemModel.price,
@@ -27,6 +28,7 @@ class ItemRepo(BaseRepository):
         items_with_sorting = select(
             ItemModel.id,
             ItemModel.image_url,
+            ItemModel.video_url,
             ItemModel.name,
             ItemModel.description,
             ItemModel.price,
@@ -40,6 +42,7 @@ class ItemRepo(BaseRepository):
         item_query = select(
             ItemModel.id,
             ItemModel.image_url,
+            ItemModel.video_url,
             ItemModel.name,
             ItemModel.description,
             ItemModel.price,
