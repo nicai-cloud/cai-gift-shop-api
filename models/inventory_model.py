@@ -1,6 +1,6 @@
-from datetime import datetime, UTC
+from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer, String, func
+from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
@@ -15,5 +15,5 @@ class InventoryModel(Base, SerializerMixin):
     current_stock = Column(Integer, nullable=False)
     low_stock_threshold = Column(Integer, nullable=True)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.timezone('UTC', func.now()))
-    updated_at = Column(DateTime(timezone=True), default=datetime.now(UTC), onupdate=datetime.now(UTC))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

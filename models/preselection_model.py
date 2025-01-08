@@ -1,5 +1,5 @@
-from datetime import datetime, UTC
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, func
+from datetime import datetime
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy_serializer import SerializerMixin
 
@@ -19,5 +19,5 @@ class PreselectionModel(Base, SerializerMixin):
     bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
     item_ids = Column(ARRAY(Integer), nullable=False)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=datetime.now(UTC), server_default=func.timezone('UTC', func.now()))
-    updated_at = Column(DateTime(timezone=True), default=datetime.now(UTC), onupdate=datetime.now(UTC))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -10,8 +10,6 @@ SELECT * FROM item;
 SELECT * FROM preselection;
 SELECT * FROM inventory ORDER BY id;
 
-SET timezone = 'UTC';
-
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/bag1.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag1', 'bag1 description', 10);
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/bag2.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag2', 'bag2 description', 15);
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (3, 'https://giftoz.netlify.app/images/custom/bag3.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag3', 'bag3 description', 15);
