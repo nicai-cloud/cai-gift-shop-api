@@ -28,6 +28,16 @@ class ItemFeature:
             return dict(items_dict)
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
+    
+    async def get_items_with_name(self) -> dict[str, list[Item]]:
+        try:
+            items = await self.item_repo.get_all_with_sorting()
+            items_dict = defaultdict(list)
+            for item in items:
+                items_dict[item["name"]].append(Item(**item))
+            return dict(items_dict)
+        except Exception as e:
+            LOG.exception("Unable to get items due to unexpected error", exc_info=e)
 
     async def get_item(self, item_id: int) -> Item:
         try:

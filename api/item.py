@@ -19,6 +19,11 @@ class ItemRequestHandler(RequestHandler):
     async def get_items_with_category(self, req, resp):
         resp.media = await self.item_feature.get_items_with_category()
         resp.status = falcon.HTTP_OK
+    
+    @route.get("/all-with-name", auth_exempt=True)
+    async def get_items_with_name(self, req, resp):
+        resp.media = await self.item_feature.get_items_with_name()
+        resp.status = falcon.HTTP_OK
 
     @route.get("/{item_id}", auth_exempt=True)
     async def get_item(self, req, resp, item_id):
