@@ -28,10 +28,10 @@ class Item:
     id: int
     image_url: str
     video_url: str
+    product: str
     name: str
     description: str
     price: float
-    category: str
 
 
 @dataclass

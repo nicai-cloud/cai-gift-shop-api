@@ -15,10 +15,10 @@ class ItemRepo(BaseRepository):
             ItemModel.id,
             ItemModel.image_url,
             ItemModel.video_url,
+            ItemModel.product,
             ItemModel.name,
             ItemModel.description,
-            ItemModel.price,
-            ItemModel.category
+            ItemModel.price
         ).where(ItemModel.deleted_at.is_(None))
 
         result = await self.session.execute(items_query)
@@ -29,11 +29,11 @@ class ItemRepo(BaseRepository):
             ItemModel.id,
             ItemModel.image_url,
             ItemModel.video_url,
+            ItemModel.product,
             ItemModel.name,
             ItemModel.description,
-            ItemModel.price,
-            ItemModel.category
-        ).where(ItemModel.deleted_at.is_(None)).order_by(ItemModel.category, ItemModel.name)
+            ItemModel.price
+        ).where(ItemModel.deleted_at.is_(None)).order_by(ItemModel.product, ItemModel.name)
 
         result = await self.session.execute(items_with_sorting)
         return result.all()
@@ -43,10 +43,10 @@ class ItemRepo(BaseRepository):
             ItemModel.id,
             ItemModel.image_url,
             ItemModel.video_url,
+            ItemModel.product,
             ItemModel.name,
             ItemModel.description,
-            ItemModel.price,
-            ItemModel.category,
+            ItemModel.price
         ).where(and_(ItemModel.deleted_at.is_(None), ItemModel.id == item_id))
 
         result = await self.session.execute(item_query)    
