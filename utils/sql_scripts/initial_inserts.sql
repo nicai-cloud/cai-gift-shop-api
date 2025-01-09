@@ -14,13 +14,13 @@ INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (1, 
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/bag2.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag2', 'bag2 description', 15);
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (3, 'https://giftoz.netlify.app/images/custom/bag3.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag3', 'bag3 description', 15);
 
-INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/item1.png', 'https://www.w3schools.com/html/mov_bbb.mp4', 'sticker', 'Elsa sticker', 'item1 description', 2);
-INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/item2.jpg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'sticker', 'Batman sticker', 'item2 description', 1);
+INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/item1.png', 'https://www.w3schools.com/html/mov_bbb.mp4', 'sticker', 'Elsa', 'item1 description', 2);
+INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/item2.jpg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'sticker', 'Batman', 'item2 description', 1);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (3, 'https://giftoz.netlify.app/images/custom/item3.jpg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'pen', 'pen1', 'item3 description', 3);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (4, 'https://giftoz.netlify.app/images/custom/item4.jpg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'pen', 'pen2', 'item4 description', 1);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (5, 'https://giftoz.netlify.app/images/custom/item5.webp', 'https://www.w3schools.com/html/mov_bbb.mp4', 'pen', 'pen3', 'item5 description', 2);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (6, 'https://giftoz.netlify.app/images/custom/item6.webp', 'https://www.w3schools.com/html/mov_bbb.mp4', 'pen', 'pen4', 'item6 description', 2);
-INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (7, 'https://giftoz.netlify.app/images/custom/item7.webp', 'https://www.w3schools.com/html/mov_bbb.mp4', 'hairclip', 'Elsa hairclip', 'item7 description', 1);
+INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (7, 'https://giftoz.netlify.app/images/custom/item7.webp', 'https://www.w3schools.com/html/mov_bbb.mp4', 'hairclip', 'Elsa', 'item7 description', 1);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (8, 'https://giftoz.netlify.app/images/custom/item8.jpg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'toy', 'toy1', 'item8 description', 3);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (9, 'https://giftoz.netlify.app/images/custom/item9.jpg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'toy', 'toy2', 'item9 description', 1);
 
