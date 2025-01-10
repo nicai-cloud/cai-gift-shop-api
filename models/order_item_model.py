@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, CheckConstraint
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, CheckConstraint, func
 from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 
@@ -22,8 +22,8 @@ class OrderItemModel(Base, SerializerMixin):
 
     order = relationship("OrderModel", back_populates="order_items")
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Adding the CheckConstraint
     __table_args__ = (

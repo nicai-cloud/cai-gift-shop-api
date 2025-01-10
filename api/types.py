@@ -7,6 +7,7 @@ class Preselection:
     image_url: str
     video_url: str
     name: str
+    gender: str
     description: str
     price: float
     bag_id: int

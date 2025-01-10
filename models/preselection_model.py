@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, func
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy_serializer import SerializerMixin
 
@@ -13,11 +13,12 @@ class PreselectionModel(Base, SerializerMixin):
     image_url = Column(String, nullable=False)
     video_url = Column(String, nullable=True)
     name = Column(String, nullable=False, index=True)
+    gender = Column(String, nullable=False)
     description = Column(String, nullable=False)
     price = Column(Float, nullable=False)
 
     bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
     item_ids = Column(ARRAY(Integer), nullable=False)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

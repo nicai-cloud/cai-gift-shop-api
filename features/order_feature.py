@@ -105,7 +105,7 @@ class OrderFeature:
         return bag.price + sum(item.price for item in items)
     
     async def _generate_custom_gift_name(self, bag: Bag, items: list[Item]):
-        return bag.name + ' + ' + ' + '.join([item.name for item in items])
+        return bag.name + ' + ' + ' + '.join([f"{item.name} {item.product}" for item in items])
 
     async def generate_custom_item_payload(self, index: int, quantity: int, bag_id: int, item_ids: list[int]):
         try:
