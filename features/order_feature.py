@@ -31,7 +31,7 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
 
-    async def calculate_order_cost(self, order_items: list[dict]) -> float:
+    async def calculate_subtotal(self, order_items: list[dict]) -> float:
         total_cost = 0
         for order_item in order_items:
             quantity = order_item["quantity"]
@@ -73,6 +73,9 @@ class OrderFeature:
                     item_quantities[preselection_item_id] = item_quantities.get(preselection_item_id, 0) + quantity
         
         return bag_quantities, item_quantities
+
+    async def calculate_shipping_cost(self, subtotal: float) -> float:
+        return 0
 
     async def get_orders(self) -> list[Order]:
         try:

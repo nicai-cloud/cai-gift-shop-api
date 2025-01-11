@@ -24,13 +24,13 @@ class CompleteOrderRequestHandler(RequestHandler):
         self.payment_method_feature = PaymentMethodFeature()
         self.email_feature = EmailFeature()
 
-    @route.post("/calculate-order-cost", auth_exempt=True)
-    async def calculate_order_cost(self, req, resp):
+    @route.post("/calculate-subtotal", auth_exempt=True)
+    async def calculate_subtotal(self, req, resp):
         request_body = await req.get_media()
         print('request_body', request_body)
 
         order_items = request_body["order_items"]
-        resp.media = await self.order_feature.calculate_order_cost(order_items=order_items)
+        resp.media = await self.order_feature.calculate_subtotal(order_items=order_items)
     
     @route.get("/publishable-key", auth_exempt=True)
     async def get_publishable_key(self, req, resp):
@@ -60,8 +60,10 @@ class CompleteOrderRequestHandler(RequestHandler):
         if not stocks_available:
             raise falcon.HTTPError(status="400", description="Out of stock")
         
-        # Calculate total cost and make the payment
-        total_cost = await self.order_feature.calculate_order_cost(order_items)
+        # Calculate subtotal and make the payment
+        subtotal = await self.order_feature.calculate_subtotal(order_items)
+        shipping_cost = await self.order_feature.calculate_shipping_cost(order_items)
+        total_cost = subtotal + shipping_cost
         await self.payment_method_feature.create_payment_intent(payment_method_id, total_cost)
 
         # If the code reaches here, it means the payment is successful, then we update inventories

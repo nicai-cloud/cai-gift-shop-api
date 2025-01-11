@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import Column, DateTime, Float, Integer, String, func
 from sqlalchemy_serializer import SerializerMixin
 

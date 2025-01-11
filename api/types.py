@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import date
 
 
 @dataclass
@@ -45,6 +46,28 @@ class Inventory:
 
 
 @dataclass
+class Shipment:
+    id: str
+    volume: float | None
+    weight: float
+    delivery_fee: float
+    send_date: date
+    receive_date: date | None
+    tracking_number: str
+    order_id: str
+
+
+@dataclass
+class PromoCode:
+    id: int
+    code: str
+    discount_percentage: int
+    description: str
+    expiry_date: date
+    expired: bool
+
+
+@dataclass
 class InventoryTransaction:
     id: str
     inventory_id: int
@@ -68,6 +91,7 @@ class Order:
     customer_id: str
     amount: float
     order_number: str
+    promo_code_id: str | None
 
 
 @dataclass

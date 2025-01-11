@@ -2,8 +2,17 @@ SELECT * FROM customer;
 SELECT * FROM public.order;
 SELECT * FROM order_item;
 
-DELETE FROM customer;
-DELETE FROM public.order;
+DROP TABLE shipment;
+DROP TABLE order_item;
+DROP TABLE public.order;
+DROP TABLE customer;
+DROP TABLE inventory_transaction;
+DROP TABLE inventory;
+DROP TABLE promo_code;
+DROP TABLE preselection;
+DROP TABLE item;
+DROP TABLE bag;
+Truncate alembic_version;
 
 SELECT * FROM bag;
 SELECT * FROM item;
@@ -41,3 +50,7 @@ INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_thre
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (10, 'item', 7, 100, 10);
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (11, 'item', 8, 100, 10);
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (12, 'item', 9, 100, 10);
+
+INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('ABC123', 2, '2% discount on subtotal', '2025-10-04', false);
+INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('DEF456', 5, '5% discount on subtotal', '2025-10-04', false);
+INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('OPQ789', 10, '10% discount on subtotal', '2025-10-04', false);

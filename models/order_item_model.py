@@ -1,4 +1,3 @@
-from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, CheckConstraint, func
