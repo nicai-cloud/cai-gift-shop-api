@@ -19,30 +19,35 @@ class InventoryFeature:
             inventories = await self.inventory_repo.get_all()
             inventories_dict = defaultdict(dict[str, int])
             for inventory in inventories:
-                inventory_dict = inventory.to_dict()
-                inventories_dict[inventory_dict["entity_type"]].update({inventory_dict["entity_id"]: inventory_dict["current_stock"]})
+                inventories_dict[inventory["entity_type"]].update({inventory["entity_id"]: inventory["current_stock"]})
             return dict(inventories_dict)
         except Exception as e:
             LOG.exception("Unable to get inventories due to unexpected error", exc_info=e)
 
-    async def get_inventory_by_id(self, inventory_id: int) -> Inventory:
+    async def get_inventory_by_id(self, inventory_id: int) -> Inventory | None:
         try:
             inventory = await self.inventory_repo.get_by_id(inventory_id)
-            return Inventory(**inventory.to_dict())
+            return Inventory(**inventory)
+        except InventoryRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get inventory due to unexpected error", exc_info=e)
 
-    async def get_inventory_by_bag_id(self, bag_id: int):
+    async def get_inventory_by_bag_id(self, bag_id: int) -> Inventory | None:
         try:
             inventory = await self.inventory_repo.get_by_bag_id(bag_id)
-            return Inventory(**inventory.to_dict())
+            return Inventory(**inventory)
+        except InventoryRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get inventory due to unexpected error", exc_info=e)
 
-    async def get_inventory_by_item_id(self, item_id: int):
+    async def get_inventory_by_item_id(self, item_id: int) -> Inventory | None:
         try:
             inventory = await self.inventory_repo.get_by_item_id(item_id)
-            return Inventory(**inventory.to_dict())
+            return Inventory(**inventory)
+        except InventoryRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get inventory due to unexpected error", exc_info=e)
     
@@ -110,7 +115,6 @@ class InventoryFeature:
                 "quantity": item_quantity
             }
             await self.inventory_transactoin_repo.create(inventory_transaction)
-
 
     async def check_stock_availability(self, bag_quantities, item_quantities):
         inventories = await self.get_inventories()

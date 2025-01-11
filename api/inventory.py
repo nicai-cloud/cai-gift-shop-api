@@ -1,4 +1,4 @@
-import falcon
+from falcon import HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
 from features.inventory_feature import InventoryFeature
@@ -13,22 +13,25 @@ class InventoryRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_inventories(self, req, resp):
         resp.media = await self.inventory_feature.get_inventories()
-        resp.status = falcon.HTTP_OK
-
-    @route.get("/{inventory_id}", auth_exempt=True)
-    async def get_inventory_by_id(self, req, resp, inventory_id):
-        resp.media = await self.inventory_feature.get_inventory_by_id(int(inventory_id))
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
 
     @route.get("/", auth_exempt=True)
-    async def get_inventory_by_bag_or_item_id(self, req, resp):
+    async def get_inventory_by_id_or_bag_id_or_item_id(self, req, resp):
+        id = req.params.get('id')
         bag_id = req.params.get('bagId')
         item_id = req.params.get('itemId')
-        if bag_id:
-            resp.media = await self.inventory_feature.get_inventory_by_bag_id(int(bag_id))
+        if id:
+            inventory = await self.inventory_feature.get_inventory_by_id(int(id))
+        elif bag_id:
+            inventory = await self.inventory_feature.get_inventory_by_bag_id(int(bag_id))
         elif item_id:
-            resp.media = await self.inventory_feature.get_inventory_by_item_id(int(item_id))
-        resp.status = falcon.HTTP_OK
+            inventory = await self.inventory_feature.get_inventory_by_item_id(int(item_id))
+
+        if inventory is None:
+            raise HTTPNotFound(description="Inventory not found")
+    
+        resp.media = inventory
+        resp.status = HTTP_OK
 
     @route.post("/refill-bags", auth_exempt=True)
     async def refill_bags(self, req, resp):
@@ -36,7 +39,7 @@ class InventoryRequestHandler(RequestHandler):
         bag_id = request_body["bag_id"]
         quantity = request_body["quantity"]
         await self.inventory_feature.refill_bags(bag_id, quantity)
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
 
     @route.post("/refill-items", auth_exempt=True)
     async def refill_items(self, req, resp):
@@ -44,4 +47,4 @@ class InventoryRequestHandler(RequestHandler):
         item_id = request_body["item_id"]
         quantity = request_body["quantity"]
         await self.inventory_feature.refill_items(item_id, quantity)
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK

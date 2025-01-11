@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{api}}/inventory/1
+  url: {{api}}/inventory?id=10
   body: none
   auth: none
+}
+
+params:query {
+  id: 10
 }
