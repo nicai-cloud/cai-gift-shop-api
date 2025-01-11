@@ -35,13 +35,15 @@ class OrderItemFeature:
     async def get_order_items(self) -> list[OrderItem]:
         try:
             order_items = await self.order_item_repo.get_all()
-            return [OrderItem(**order_item.to_dict()) for order_item in order_items]
+            return [OrderItem(**order_item) for order_item in order_items]
         except Exception as e:
             LOG.exception("Unable to get order items due to unexpected error", exc_info=e)
 
-    async def get_order_item_by_id(self, order_item_id: str) -> OrderItem:
+    async def get_order_item_by_id(self, order_item_id: UUID) -> OrderItem:
         try:
             order_item = await self.order_item_repo.get_by_id(order_item_id)
-            return OrderItem(**order_item.to_dict())
+            return OrderItem(**order_item)
+        except OrderItemRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get order item due to unexpected error", exc_info=e)

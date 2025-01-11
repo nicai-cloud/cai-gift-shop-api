@@ -1,4 +1,4 @@
-import falcon
+from falcon import HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
 from features.bag_feature import BagFeature
@@ -13,9 +13,13 @@ class BagRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_bags(self, req, resp):
         resp.media = await self.bag_feature.get_bags()
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
 
     @route.get("/{bag_id}", auth_exempt=True)
     async def get_bag(self, req, resp, bag_id):
-        resp.media = await self.bag_feature.get_bag_by_id(int(bag_id))
-        resp.status = falcon.HTTP_OK
+        bag = await self.bag_feature.get_bag_by_id(int(bag_id))
+        if bag is None:
+            raise HTTPNotFound(description="Bag not found")
+
+        resp.media = bag
+        resp.status = HTTP_OK

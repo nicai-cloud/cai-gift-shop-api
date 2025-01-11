@@ -1,5 +1,4 @@
 from uuid import UUID
-import falcon
 from falcon import HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
@@ -15,7 +14,7 @@ class ShipmentRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_shipments(self, req, resp):
         resp.media = await self.shipment_feature.get_shipments()
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
 
     @route.get("/", auth_exempt=True)
     async def get_shipment_by_order_id(self, req, resp):

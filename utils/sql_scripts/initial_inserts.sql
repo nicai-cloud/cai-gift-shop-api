@@ -17,6 +17,7 @@ Truncate alembic_version;
 SELECT * FROM bag;
 SELECT * FROM item;
 SELECT * FROM preselection;
+SELECT * FROM promo_code;
 SELECT * FROM inventory ORDER BY id;
 
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/bag1.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag1', 'bag1 description', 10);

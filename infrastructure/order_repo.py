@@ -1,7 +1,8 @@
 from uuid import UUID
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.ext.asyncio import async_scoped_session
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
+from sqlalchemy.ext.asyncio import async_scoped_session
+from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -24,18 +25,29 @@ class OrderRepo(BaseRepository):
         return order_entry.inserted_primary_key[0]
 
     async def get_all(self):
-        orders_query = await self.get_filtered_query(OrderModel)
+        orders_query = select(
+            OrderModel.id,
+            OrderModel.customer_id,
+            OrderModel.amount,
+            OrderModel.order_number,
+            OrderModel.promo_code_id
+        ).where(OrderModel.deleted_at.is_(None))
         result = await self.session.execute(orders_query)
         
-        return result.scalars().all()
+        return result.all()
     
     async def get_by_id(self, order_id: UUID):
         try:
-            order_query = await self.get_filtered_query(OrderModel)
-            result = await self.session.execute(order_query.where(OrderModel.id == order_id))
+            order_query = select(
+                OrderModel.id,
+                OrderModel.customer_id,
+                OrderModel.amount,
+                OrderModel.order_number,
+                OrderModel.promo_code_id
+            ).where(and_(OrderModel.deleted_at.is_(None), OrderModel.id == order_id))
             
-            order = result.scalar_one()
-            return order
+            result = await self.session.execute(order_query)
+            return result.one()
         except MultipleResultsFound:
             raise OrderRepo.MultipleResultsFound
         except NoResultFound:

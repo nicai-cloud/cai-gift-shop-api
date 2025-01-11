@@ -28,13 +28,15 @@ class CustomerFeature:
     async def get_customers(self) -> list[Customer]:
         try:
             customers = await self.customer_repo.get_all()
-            return [Customer(**customer.to_dict()) for customer in customers]
+            return [Customer(**customer) for customer in customers]
         except Exception as e:
             LOG.exception("Unable to get customers due to unexpected error", exc_info=e)
 
-    async def get_customer_by_id(self, customer_id: str) -> Customer:
+    async def get_customer_by_id(self, customer_id: UUID) -> Customer | None:
         try:
             customer = await self.customer_repo.get_by_id(customer_id)
-            return Customer(**customer.to_dict())
+            return Customer(**customer)
+        except CustomerRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get customer due to unexpected error", exc_info=e)

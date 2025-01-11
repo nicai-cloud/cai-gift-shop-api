@@ -1,4 +1,5 @@
-import falcon
+from uuid import UUID
+from falcon import HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
 from features.customer_feature import CustomerFeature
@@ -13,9 +14,13 @@ class CustomerRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_customers(self, req, resp):
         resp.media = await self.customer_feature.get_customers()
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
 
     @route.get("/{customer_id}", auth_exempt=True)
     async def get_customer(self, req, resp, customer_id):
-        resp.media = await self.customer_feature.get_customer_by_id(customer_id)
-        resp.status = falcon.HTTP_OK
+        customer = await self.customer_feature.get_customer_by_id(UUID(customer_id))
+        if customer is None:
+            raise HTTPNotFound(description="Customer not found")
+
+        resp.media = customer
+        resp.status = HTTP_OK

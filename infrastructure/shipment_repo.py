@@ -1,8 +1,8 @@
 from uuid import UUID
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
 from sqlalchemy import and_, select
-from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository

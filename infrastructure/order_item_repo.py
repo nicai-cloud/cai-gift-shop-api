@@ -1,6 +1,8 @@
 from uuid import UUID
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
+from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -8,6 +10,12 @@ from models.order_item_model import OrderItemModel
 
 
 class OrderItemRepo(BaseRepository):
+    class DoesNotExist(Exception):
+        pass
+
+    class MultipleResultsFound(Exception):
+        pass
+
     def __init__(self, session: async_scoped_session):
         self.session = session
 
@@ -17,17 +25,35 @@ class OrderItemRepo(BaseRepository):
         return order_item_entry.inserted_primary_key[0]
 
     async def get_all(self):
-        order_items_query = await self.get_filtered_query(OrderItemModel)
+        order_items_query = select(
+            OrderItemModel.id,
+            OrderItemModel.quantity,
+            OrderItemModel.preselection_id,
+            OrderItemModel.bag_id,
+            OrderItemModel.item_ids,
+            OrderItemModel.order_id
+        ).where(OrderItemModel.deleted_at.is_(None))
+
         result = await self.session.execute(order_items_query)
-        
-        return result.scalars().all()
+        return result.all()
     
-    async def get_by_id(self, order_item_id: str):
-        order_item_query = await self.get_filtered_query(OrderItemModel)
-        result = await self.session.execute(order_item_query.where(OrderItemModel.id == order_item_id))
-            
-        order_item = result.scalars().first()
-        return order_item
+    async def get_by_id(self, order_item_id: UUID):
+        try:
+            order_item_query = select(
+                OrderItemModel.id,
+                OrderItemModel.quantity,
+                OrderItemModel.preselection_id,
+                OrderItemModel.bag_id,
+                OrderItemModel.item_ids,
+                OrderItemModel.order_id
+            ).where(and_(OrderItemModel.deleted_at.is_(None), OrderItemModel.id == order_item_id))
+
+            result = await self.session.execute(order_item_query)
+            return result.one()
+        except MultipleResultsFound:
+            raise OrderItemRepo.MultipleResultsFound
+        except NoResultFound:
+            raise OrderItemRepo.DoesNotExist
 
 
 def construct_postgres_order_item_repo(transactable: PostgresTransactable) -> OrderItemRepo:

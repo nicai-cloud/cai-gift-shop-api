@@ -80,14 +80,14 @@ class OrderFeature:
     async def get_orders(self) -> list[Order]:
         try:
             orders = await self.order_repo.get_all()
-            return [Order(**order.to_dict()) for order in orders]
+            return [Order(**order) for order in orders]
         except Exception as e:
             LOG.exception("Unable to get orders due to unexpected error", exc_info=e)
 
     async def get_order_by_id(self, order_id: UUID) -> Order | None:
         try:
             order = await self.order_repo.get_by_id(order_id)
-            return Order(**order.to_dict())
+            return Order(**order)
         except OrderRepo.DoesNotExist:
             return None
         except Exception as e:
@@ -95,7 +95,7 @@ class OrderFeature:
 
     async def generate_preselection_item_payload(self, index: int, quantity: int, preselection_id: int):
         try:
-            preselection = (await self.preselection_repo.get_by_id(preselection_id)).to_dict()
+            preselection = await self.preselection_repo.get_by_id(preselection_id)
             return {
                 "index": index,
                 "image_url": preselection["image_url"],

@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{api}}/preselection/preselection1
+  url: {{api}}/preselection?name=preselection1
   body: none
   auth: none
+}
+
+params:query {
+  name: preselection1
 }

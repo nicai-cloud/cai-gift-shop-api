@@ -29,9 +29,11 @@ class ItemFeature:
         except Exception as e:
             LOG.exception("Unable to get items due to unexpected error", exc_info=e)
 
-    async def get_item(self, item_id: int) -> Item:
+    async def get_item(self, item_id: int) -> Item | None:
         try:
             item = await self.item_repo.get_by_id(item_id)
             return Item(**item)
+        except ItemRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get item due to unexpected error", exc_info=e)

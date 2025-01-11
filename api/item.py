@@ -1,4 +1,4 @@
-import falcon
+from falcon import HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
 from features.item_feature import ItemFeature
@@ -13,14 +13,18 @@ class ItemRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_items(self, req, resp):
         resp.media = await self.item_feature.get_items()
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
     
     @route.get("/all-with-product", auth_exempt=True)
     async def get_items_with_product(self, req, resp):
         resp.media = await self.item_feature.get_items_with_product()
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
 
     @route.get("/{item_id}", auth_exempt=True)
     async def get_item(self, req, resp, item_id):
-        resp.media = await self.item_feature.get_item(int(item_id))
-        resp.status = falcon.HTTP_OK
+        item = await self.item_feature.get_item(int(item_id))
+        if item is None:
+            raise HTTPNotFound(description="Item not found")
+
+        resp.media = item
+        resp.status = HTTP_OK

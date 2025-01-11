@@ -18,9 +18,11 @@ class BagFeature:
         except Exception as e:
             LOG.exception("Unable to get bags due to unexpected error", exc_info=e)
 
-    async def get_bag_by_id(self, bag_id: int) -> Bag:
+    async def get_bag_by_id(self, bag_id: int) -> Bag | None:
         try:
             bag = await self.bag_repo.get_by_id(bag_id)
             return Bag(**bag)
+        except BagRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get bag due to unexpected error", exc_info=e)

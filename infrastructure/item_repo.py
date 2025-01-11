@@ -1,3 +1,4 @@
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
 from sqlalchemy import and_, select
 
@@ -7,6 +8,12 @@ from models.item_model import ItemModel
 
 
 class ItemRepo(BaseRepository):
+    class DoesNotExist(Exception):
+        pass
+
+    class MultipleResultsFound(Exception):
+        pass
+
     def __init__(self, session: async_scoped_session):
         self.session = session
 
@@ -39,18 +46,23 @@ class ItemRepo(BaseRepository):
         return result.all()
 
     async def get_by_id(self, item_id: int):
-        item_query = select(
-            ItemModel.id,
-            ItemModel.image_url,
-            ItemModel.video_url,
-            ItemModel.product,
-            ItemModel.name,
-            ItemModel.description,
-            ItemModel.price
-        ).where(and_(ItemModel.deleted_at.is_(None), ItemModel.id == item_id))
+        try:
+            item_query = select(
+                ItemModel.id,
+                ItemModel.image_url,
+                ItemModel.video_url,
+                ItemModel.product,
+                ItemModel.name,
+                ItemModel.description,
+                ItemModel.price
+            ).where(and_(ItemModel.deleted_at.is_(None), ItemModel.id == item_id))
 
-        result = await self.session.execute(item_query)    
-        return result.first()
+            result = await self.session.execute(item_query)    
+            return result.one()
+        except MultipleResultsFound:
+            raise ItemRepo.MultipleResultsFound
+        except NoResultFound:
+            raise ItemRepo.DoesNotExist
 
 
 def construct_postgres_item_repo(transactable: PostgresTransactable) -> ItemRepo:
