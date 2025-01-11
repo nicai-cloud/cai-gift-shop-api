@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{api}}/shipment/667674b4-d7bb-46fe-adfb-121e26c25973
+  url: {{api}}/shipment?orderId=667674b4-d7bb-46fe-adfb-121e26c25973
   body: none
   auth: none
+}
+
+params:query {
+  orderId: 667674b4-d7bb-46fe-adfb-121e26c25973
 }

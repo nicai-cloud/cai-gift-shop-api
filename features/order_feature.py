@@ -84,10 +84,12 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to get orders due to unexpected error", exc_info=e)
 
-    async def get_order_by_id(self, order_id: str) -> Order:
+    async def get_order_by_id(self, order_id: UUID) -> Order | None:
         try:
             order = await self.order_repo.get_by_id(order_id)
             return Order(**order.to_dict())
+        except OrderRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get order due to unexpected error", exc_info=e)
 

@@ -20,10 +20,12 @@ class ShipmentFeature:
         except Exception as e:
             LOG.exception("Unable to get shipments due to unexpected error", exc_info=e)
 
-    async def get_shipment_by_order_id(self, order_id: UUID) -> Shipment:
+    async def get_shipment_by_order_id(self, order_id: UUID) -> Shipment | None:
         try:
             shipment = await self.shipment_repo.get_by_order_id(order_id)
             return Shipment(**shipment)
+        except ShipmentRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get shipment due to unexpected error", exc_info=e)
 

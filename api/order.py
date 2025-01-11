@@ -1,4 +1,5 @@
-import falcon
+from uuid import UUID
+from falcon import HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
 from features.order_feature import OrderFeature
@@ -13,9 +14,13 @@ class OrderRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_orders(self, req, resp):
         resp.media = await self.order_feature.get_orders()
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
 
     @route.get("/{order_id}", auth_exempt=True)
     async def get_order(self, req, resp, order_id):
-        resp.media = await self.order_feature.get_order_by_id(order_id)
-        resp.status = falcon.HTTP_OK
+        order = await self.order_feature.get_order_by_id(UUID(order_id))
+        if order is None:
+            raise HTTPNotFound(description="Order not found")
+    
+        resp.media = order
+        resp.status = HTTP_OK

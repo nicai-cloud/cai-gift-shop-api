@@ -1,4 +1,6 @@
+from uuid import UUID
 import falcon
+from falcon import HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
 from features.shipment_feature import ShipmentFeature
@@ -15,10 +17,15 @@ class ShipmentRequestHandler(RequestHandler):
         resp.media = await self.shipment_feature.get_shipments()
         resp.status = falcon.HTTP_OK
 
-    @route.get("/{order_id}", auth_exempt=True)
-    async def get_shipment_by_order_id(self, req, resp, order_id):
-        resp.media = await self.shipment_feature.get_shipment_by_order_id(order_id)
-        resp.status = falcon.HTTP_OK
+    @route.get("/", auth_exempt=True)
+    async def get_shipment_by_order_id(self, req, resp):
+        order_id = req.params.get('orderId')
+        shipment = await self.shipment_feature.get_shipment_by_order_id(UUID(order_id))
+        if shipment is None:
+            raise HTTPNotFound(description="Shipment not found")
+        
+        resp.media = shipment
+        resp.status = HTTP_OK
 
     @route.post("/", auth_exempt=True)
     async def create_shipment(self, req, resp):
@@ -31,4 +38,4 @@ class ShipmentRequestHandler(RequestHandler):
         order_id = request_body["order_id"]
 
         resp.media = await self.shipment_feature.create_shipment(volume, weight, delivery_fee, tracking_number, order_id)
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK
