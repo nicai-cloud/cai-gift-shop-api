@@ -33,6 +33,27 @@ class PreselectionRepo(BaseRepository):
         result = await self.session.execute(preselections_query)
         return result.all()
 
+    async def get_by_id(self, preselection_id: id):
+        try:
+            preselection_query = select(
+                PreselectionModel.id,
+                PreselectionModel.image_url,
+                PreselectionModel.video_url,
+                PreselectionModel.name,
+                PreselectionModel.gender,
+                PreselectionModel.description,
+                PreselectionModel.price,
+                PreselectionModel.bag_id,
+                PreselectionModel.item_ids
+            ).where(and_(PreselectionModel.deleted_at.is_(None), PreselectionModel.id == preselection_id))
+
+            result = await self.session.execute(preselection_query)
+            return result.one()
+        except MultipleResultsFound:
+            raise PreselectionRepo.MultipleResultsFound
+        except NoResultFound:
+            raise PreselectionRepo.DoesNotExist
+
     async def get_by_name(self, preselection_name: str):
         try:
             preselection_query = select(
@@ -48,7 +69,6 @@ class PreselectionRepo(BaseRepository):
             ).where(and_(PreselectionModel.deleted_at.is_(None), PreselectionModel.name == preselection_name))
 
             result = await self.session.execute(preselection_query)
-            print('!!', result)
             return result.one()
         except MultipleResultsFound:
             raise PreselectionRepo.MultipleResultsFound

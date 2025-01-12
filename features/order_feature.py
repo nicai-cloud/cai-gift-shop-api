@@ -104,7 +104,7 @@ class OrderFeature:
                 "quantity": quantity
             }
         except Exception as e:
-            LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
+            LOG.exception("Unable to get preselection item due to unexpected error", exc_info=e)
 
     async def _calculate_customer_gift_unit_price(self, bag: Bag, items: list[Item]):
         return bag.price + sum(item.price for item in items)
@@ -123,7 +123,7 @@ class OrderFeature:
                 "price": (await self._calculate_customer_gift_unit_price(bag, items)) * quantity
             }
         except Exception as e:
-            LOG.exception("Unable to get preselection due to unexpected error", exc_info=e)
+            LOG.exception("Unable to get custom item due to unexpected error", exc_info=e)
 
     async def generate_order_info(self, order_number: str, order_items: dict, total_cost: float) -> dict:
         ordered_preselection_items = []
