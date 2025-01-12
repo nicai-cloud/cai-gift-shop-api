@@ -15,6 +15,7 @@ from api.item import ItemRequestHandler
 from api.payment_method import PaymentMethodRequestHandler
 from api.preselection import PreselectionRequestHandler
 from api.inventory import InventoryRequestHandler
+from api.inventory_transaction import InventoryTransactionRequestHandler
 from api.customer import CustomerRequestHandler
 from api.order import OrderRequestHandler
 from api.order_item import OrderItemRequestHandler
@@ -118,6 +119,11 @@ def create_api():
     app.add_sink(
         InventoryRequestHandler(work_manager),
         prefix=re.compile("^/inventory(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        InventoryTransactionRequestHandler(work_manager),
+        prefix=re.compile("^/inventory-transaction(?P<path>/?.*)$"),
     )
 
     app.add_sink(

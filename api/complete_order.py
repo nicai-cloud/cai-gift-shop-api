@@ -1,4 +1,4 @@
-import falcon
+from falcon import HTTPError, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.types import PublishableKeyResponse
@@ -58,7 +58,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         bag_quantities, item_quantities = await self.order_feature.calculate_order_quantities(order_items)
         stocks_available = await self.inventory_feature.check_stock_availability(bag_quantities, item_quantities)
         if not stocks_available:
-            raise falcon.HTTPError(status="400", description="Out of stock")
+            raise HTTPError(status="400", description="Out of stock")
         
         # Calculate subtotal and make the payment
         subtotal = await self.order_feature.calculate_subtotal(order_items)
@@ -96,4 +96,4 @@ class CompleteOrderRequestHandler(RequestHandler):
         await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
         resp.media = {"order_number": order_number}
-        resp.status = falcon.HTTP_OK
+        resp.status = HTTP_OK

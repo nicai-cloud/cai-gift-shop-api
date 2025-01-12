@@ -1,5 +1,5 @@
 from aiohttp import ClientSession, TCPConnector
-import falcon
+from falcon import HTTP_OK, HTTPInternalServerError
 import json
 import ssl
 import certifi
@@ -18,7 +18,7 @@ class AddressRequestHandler(RequestHandler):
     async def auto_complete(self, req, resp):
         request_body = await req.get_media()
         if "search" not in request_body:
-            raise falcon.HTTPInternalServerError(description="Missing search")
+            raise HTTPInternalServerError(description="Missing search")
         
         query = request_body["search"]
         url = f"http://localhost:8080/addresses?q={quote_plus(query)}"
@@ -38,7 +38,7 @@ class AddressRequestHandler(RequestHandler):
                         addresses.append(suggestion['sla'])
 
                     resp.media = {"addresses": addresses}
-                    resp.status = falcon.HTTP_OK
+                    resp.status = HTTP_OK
                 else:
                     resp.media = {}
             except json.JSONDecodeError:
@@ -48,7 +48,7 @@ class AddressRequestHandler(RequestHandler):
     async def auto_complete_amazon(self, req, resp):
         request_body = await req.get_media()
         if "search" not in request_body:
-            raise falcon.HTTPInternalServerError(description="Missing search")
+            raise HTTPInternalServerError(description="Missing search")
         
         query = request_body["search"]
         suggestions = self.address_feature.get_address_suggestions(partial_text=query, max_results=10)

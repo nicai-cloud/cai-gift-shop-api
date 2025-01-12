@@ -1,6 +1,13 @@
 SELECT * FROM customer;
 SELECT * FROM public.order;
 SELECT * FROM order_item;
+SELECT * FROM bag;
+SELECT * FROM item;
+SELECT * FROM preselection;
+SELECT * FROM shipment;
+SELECT * FROM promo_code;
+SELECT * FROM inventory ORDER BY id;
+SELECT * FROM inventory_transaction
 
 DROP TABLE shipment;
 DROP TABLE order_item;
@@ -13,12 +20,6 @@ DROP TABLE preselection;
 DROP TABLE item;
 DROP TABLE bag;
 Truncate alembic_version;
-
-SELECT * FROM bag;
-SELECT * FROM item;
-SELECT * FROM preselection;
-SELECT * FROM promo_code;
-SELECT * FROM inventory ORDER BY id;
 
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/bag1.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag1', 'bag1 description', 10);
 INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/bag2.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag2', 'bag2 description', 15);

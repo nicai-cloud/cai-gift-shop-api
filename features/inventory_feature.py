@@ -5,6 +5,7 @@ from api.types import Inventory
 from infrastructure.inventory_repo import InventoryRepo
 from infrastructure.inventory_transaction_repo import InventoryTransactionRepo
 from infrastructure.work_management import WorkManager
+from dataclasses import asdict
 
 LOG = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ class InventoryFeature:
     async def refill_bags(self, bag_id: int, quantity: int):
         try:
             bag_inventory = await self.inventory_repo.get_by_bag_id(bag_id)
-            bag_inventory_dict = bag_inventory.to_dict()
+            bag_inventory_dict = asdict(Inventory(**bag_inventory))
             bag_inventory_dict["current_stock"] += quantity
             await self.inventory_repo.update(bag_inventory.id, bag_inventory_dict)
 
@@ -71,7 +72,7 @@ class InventoryFeature:
     async def refill_items(self, item_id: int, quantity: int):
         try:
             item_inventory = await self.inventory_repo.get_by_item_id(item_id)
-            item_inventory_dict = item_inventory.to_dict()
+            item_inventory_dict = asdict(Inventory(**item_inventory))
             item_inventory_dict["current_stock"] += quantity
             await self.inventory_repo.update(item_inventory.id, item_inventory_dict)
 
@@ -89,7 +90,7 @@ class InventoryFeature:
          # Update bag inventories
         for bag_id, bag_quantity in bag_quantities.items():
             bag_inventory = await self.inventory_repo.get_by_bag_id(bag_id)
-            bag_inventory_dict = bag_inventory.to_dict()
+            bag_inventory_dict = asdict(Inventory(**bag_inventory))
             bag_inventory_dict["current_stock"] -= bag_quantity
             await self.inventory_repo.update(bag_inventory.id, bag_inventory_dict)
 
@@ -104,7 +105,7 @@ class InventoryFeature:
         # Update item inventories
         for item_id, item_quantity in item_quantities.items():
             item_inventory = await self.inventory_repo.get_by_item_id(item_id)
-            item_inventory_dict = item_inventory.to_dict()
+            item_inventory_dict = asdict(Inventory(**item_inventory))
             item_inventory_dict["current_stock"] -= item_quantity
             await self.inventory_repo.update(item_inventory.id, item_inventory_dict)
 
