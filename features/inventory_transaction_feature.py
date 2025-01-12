@@ -23,5 +23,7 @@ class InventoryTransactionFeature:
         try:
             inventory_transaction = await self.inventory_transaction_repo.get_by_id(inventory_transaction_id)
             return InventoryTransaction(**inventory_transaction)
+        except InventoryTransactionRepo.DoesNotExist:
+            return None
         except Exception as e:
             LOG.exception("Unable to get inventory transaction due to unexpected error", exc_info=e)
