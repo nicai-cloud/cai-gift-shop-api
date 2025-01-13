@@ -39,6 +39,7 @@ class ShipmentRequestHandler(RequestHandler):
         order_id = request_body["order_id"]
 
         try:
+            # TODO: maybe change check on order_number instead of order_id?
             shipment_id = await self.shipment_feature.create_shipment(volume, weight, delivery_fee, tracking_number, order_id)
         except ShipmentAlreadyExistsException:
             raise HTTPBadRequest(
