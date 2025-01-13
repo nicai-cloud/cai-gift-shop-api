@@ -98,7 +98,8 @@ class Customer:
 class Order:
     id: str
     customer_id: str
-    amount: float
+    subtotal: float
+    shipping_cost: float
     order_number: str
     shipping_method: int
     promo_code_id: str | None

@@ -28,7 +28,8 @@ class OrderRepo(BaseRepository):
         orders_query = select(
             OrderModel.id,
             OrderModel.customer_id,
-            OrderModel.amount,
+            OrderModel.subtotal,
+            OrderModel.shipping_cost,
             OrderModel.order_number,
             OrderModel.shipping_method,
             OrderModel.promo_code_id
@@ -42,7 +43,8 @@ class OrderRepo(BaseRepository):
             order_query = select(
                 OrderModel.id,
                 OrderModel.customer_id,
-                OrderModel.amount,
+                OrderModel.subtotal,
+                OrderModel.shipping_cost,
                 OrderModel.order_number,
                 OrderModel.shipping_method,
                 OrderModel.promo_code_id

@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 6f78e2b87401
+Revision ID: 00e5078dde2a
 Revises: 
-Create Date: 2025-01-13 17:36:39.915787
+Create Date: 2025-01-13 20:24:48.467866
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '6f78e2b87401'
+revision: str = '00e5078dde2a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -58,17 +58,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
-    op.create_table('inventory_transaction',
-    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
-    sa.Column('inventory_id', sa.Integer(), nullable=False),
-    sa.Column('transaction_type', sa.String(), nullable=False),
-    sa.Column('quantity', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
-    )
     op.create_table('item',
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
@@ -108,10 +97,23 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
+    op.create_table('inventory_transaction',
+    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('inventory_id', sa.Integer(), nullable=False),
+    sa.Column('transaction_type', sa.String(), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.ForeignKeyConstraint(['inventory_id'], ['inventory.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
+    )
     op.create_table('order',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('customer_id', postgresql.UUID(as_uuid=True), nullable=False),
-    sa.Column('amount', sa.Float(), nullable=False),
+    sa.Column('subtotal', sa.Float(), nullable=False),
+    sa.Column('shipping_cost', sa.Float(), nullable=False),
     sa.Column('order_number', sa.String(), nullable=False),
     sa.Column('shipping_method', sa.Integer(), nullable=False),
     sa.Column('promo_code_id', postgresql.UUID(as_uuid=True), nullable=True),
@@ -120,6 +122,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),
     sa.ForeignKeyConstraint(['promo_code_id'], ['promo_code.id'], ),
+    sa.ForeignKeyConstraint(['shipping_method'], ['shipping_method.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
@@ -186,10 +189,10 @@ def downgrade() -> None:
     op.drop_table('preselection')
     op.drop_index('idx_order_number_unique_if_not_deleted', table_name='order', postgresql_where=False)
     op.drop_table('order')
+    op.drop_table('inventory_transaction')
     op.drop_table('shipping_method')
     op.drop_table('promo_code')
     op.drop_table('item')
-    op.drop_table('inventory_transaction')
     op.drop_table('inventory')
     op.drop_table('customer')
     op.drop_table('bag')
