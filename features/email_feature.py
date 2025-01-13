@@ -28,8 +28,7 @@ class EmailFeature:
             to_emails=to_email
         )
 
-        # TODO: get template_id from config
-        email.template_id = "d-0d5368d2d8e2456a88c1f7d48b648b1e"
+        email.template_id = get("ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
 
         email.dynamic_template_data = {
             "orderNumber": order_info["order_number"],
@@ -57,8 +56,7 @@ class EmailFeature:
             to_emails=customer.email
         )
 
-        # TODO: get template_id from config
-        email.template_id = "d-6d389d81b3f943cbb2059618ea3f7581"
+        email.template_id = get("DELIVERY_EMAIL_TEMPLATE_ID")
 
         email.dynamic_template_data = {
             "firstName": customer.first_name,

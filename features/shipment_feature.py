@@ -12,6 +12,11 @@ from sqlalchemy.exc import IntegrityError
 LOG = logging.getLogger(__name__)
 
 
+class ShipmentAlreadyExistsException(Exception):
+    def __init__(self, order_id):
+        super().__init__(f"Shipment already exists for order_id: {order_id}")
+
+
 class ShipmentFeature:
     def __init__(self, work_manager: WorkManager):
         self.shipment_repo = work_manager.get(ShipmentRepo)
@@ -48,7 +53,11 @@ class ShipmentFeature:
             LOG.exception("Unable to get customer due to unexpected error", exc_info=e)
 
     async def create_shipment(self, volume: float | None, weight: float, delivery_fee: float, tracking_number: str, order_id: UUID) -> UUID | None:
-        # TODO: Check the shipment for the same order_id hasn't been created yet
+        # Ensure a shipment for the same order_id hasn't been created yet
+        shipment = await self.shipment_repo.get_by_order_id(order_id)
+        if shipment is not None:
+            raise ShipmentAlreadyExistsException(order_id)
+        
         try:
             shipment_dict = {
                 "volume": volume,

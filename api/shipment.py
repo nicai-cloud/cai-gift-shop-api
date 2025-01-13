@@ -2,7 +2,7 @@ from uuid import UUID
 from falcon import HTTPBadRequest, HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
-from features.shipment_feature import ShipmentFeature
+from features.shipment_feature import ShipmentAlreadyExistsException, ShipmentFeature
 from features.email_feature import EmailFeature
 from infrastructure.work_management import WorkManager
 
@@ -38,7 +38,14 @@ class ShipmentRequestHandler(RequestHandler):
         tracking_number = request_body["tracking_number"]
         order_id = request_body["order_id"]
 
-        shipment_id = await self.shipment_feature.create_shipment(volume, weight, delivery_fee, tracking_number, order_id)
+        try:
+            shipment_id = await self.shipment_feature.create_shipment(volume, weight, delivery_fee, tracking_number, order_id)
+        except ShipmentAlreadyExistsException:
+            raise HTTPBadRequest(
+                title="Duplicate shipment for order_id",
+                description="A shipment has already been created for the provided order_id."
+            )
+
         if shipment_id is None:
             raise HTTPBadRequest(
                 title="Unknown order_id",

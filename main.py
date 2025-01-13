@@ -60,7 +60,7 @@ def create_api():
     work_manager.register(ShippingMethodRepo, construct_postgres_shipping_method_repo)
     work_manager.register(PromoCodeRepo, construct_postgres_promo_code_repo)
     
-    cors_allowed_origins = get("fe_cors_allowed_origins").split(";")
+    cors_allowed_origins = get("CORS_ALLOWED_ORIGINS").split(";")
 
     app = asgi.App(
         middleware=[
