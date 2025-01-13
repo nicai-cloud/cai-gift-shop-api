@@ -25,7 +25,8 @@ class PromoCodeRepo(BaseRepository):
             PromoCodeModel.discount_percentage,
             PromoCodeModel.description,
             PromoCodeModel.expiry_date,
-            PromoCodeModel.expired
+            PromoCodeModel.expired,
+            PromoCodeModel.used
         ).where(PromoCodeModel.deleted_at.is_(None))
 
         result = await self.session.execute(promo_codes_query)
@@ -39,7 +40,8 @@ class PromoCodeRepo(BaseRepository):
                 PromoCodeModel.discount_percentage,
                 PromoCodeModel.description,
                 PromoCodeModel.expiry_date,
-                PromoCodeModel.expired
+                PromoCodeModel.expired,
+                PromoCodeModel.used
             ).where(and_(PromoCodeModel.deleted_at.is_(None), PromoCodeModel.id == promo_code_id))
 
             result = await self.session.execute(promo_code_query)

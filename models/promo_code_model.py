@@ -13,7 +13,8 @@ class PromoCodeModel(Base, SerializerMixin):
     discount_percentage = Column(Integer, nullable=False)
     description = Column(String, nullable=False)
     expiry_date = Column(DateTime(timezone=True), server_default=func.now())
-    expired = Column(Boolean, nullable=False)
+    expired = Column(Boolean, nullable=False, server_default='false')
+    used = Column(Boolean, nullable=False, server_default='false')
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

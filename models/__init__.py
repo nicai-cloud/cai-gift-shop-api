@@ -9,4 +9,5 @@ from models.preselection_model import PreselectionModel
 from models.inventory_model import InventoryModel
 from models.inventory_transaction_model import InventoryTransactionModel
 from models.shipment_model import ShipmentModel
+from models.shipping_method_model import ShippingMethodModel
 from models.promo_code_model import PromoCodeModel

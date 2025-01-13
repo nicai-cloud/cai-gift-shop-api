@@ -30,6 +30,7 @@ class OrderRepo(BaseRepository):
             OrderModel.customer_id,
             OrderModel.amount,
             OrderModel.order_number,
+            OrderModel.shipping_method,
             OrderModel.promo_code_id
         ).where(OrderModel.deleted_at.is_(None))
         result = await self.session.execute(orders_query)
@@ -43,6 +44,7 @@ class OrderRepo(BaseRepository):
                 OrderModel.customer_id,
                 OrderModel.amount,
                 OrderModel.order_number,
+                OrderModel.shipping_method,
                 OrderModel.promo_code_id
             ).where(and_(OrderModel.deleted_at.is_(None), OrderModel.id == order_id))
             

@@ -1,0 +1,16 @@
+from sqlalchemy import Column, DateTime, Float, Integer, String, func
+from sqlalchemy_serializer import SerializerMixin
+
+from models.base import Base
+
+
+class ShippingMethodModel(Base, SerializerMixin):
+    __tablename__ = "shipping_method"
+
+    id = Column(Integer, primary_key=True, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    fee = Column(Float, nullable=False)
+    discount_fee = Column(Float, nullable=False)
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

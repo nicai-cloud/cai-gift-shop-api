@@ -45,6 +45,7 @@ class CompleteOrderRequestHandler(RequestHandler):
 
         customer_info = request_body["customer_info"]
         order_items = request_body["order_items"]
+        shipping_method = request_body["shipping_method"]
         payment_method_id = request_body["payment_method_id"]
 
         first_name = customer_info["first_name"]
@@ -74,7 +75,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('!! created customer id:', customer_id)
 
         # Create an order against the customer
-        order_id, order_number = await self.order_feature.create_order(customer_id=customer_id, amount=total_cost)
+        order_id, order_number = await self.order_feature.create_order(customer_id=customer_id, shipping_method=shipping_method, amount=total_cost)
         print('!! created order id:', order_id)
 
         # Create each of the order items

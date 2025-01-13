@@ -58,6 +58,14 @@ class Shipment:
 
 
 @dataclass
+class ShippingMethod:
+    id: int
+    name: str
+    fee: float
+    discount_fee: float
+
+
+@dataclass
 class PromoCode:
     id: int
     code: str
@@ -65,6 +73,7 @@ class PromoCode:
     description: str
     expiry_date: date
     expired: bool
+    used: bool
 
 
 @dataclass
@@ -91,6 +100,7 @@ class Order:
     customer_id: str
     amount: float
     order_number: str
+    shipping_method: int
     promo_code_id: str | None
 
 

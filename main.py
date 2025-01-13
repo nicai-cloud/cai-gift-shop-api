@@ -20,6 +20,7 @@ from api.customer import CustomerRequestHandler
 from api.order import OrderRequestHandler
 from api.order_item import OrderItemRequestHandler
 from api.shipment import ShipmentRequestHandler
+from api.shipping_method import ShippingMethodRequestHandler
 from api.promo_code import PromoCodeRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
@@ -33,6 +34,7 @@ from infrastructure.item_repo import ItemRepo, construct_postgres_item_repo
 from infrastructure.inventory_repo import InventoryRepo, construct_postgres_inventory_repo
 from infrastructure.inventory_transaction_repo import InventoryTransactionRepo, construct_postgres_inventory_transaction_repo
 from infrastructure.shipment_repo import ShipmentRepo, construct_postgres_shipment_repo
+from infrastructure.shipping_method_repo import ShippingMethodRepo, construct_postgres_shipping_method_repo
 from infrastructure.promo_code_repo import PromoCodeRepo, construct_postgres_promo_code_repo
 from infrastructure.work_management import WorkManager, WorkManagementMiddleware
 
@@ -55,6 +57,7 @@ def create_api():
     work_manager.register(InventoryRepo, construct_postgres_inventory_repo)
     work_manager.register(InventoryTransactionRepo, construct_postgres_inventory_transaction_repo)
     work_manager.register(ShipmentRepo, construct_postgres_shipment_repo)
+    work_manager.register(ShippingMethodRepo, construct_postgres_shipping_method_repo)
     work_manager.register(PromoCodeRepo, construct_postgres_promo_code_repo)
     
     cors_allowed_origins = get("fe_cors_allowed_origins").split(";")
@@ -144,6 +147,11 @@ def create_api():
     app.add_sink(
         ShipmentRequestHandler(work_manager),
         prefix=re.compile("^/shipment(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        ShippingMethodRequestHandler(work_manager),
+        prefix=re.compile("^/shipping-method(?P<path>/?.*)$"),
     )
 
     app.add_sink(

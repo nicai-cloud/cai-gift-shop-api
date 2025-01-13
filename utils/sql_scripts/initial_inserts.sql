@@ -56,3 +56,6 @@ INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_thre
 INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('ABC123', 2, '2% discount on subtotal', '2025-10-04', false);
 INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('DEF456', 5, '5% discount on subtotal', '2025-10-04', false);
 INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('OPQ789', 10, '10% discount on subtotal', '2025-10-04', false);
+
+INSERT INTO shipping_method (name, fee, discount_fee) VALUES ('standard', 17.95, 0);
+INSERT INTO shipping_method (name, fee, discount_fee) VALUES ('express', 22.95, 9.95);

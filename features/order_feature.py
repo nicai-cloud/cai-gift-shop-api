@@ -19,13 +19,14 @@ class OrderFeature:
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
     
-    async def create_order(self, customer_id: UUID, amount: float) -> tuple[UUID, str]:
+    async def create_order(self, customer_id: UUID, shipping_method: int, amount: float) -> tuple[UUID, str]:
         try:
             order_number = generate_order_number()
             order = {
                 "customer_id": customer_id,
                 "amount": amount,
-                "order_number": order_number
+                "order_number": order_number,
+                "shipping_method": shipping_method
             }
             return await self.order_repo.create(order), order_number
         except Exception as e:
