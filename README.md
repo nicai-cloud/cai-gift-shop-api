@@ -4,6 +4,10 @@ Analysis for a return statement such as "return Bag(**bag.to_dict())" in BagFeat
 bag.to_dict() will return a BagModel like dict which include all fields except "deleted_at", "created_at" and "updated_at",
 then Bag(**bag.to_dict()) will return a Bag object defined inside api.types.py
 
+Useful stripe CLI commands:
+stripe login --interactive
+stripe payment_intents list --limit 3
+
 To use Amazon Location Service to address auto-complete:
 1. Log into AWS console
 2. Go to Amazon Location Service
