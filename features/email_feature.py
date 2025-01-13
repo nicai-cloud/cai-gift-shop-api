@@ -5,6 +5,7 @@ import certifi
 from uuid import UUID
 import sendgrid
 from sendgrid.helpers.mail import Mail
+from api.types import Customer
 
 from utils.config import get
 
@@ -19,14 +20,15 @@ class EmailFeature:
     def __init__(self):
         super().__init__()
     
-    # Use SendGrid, which has a limit of 100 email per day, to send email to customer
-    async def send_email_to_customer(self, to_email: str, customer_info: dict, order_info: dict):
+    # Use SendGrid, which has a limit of 100 email per day, to send order confirmation email to customer
+    async def send_order_confirmation_email_to_customer(self, to_email: str, customer_info: dict, order_info: dict):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
             to_emails=to_email
         )
 
+        # TODO: get template_id from config
         email.template_id = "d-0d5368d2d8e2456a88c1f7d48b648b1e"
 
         email.dynamic_template_data = {
@@ -38,6 +40,31 @@ class EmailFeature:
             "lastName": customer_info["last_name"],
             "mobile": customer_info["mobile"],
             "email": customer_info["email"]
+        }
+
+        # Send the email
+        try:
+            response = sg.send(email)
+            print(f"Email sent! Status code: {response.status_code}")
+        except Exception as e:
+            print(f"Error: {e}")
+    
+    # Use SendGrid, which has a limit of 100 email per day, to send delivery email to customer
+    async def send_delivery_email_to_customer(self, customer: Customer, tracking_number: str):
+        # Create the email
+        email = Mail(
+            from_email=get("FROM_EMAIL"),
+            to_emails=customer.email
+        )
+
+        # TODO: get template_id from config
+        email.template_id = "d-6d389d81b3f943cbb2059618ea3f7581"
+
+        email.dynamic_template_data = {
+            "firstName": customer.first_name,
+            "lastName": customer.last_name,
+            "address": customer.address,
+            "trackingNumber": tracking_number
         }
 
         # Send the email

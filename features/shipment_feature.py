@@ -2,9 +2,12 @@ import logging
 from uuid import UUID
 from datetime import date
 
-from api.types import Shipment
+from api.types import Customer, Order, Shipment
 from infrastructure.shipment_repo import ShipmentRepo
+from infrastructure.order_repo import OrderRepo
+from infrastructure.customer_repo import CustomerRepo
 from infrastructure.work_management import WorkManager
+from sqlalchemy.exc import IntegrityError
 
 LOG = logging.getLogger(__name__)
 
@@ -12,6 +15,8 @@ LOG = logging.getLogger(__name__)
 class ShipmentFeature:
     def __init__(self, work_manager: WorkManager):
         self.shipment_repo = work_manager.get(ShipmentRepo)
+        self.order_repo = work_manager.get(OrderRepo)
+        self.customer_repo = work_manager.get(CustomerRepo)
     
     async def get_shipments(self) -> list[Shipment]:
         try:
@@ -28,8 +33,22 @@ class ShipmentFeature:
             return None
         except Exception as e:
             LOG.exception("Unable to get shipment due to unexpected error", exc_info=e)
+    
+    async def get_customer(self, order_id: UUID) -> Customer | None:
+        try:
+            order_obj = await self.order_repo.get_by_id(order_id)
+            order = Order(**order_obj)
+            customer_obj = await self.customer_repo.get_by_id(order.customer_id)
+            return Customer(**customer_obj)
+        except OrderRepo.DoesNotExist:
+            return None
+        except CustomerRepo.DoesNotExist:
+            return None
+        except Exception as e:
+            LOG.exception("Unable to get customer due to unexpected error", exc_info=e)
 
-    async def create_shipment(self, volume: float | None, weight: float, delivery_fee: float, tracking_number: str, order_id: UUID) -> UUID:
+    async def create_shipment(self, volume: float | None, weight: float, delivery_fee: float, tracking_number: str, order_id: UUID) -> UUID | None:
+        # TODO: Check the shipment for the same order_id hasn't been created yet
         try:
             shipment_dict = {
                 "volume": volume,
@@ -40,5 +59,7 @@ class ShipmentFeature:
                 "order_id": order_id
             }
             return await self.shipment_repo.create(shipment_dict)
+        except IntegrityError as e:
+            return None
         except Exception as e:
-            LOG.exception("Unable to get shipment due to unexpected error", exc_info=e)
+            LOG.exception("Unable to create shipment due to unexpected error", exc_info=e)

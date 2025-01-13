@@ -93,7 +93,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         order_info = await self.order_feature.generate_order_info(order_number, order_items, total_cost)
 
         # Send the successful order email to customer and myself
-        await self.email_feature.send_email_to_customer(email, customer_info, order_info)
+        await self.email_feature.send_order_confirmation_email_to_customer(email, customer_info, order_info)
         await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
         resp.media = {"order_number": order_number}
