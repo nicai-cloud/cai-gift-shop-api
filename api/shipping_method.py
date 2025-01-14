@@ -3,6 +3,7 @@ from falcon import HTTP_OK, HTTPNotFound
 from api.base import RequestHandler, route
 from features.shipping_method_feature import ShippingMethodFeature
 from infrastructure.work_management import WorkManager
+from utils.config import get
 
 
 class ShippingMethodRequestHandler(RequestHandler):
@@ -13,7 +14,7 @@ class ShippingMethodRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_shipping_methods(self, req, resp):
         shipping_methods = await self.shipping_method_feature.get_shipping_methods()
-        resp.media = {"shippingMethods": shipping_methods, "discountThreshold": 200}
+        resp.media = {"shippingMethods": shipping_methods, "discountThreshold": get("DISCOUNT_THRESHOLD")}
         resp.status = HTTP_OK
 
     @route.get("/", auth_exempt=True)

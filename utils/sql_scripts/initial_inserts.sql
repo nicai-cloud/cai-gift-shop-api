@@ -5,6 +5,7 @@ SELECT * FROM bag;
 SELECT * FROM item;
 SELECT * FROM preselection;
 SELECT * FROM shipment;
+SELECT * FROM shipping_method;
 SELECT * FROM promo_code;
 SELECT * FROM inventory ORDER BY id;
 SELECT * FROM inventory_transaction
@@ -13,6 +14,8 @@ DROP TABLE shipment;
 DROP TABLE order_item;
 DROP TABLE public.order;
 DROP TABLE customer;
+DROP TABLE shipment;
+DROP TABLE shipping_method;
 DROP TABLE inventory_transaction;
 DROP TABLE inventory;
 DROP TABLE promo_code;

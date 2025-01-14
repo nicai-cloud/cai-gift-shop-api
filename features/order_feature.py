@@ -1,13 +1,15 @@
 import logging
 from uuid import UUID
 
-from api.types import Bag, Item, Order
+from api.types import Bag, Item, Order, ShippingMethod
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
+from infrastructure.shipping_method_repo import ShippingMethodRepo
 from infrastructure.work_management import WorkManager
 from utils.generate_order_number import generate_order_number
+from utils.config import get
 
 LOG = logging.getLogger(__name__)
 
@@ -18,6 +20,7 @@ class OrderFeature:
         self.preselection_repo = work_manager.get(PreselectionRepo)
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
+        self.shipping_method_repo = work_manager.get(ShippingMethodRepo)
     
     async def create_order(self, customer_id: UUID, shipping_method: int, subtotal: float, shipping_cost: float) -> tuple[UUID, str]:
         try:
@@ -34,7 +37,7 @@ class OrderFeature:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
 
     async def calculate_subtotal(self, order_items: list[dict]) -> float:
-        total_cost = 0
+        subtotal = 0
         for order_item in order_items:
             quantity = order_item["quantity"]
             price = 0
@@ -51,8 +54,8 @@ class OrderFeature:
                 for item_id in item_ids:
                     item = await self.item_repo.get_by_id(item_id)
                     price += item.price
-            total_cost += price * quantity
-        return total_cost
+            subtotal += price * quantity
+        return subtotal
 
     async def calculate_order_quantities(self, order_items: list[dict]) -> tuple[dict, dict]:
         bag_quantities = {}
@@ -76,8 +79,11 @@ class OrderFeature:
         
         return bag_quantities, item_quantities
 
-    async def calculate_shipping_cost(self, subtotal: float) -> float:
-        return 0
+    async def calculate_shipping_cost(self, shipping_method_id: int, subtotal: float) -> float:
+        discount_threshold = int(get("DISCOUNT_THRESHOLD"))
+        shipping_method_obj = await self.shipping_method_repo.get_by_id(shipping_method_id)
+        shipping_method = ShippingMethod(**shipping_method_obj)
+        return shipping_method.discount_fee if subtotal >= discount_threshold else shipping_method.fee
 
     async def get_orders(self) -> list[Order]:
         try:
@@ -127,7 +133,7 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to get custom item due to unexpected error", exc_info=e)
 
-    async def generate_order_info(self, order_number: str, order_items: dict, total_cost: float) -> dict:
+    async def generate_order_info(self, order_number: str, order_items: dict,  subtotal: float, shipping_cost: float, order_total: float) -> dict:
         ordered_preselection_items = []
         ordered_custom_items = []
         preselection_index, custom_index = 1, 1
@@ -148,10 +154,12 @@ class OrderFeature:
 
         order_info = {
             "order_number": order_number,
+            "subtotal": subtotal,
+            "shipping_cost": shipping_cost,
+            "order_total": order_total,
             "ordered_items": {
                 "preselection_items": ordered_preselection_items,
                 "custom_items": ordered_custom_items
-            },
-            "total_cost": total_cost
+            }
         }
         return order_info
