@@ -14,7 +14,7 @@ class ShippingMethodRequestHandler(RequestHandler):
     @route.get("/all", auth_exempt=True)
     async def get_shipping_methods(self, req, resp):
         shipping_methods = await self.shipping_method_feature.get_shipping_methods()
-        resp.media = {"shippingMethods": shipping_methods, "discountThreshold": get("DISCOUNT_THRESHOLD")}
+        resp.media = {"shippingMethods": shipping_methods, "freeShippingThreshold": get("FREE_SHIPPING_THRESHOLD")}
         resp.status = HTTP_OK
 
     @route.get("/", auth_exempt=True)

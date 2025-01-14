@@ -80,10 +80,10 @@ class OrderFeature:
         return bag_quantities, item_quantities
 
     async def calculate_shipping_cost(self, shipping_method_id: int, subtotal: float) -> float:
-        discount_threshold = int(get("DISCOUNT_THRESHOLD"))
+        free_shipping_threshold = int(get("FREE_SHIPPING_THRESHOLD"))
         shipping_method_obj = await self.shipping_method_repo.get_by_id(shipping_method_id)
         shipping_method = ShippingMethod(**shipping_method_obj)
-        return shipping_method.discount_fee if subtotal >= discount_threshold else shipping_method.fee
+        return shipping_method.discount_fee if subtotal >= free_shipping_threshold else shipping_method.fee
 
     async def get_orders(self) -> list[Order]:
         try:
