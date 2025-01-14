@@ -16,7 +16,7 @@ class OrderModel(Base, SerializerMixin):
     shipping_cost = Column(Float, nullable=False)
     order_number = Column(String, nullable=False)
     shipping_method = Column(Integer, ForeignKey("shipping_method.id"), nullable=False)
-    promo_code_id = Column(UUID(as_uuid=True), ForeignKey("promo_code.id"), nullable=True)
+    coupon_id = Column(UUID(as_uuid=True), ForeignKey("coupon.id"), nullable=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

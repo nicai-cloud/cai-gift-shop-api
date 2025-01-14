@@ -6,7 +6,7 @@ SELECT * FROM item;
 SELECT * FROM preselection;
 SELECT * FROM shipment;
 SELECT * FROM shipping_method;
-SELECT * FROM promo_code;
+SELECT * FROM coupon;
 SELECT * FROM inventory ORDER BY id;
 SELECT * FROM inventory_transaction
 
@@ -18,7 +18,7 @@ DROP TABLE shipment;
 DROP TABLE shipping_method;
 DROP TABLE inventory_transaction;
 DROP TABLE inventory;
-DROP TABLE promo_code;
+DROP TABLE coupon;
 DROP TABLE preselection;
 DROP TABLE item;
 DROP TABLE bag;
@@ -56,9 +56,9 @@ INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_thre
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (11, 'item', 8, 100, 10);
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (12, 'item', 9, 100, 10);
 
-INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('ABC123', 2, '2% discount on subtotal', '2025-10-04', false);
-INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('DEF456', 5, '5% discount on subtotal', '2025-10-04', false);
-INSERT INTO promo_code (code, discount_percentage, description, expiry_date, expired) VALUES ('OPQ789', 10, '10% discount on subtotal', '2025-10-04', false);
+INSERT INTO coupon (code, discount_percentage, description, expiry_date, used) VALUES ('ABC123', 2, '2% discount on subtotal', '2025-10-04', false);
+INSERT INTO coupon (code, discount_percentage, description, expiry_date, used) VALUES ('DEF456', 5, '5% discount on subtotal', '2025-10-04', false);
+INSERT INTO coupon (code, discount_percentage, description, expiry_date, used) VALUES ('OPQ789', 10, '10% discount on subtotal', '2025-10-04', false);
 
 INSERT INTO shipping_method (name, fee, discount_fee) VALUES ('standard', 17.95, 0);
 INSERT INTO shipping_method (name, fee, discount_fee) VALUES ('express', 22.95, 9.95);

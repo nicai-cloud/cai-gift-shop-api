@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: 00e5078dde2a
+Revision ID: e5ef2ff2778b
 Revises: 
-Create Date: 2025-01-13 20:24:48.467866
+Create Date: 2025-01-15 08:07:36.555404
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '00e5078dde2a'
+revision: str = 'e5ef2ff2778b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,6 +28,19 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id')
+    )
+    op.create_table('coupon',
+    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.Column('code', sa.String(), nullable=False),
+    sa.Column('discount_percentage', sa.Integer(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('expiry_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('used', sa.Boolean(), server_default='false', nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -72,20 +85,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
-    op.create_table('promo_code',
-    sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('gen_random_uuid()'), nullable=False),
-    sa.Column('code', sa.String(), nullable=False),
-    sa.Column('discount_percentage', sa.Integer(), nullable=False),
-    sa.Column('description', sa.String(), nullable=False),
-    sa.Column('expiry_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('expired', sa.Boolean(), server_default='false', nullable=False),
-    sa.Column('used', sa.Boolean(), server_default='false', nullable=False),
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
-    )
     op.create_table('shipping_method',
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
@@ -116,12 +115,12 @@ def upgrade() -> None:
     sa.Column('shipping_cost', sa.Float(), nullable=False),
     sa.Column('order_number', sa.String(), nullable=False),
     sa.Column('shipping_method', sa.Integer(), nullable=False),
-    sa.Column('promo_code_id', postgresql.UUID(as_uuid=True), nullable=True),
+    sa.Column('coupon_id', postgresql.UUID(as_uuid=True), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
+    sa.ForeignKeyConstraint(['coupon_id'], ['coupon.id'], ),
     sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),
-    sa.ForeignKeyConstraint(['promo_code_id'], ['promo_code.id'], ),
     sa.ForeignKeyConstraint(['shipping_method'], ['shipping_method.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
@@ -191,9 +190,9 @@ def downgrade() -> None:
     op.drop_table('order')
     op.drop_table('inventory_transaction')
     op.drop_table('shipping_method')
-    op.drop_table('promo_code')
     op.drop_table('item')
     op.drop_table('inventory')
     op.drop_table('customer')
+    op.drop_table('coupon')
     op.drop_table('bag')
     # ### end Alembic commands ###
