@@ -2,7 +2,7 @@ from uuid import UUID
 from falcon import HTTPBadRequest, HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
-from features.shipment_feature import ShipmentAlreadyExistsException, ShipmentFeature
+from features.shipment_feature import OrderNotFoundException, ShipmentFeature
 from features.email_feature import EmailFeature
 from infrastructure.work_management import WorkManager
 
@@ -41,10 +41,10 @@ class ShipmentRequestHandler(RequestHandler):
         try:
             # TODO: maybe change check on order_number instead of order_id?
             shipment_id = await self.shipment_feature.create_shipment(volume, weight, delivery_fee, tracking_number, order_id)
-        except ShipmentAlreadyExistsException:
+        except OrderNotFoundException:
             raise HTTPBadRequest(
-                title="Duplicate shipment for order_id",
-                description="A shipment has already been created for the provided order_id."
+                title="order id not found",
+                description="Unable to create shipment for an order whose order_id that is not found."
             )
 
         if shipment_id is None:

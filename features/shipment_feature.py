@@ -12,9 +12,9 @@ from sqlalchemy.exc import IntegrityError
 LOG = logging.getLogger(__name__)
 
 
-class ShipmentAlreadyExistsException(Exception):
+class OrderNotFoundException(Exception):
     def __init__(self, order_id):
-        super().__init__(f"Shipment already exists for order_id: {order_id}")
+        super().__init__(f"Order not found with order_id: {order_id}")
 
 
 class ShipmentFeature:
@@ -54,21 +54,21 @@ class ShipmentFeature:
 
     async def create_shipment(self, volume: float | None, weight: float, delivery_fee: float, tracking_number: str, order_id: UUID) -> UUID | None:
         # Ensure a shipment for the same order_id hasn't been created yet
-        shipment = await self.shipment_repo.get_by_order_id(order_id)
-        if shipment is not None:
-            raise ShipmentAlreadyExistsException(order_id)
-        
         try:
-            shipment_dict = {
-                "volume": volume,
-                "weight": weight,
-                "delivery_fee": delivery_fee,
-                "send_date": date.today(),
-                "tracking_number": tracking_number,
-                "order_id": order_id
-            }
-            return await self.shipment_repo.create(shipment_dict)
-        except IntegrityError as e:
-            return None
-        except Exception as e:
-            LOG.exception("Unable to create shipment due to unexpected error", exc_info=e)
+            await self.shipment_repo.get_by_order_id(order_id)
+        except ShipmentRepo.DoesNotExist:
+            # This is a happy path, the shipment associated with the order_id is not supposed to exist yet
+            try:
+                shipment_dict = {
+                    "volume": volume,
+                    "weight": weight,
+                    "delivery_fee": delivery_fee,
+                    "send_date": date.today(),
+                    "tracking_number": tracking_number,
+                    "order_id": order_id
+                }
+                return await self.shipment_repo.create(shipment_dict)
+            except IntegrityError as e:
+                raise OrderNotFoundException(order_id)
+            except Exception as e:
+                LOG.exception("Unable to create shipment due to unexpected error", exc_info=e)
