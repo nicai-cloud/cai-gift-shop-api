@@ -101,62 +101,62 @@ def create_api():
 
     app.add_sink(
         PaymentMethodRequestHandler(),
-        prefix=re.compile("^/payment-method(?P<path>/?.*)$"),
+        prefix=re.compile("^/payment-methods(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         PreselectionRequestHandler(work_manager),
-        prefix=re.compile("^/preselection(?P<path>/?.*)$"),
+        prefix=re.compile("^/preselections(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         BagRequestHandler(work_manager),
-        prefix=re.compile("^/bag(?P<path>/?.*)$"),
+        prefix=re.compile("^/bags(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         ItemRequestHandler(work_manager),
-        prefix=re.compile("^/item(?P<path>/?.*)$"),
+        prefix=re.compile("^/items(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         InventoryRequestHandler(work_manager),
-        prefix=re.compile("^/inventory(?P<path>/?.*)$"),
+        prefix=re.compile("^/inventories(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         InventoryTransactionRequestHandler(work_manager),
-        prefix=re.compile("^/inventory-transaction(?P<path>/?.*)$"),
+        prefix=re.compile("^/inventory-transactions(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         CustomerRequestHandler(work_manager),
-        prefix=re.compile("^/customer(?P<path>/?.*)$"),
+        prefix=re.compile("^/customers(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         OrderRequestHandler(work_manager),
-        prefix=re.compile("^/order(?P<path>/?.*)$"),
+        prefix=re.compile("^/orders(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         OrderItemRequestHandler(work_manager),
-        prefix=re.compile("^/order-item(?P<path>/?.*)$"),
+        prefix=re.compile("^/order-items(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         ShipmentRequestHandler(work_manager),
-        prefix=re.compile("^/shipment(?P<path>/?.*)$"),
+        prefix=re.compile("^/shipments(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         ShippingMethodRequestHandler(work_manager),
-        prefix=re.compile("^/shipping-method(?P<path>/?.*)$"),
+        prefix=re.compile("^/shipping-methods(?P<path>/?.*)$"),
     )
 
     app.add_sink(
         CouponRequestHandler(work_manager),
-        prefix=re.compile("^/coupon(?P<path>/?.*)$"),
+        prefix=re.compile("^/coupons(?P<path>/?.*)$"),
     )
 
     return app

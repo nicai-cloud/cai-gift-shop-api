@@ -13,12 +13,12 @@ class ShipmentRequestHandler(RequestHandler):
         self.shipment_feature = ShipmentFeature(work_manager)
         self.email_feature = EmailFeature()
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_shipments(self, req, resp):
         resp.media = await self.shipment_feature.get_shipments()
         resp.status = HTTP_OK
 
-    @route.get("/", auth_exempt=True)
+    @route.get("/search", auth_exempt=True)
     async def get_shipment_by_order_id(self, req, resp):
         order_id = req.params.get('orderId')
         shipment = await self.shipment_feature.get_shipment_by_order_id(UUID(order_id))

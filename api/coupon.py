@@ -11,13 +11,13 @@ class CouponRequestHandler(RequestHandler):
         super().__init__()
         self.coupon_feature = CouponFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_coupons(self, req, resp):
         resp.media = await self.coupon_feature.get_coupons()
         resp.status = HTTP_OK
 
-    @route.get("/{code}", auth_exempt=True)
-    async def get_coupon_by_code(self, req, resp, code):
+    @route.get("/search", auth_exempt=True)
+    async def get_coupon_by_code(self, req, resp):
         code = req.params.get('code')
         coupon = await self.coupon_feature.get_coupon_by_code(code)
         if coupon is None or datetime.now(timezone.utc) > coupon.expiry_date or coupon.used:

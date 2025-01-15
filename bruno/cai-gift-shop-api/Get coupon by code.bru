@@ -1,11 +1,11 @@
 meta {
   name: Get coupon by code
   type: http
-  seq: 14
+  seq: 12
 }
 
 get {
-  url: {{api}}/coupon?code=ABC123
+  url: {{api}}/coupons/search?code=ABC123
   body: none
   auth: none
 }

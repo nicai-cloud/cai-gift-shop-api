@@ -11,14 +11,14 @@ class InventoryTransactionRequestHandler(RequestHandler):
         super().__init__()
         self.inventory_transaction_feature = InventoryTransactionFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_inventory_transactions(self, req, resp):
         resp.media = await self.inventory_transaction_feature.get_inventory_transactions()
         resp.status = HTTP_OK
 
     @route.get("/{inventory_transaction_id}", auth_exempt=True)
     async def get_inventory_transaction_by_id(self, req, resp, inventory_transaction_id):
-        inventory_transaction = await self.inventory_transaction_feature.get_inventory_transaction(UUID(inventory_transaction_id))
+        inventory_transaction = await self.inventory_transaction_feature.get_inventory_transaction_by_id(UUID(inventory_transaction_id))
         
         if inventory_transaction is None:
             raise HTTPNotFound(description="Inventory Transaction not found")

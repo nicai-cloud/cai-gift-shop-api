@@ -11,7 +11,7 @@ class OrderRequestHandler(RequestHandler):
         super().__init__()
         self.order_feature = OrderFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_orders(self, req, resp):
         resp.media = await self.order_feature.get_orders()
         resp.status = HTTP_OK

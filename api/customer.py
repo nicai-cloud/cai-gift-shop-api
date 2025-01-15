@@ -11,7 +11,7 @@ class CustomerRequestHandler(RequestHandler):
         super().__init__()
         self.customer_feature = CustomerFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_customers(self, req, resp):
         resp.media = await self.customer_feature.get_customers()
         resp.status = HTTP_OK

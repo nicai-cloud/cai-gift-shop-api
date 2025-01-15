@@ -10,7 +10,7 @@ class BagRequestHandler(RequestHandler):
         super().__init__()
         self.bag_feature = BagFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_bags(self, req, resp):
         resp.media = await self.bag_feature.get_bags()
         resp.status = HTTP_OK

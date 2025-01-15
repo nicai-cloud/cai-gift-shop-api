@@ -10,12 +10,12 @@ class InventoryRequestHandler(RequestHandler):
         super().__init__()
         self.inventory_feature = InventoryFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_inventories(self, req, resp):
         resp.media = await self.inventory_feature.get_inventories()
         resp.status = HTTP_OK
 
-    @route.get("/", auth_exempt=True)
+    @route.get("/search", auth_exempt=True)
     async def get_inventory_by_id_or_bag_id_or_item_id(self, req, resp):
         id = req.params.get('id')
         bag_id = req.params.get('bagId')

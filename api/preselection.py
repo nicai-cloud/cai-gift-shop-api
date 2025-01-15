@@ -10,12 +10,12 @@ class PreselectionRequestHandler(RequestHandler):
         super().__init__()
         self.preselection_feature = PreselectionFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_preselections(self, req, resp):
         resp.media = await self.preselection_feature.get_preselections()
         resp.status = HTTP_OK
 
-    @route.get("/", auth_exempt=True)
+    @route.get("/search", auth_exempt=True)
     async def get_preselection_by_name(self, req, resp):
         preselection_name = req.params.get('name')
         preselection = await self.preselection_feature.get_preselection_by_name(preselection_name)

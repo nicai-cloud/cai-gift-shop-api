@@ -11,16 +11,15 @@ class ShippingMethodRequestHandler(RequestHandler):
         super().__init__()
         self.shipping_method_feature = ShippingMethodFeature(work_manager)
 
-    @route.get("/all", auth_exempt=True)
+    @route.get("/", auth_exempt=True)
     async def get_shipping_methods(self, req, resp):
         shipping_methods = await self.shipping_method_feature.get_shipping_methods()
         resp.media = {"shippingMethods": shipping_methods, "freeShippingThreshold": get("FREE_SHIPPING_THRESHOLD")}
         resp.status = HTTP_OK
 
-    @route.get("/", auth_exempt=True)
-    async def get_shipping_method_by_id(self, req, resp):
-        shipping_method_id = req.params.get('shippingMethodId')
-        shipping_method = await self.shipping_method_feature.get_shipping_method_by_id(int(shipping_method_id))
+    @route.get("/{id:int}", auth_exempt=True)
+    async def get_shipping_method_by_id(self, req, resp, id):
+        shipping_method = await self.shipping_method_feature.get_shipping_method_by_id(id)
         if shipping_method is None:
             raise HTTPNotFound(description="Shipping method not found")
         
