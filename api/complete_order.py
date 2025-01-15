@@ -100,6 +100,8 @@ class CompleteOrderRequestHandler(RequestHandler):
         )
         print('!! created order id:', order_id)
 
+        # TODO: Update the coupon to be used
+
         # Create each of the order items
         order_item_ids = []
         for order_item in order_items:
