@@ -1,6 +1,6 @@
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select
+from sqlalchemy import and_, select, update
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -47,6 +47,10 @@ class CouponRepo(BaseRepository):
             raise CouponRepo.MultipleResultsFound
         except NoResultFound:
             raise CouponRepo.DoesNotExist
+    
+    async def mark_as_used(self, coupon_id: str):
+        stmt = update(CouponModel).where(CouponModel.id == coupon_id).values(used=True)
+        await self.session.execute(stmt)
 
 
 def construct_postgres_coupon_repo(transactable: PostgresTransactable) -> CouponRepo:

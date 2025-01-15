@@ -26,3 +26,6 @@ class CouponFeature:
             return None
         except Exception as e:
             LOG.exception("Unable to get coupon due to unexpected error", exc_info=e)
+
+    async def mark_as_used(self, coupon: Coupon):
+        await self.coupon_repo.mark_as_used(coupon.id)

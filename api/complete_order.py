@@ -100,7 +100,9 @@ class CompleteOrderRequestHandler(RequestHandler):
         )
         print('!! created order id:', order_id)
 
-        # TODO: Update the coupon to be used
+        # Mark the coupon as used
+        if coupon:
+            await self.coupon_feature.mark_as_used(coupon)
 
         # Create each of the order items
         order_item_ids = []
