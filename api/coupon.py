@@ -1,4 +1,3 @@
-from uuid import UUID
 from falcon import HTTP_OK
 from datetime import datetime, timezone
 
