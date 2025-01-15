@@ -1,5 +1,6 @@
 from uuid import UUID
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
+from datetime import datetime, timezone
 
 from api.base import RequestHandler, route
 from features.coupon_feature import CouponFeature
@@ -20,8 +21,8 @@ class CouponRequestHandler(RequestHandler):
     async def get_coupon_by_code(self, req, resp, code):
         code = req.params.get('code')
         coupon = await self.coupon_feature.get_coupon_by_code(code)
-        if coupon is None:
-            raise HTTPNotFound(description="Coupon not found")
-
-        resp.media  = coupon
+        if coupon is None or datetime.now(timezone.utc) > coupon.expiry_date or coupon.used:
+            resp.media = {"isValid": False, "discountPercentage": 0}
+        else:
+            resp.media = {"isValid": True, "discountPercentage": coupon.discount_percentage}
         resp.status = HTTP_OK

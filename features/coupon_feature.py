@@ -18,7 +18,7 @@ class CouponFeature:
         except Exception as e:
             LOG.exception("Unable to get coupons due to unexpected error", exc_info=e)
 
-    async def get_coupon_by_code(self, code: str) -> Coupon:
+    async def get_coupon_by_code(self, code: str) -> Coupon | None:
         try:
             coupon = await self.coupon_repo.get_by_code(code)
             return Coupon(**coupon)

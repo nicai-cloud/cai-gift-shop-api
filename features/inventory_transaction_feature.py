@@ -19,7 +19,7 @@ class InventoryTransactionFeature:
         except Exception as e:
             LOG.exception("Unable to get inventory transactions due to unexpected error", exc_info=e)
 
-    async def get_inventory_transaction(self, inventory_transaction_id: UUID) -> InventoryTransaction:
+    async def get_inventory_transaction(self, inventory_transaction_id: UUID) -> InventoryTransaction | None:
         try:
             inventory_transaction = await self.inventory_transaction_repo.get_by_id(inventory_transaction_id)
             return InventoryTransaction(**inventory_transaction)

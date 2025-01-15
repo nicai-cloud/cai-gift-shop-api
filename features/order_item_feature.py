@@ -39,7 +39,7 @@ class OrderItemFeature:
         except Exception as e:
             LOG.exception("Unable to get order items due to unexpected error", exc_info=e)
 
-    async def get_order_item_by_id(self, order_item_id: UUID) -> OrderItem:
+    async def get_order_item_by_id(self, order_item_id: UUID) -> OrderItem | None:
         try:
             order_item = await self.order_item_repo.get_by_id(order_item_id)
             return OrderItem(**order_item)
