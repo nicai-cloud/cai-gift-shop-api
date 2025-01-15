@@ -10,7 +10,6 @@ SELECT * FROM coupon;
 SELECT * FROM inventory ORDER BY id;
 SELECT * FROM inventory_transaction
 
-DROP TABLE shipment;
 DROP TABLE order_item;
 DROP TABLE public.order;
 DROP TABLE customer;
