@@ -13,6 +13,8 @@ class OrderModel(Base, SerializerMixin):
 
     customer_id = Column(UUID(as_uuid=True), ForeignKey("customer.id"), nullable=False)
     subtotal = Column(Float, nullable=False)
+    discount = Column(Float, nullable=True)
+    subtotal_after_discount = Column(Float, nullable=True)
     shipping_cost = Column(Float, nullable=False)
     order_number = Column(String, nullable=False)
     shipping_method = Column(Integer, ForeignKey("shipping_method.id"), nullable=False)

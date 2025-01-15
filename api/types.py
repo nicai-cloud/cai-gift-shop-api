@@ -98,6 +98,8 @@ class Order:
     id: str
     customer_id: str
     subtotal: float
+    discount: float
+    subtotal_after_discount: float
     shipping_cost: float
     order_number: str
     shipping_method: int

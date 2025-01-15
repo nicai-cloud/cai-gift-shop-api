@@ -1,4 +1,4 @@
-from falcon import HTTPError, HTTP_OK
+from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.types import PublishableKeyResponse
@@ -9,6 +9,7 @@ from features.order_feature import OrderFeature
 from features.order_item_feature import OrderItemFeature
 from features.preselection_feature import PreselectionFeature
 from features.inventory_feature import InventoryFeature
+from features.coupon_feature import CouponFeature
 from infrastructure.work_management import WorkManager
 from utils.config import get
 
@@ -23,6 +24,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         self.inventory_feature = InventoryFeature(work_manager)
         self.payment_method_feature = PaymentMethodFeature()
         self.email_feature = EmailFeature()
+        self.coupon_feature = CouponFeature(work_manager)
 
     @route.post("/calculate-subtotal", auth_exempt=True)
     async def calculate_subtotal(self, req, resp):
@@ -47,6 +49,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         order_items = request_body["order_items"]
         shipping_method = request_body["shipping_method"]
         payment_method_id = request_body["payment_method_id"]
+        coupon_code = request_body.get("coupon_code", None)
 
         first_name = customer_info["first_name"]
         last_name = customer_info["last_name"]
@@ -55,6 +58,17 @@ class CompleteOrderRequestHandler(RequestHandler):
         mobile = customer_info["mobile"]
         address = customer_info["address"]
 
+        # Check if the coupon code is valid
+        if coupon_code is None:
+            coupon = None
+        else:
+            coupon = await self.coupon_feature.get_coupon_by_code(coupon_code)
+            if coupon is None:
+                raise HTTPBadRequest(
+                    title="invalid coupon code",
+                    description="The provided coupon_code is invalid."
+                )
+
         # Check if there are enough stocks
         bag_quantities, item_quantities = await self.order_feature.calculate_order_quantities(order_items)
         stocks_available = await self.inventory_feature.check_stock_availability(bag_quantities, item_quantities)
@@ -62,7 +76,7 @@ class CompleteOrderRequestHandler(RequestHandler):
             raise HTTPError(status="400", description="Out of stock")
         
         # Calculate subtotal and make the payment
-        subtotal = await self.order_feature.calculate_subtotal(order_items)
+        subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items, coupon.discount_percentage if coupon else 0)
         shipping_cost = await self.order_feature.calculate_shipping_cost(shipping_method, subtotal)
         order_total = subtotal + shipping_cost
         await self.payment_method_feature.create_payment_intent(payment_method_id, order_total)
@@ -75,7 +89,15 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('!! created customer id:', customer_id)
 
         # Create an order against the customer
-        order_id, order_number = await self.order_feature.create_order(customer_id=customer_id, shipping_method=shipping_method, subtotal=subtotal, shipping_cost=shipping_cost)
+        order_id, order_number = await self.order_feature.create_order(
+            customer_id=customer_id,
+            subtotal=subtotal,
+            discount=(subtotal - subtotal_after_discount) if coupon else None,
+            subtotal_after_discount=subtotal_after_discount if coupon else None,
+            shipping_cost=shipping_cost,
+            shipping_method=shipping_method,
+            coupon_id=coupon.id if coupon else None
+        )
         print('!! created order id:', order_id)
 
         # Create each of the order items

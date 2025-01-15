@@ -7,6 +7,7 @@ from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
 from infrastructure.shipping_method_repo import ShippingMethodRepo
+from infrastructure.coupon_repo import CouponRepo
 from infrastructure.work_management import WorkManager
 from utils.generate_order_number import generate_order_number
 from utils.config import get
@@ -21,22 +22,34 @@ class OrderFeature:
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
         self.shipping_method_repo = work_manager.get(ShippingMethodRepo)
+        self.coupon_repo = work_manager.get(CouponRepo)
     
-    async def create_order(self, customer_id: UUID, shipping_method: int, subtotal: float, shipping_cost: float) -> tuple[UUID, str]:
+    async def create_order(self,
+        customer_id: UUID,
+        subtotal: float,
+        discount: float | None,
+        subtotal_after_discount: float | None,
+        shipping_cost: float,
+        shipping_method: int,
+        coupon_id: str | None
+    ) -> tuple[UUID, str]:
         try:
             order_number = generate_order_number()
             order = {
                 "customer_id": customer_id,
                 "subtotal": subtotal,
+                "discount": discount,
+                "subtotal_after_discount": subtotal_after_discount,
                 "shipping_cost": shipping_cost,
                 "order_number": order_number,
-                "shipping_method": shipping_method
+                "shipping_method": shipping_method,
+                "coupon_id": coupon_id
             }
             return await self.order_repo.create(order), order_number
         except Exception as e:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
 
-    async def calculate_subtotal(self, order_items: list[dict]) -> float:
+    async def calculate_subtotal(self, order_items: list[dict], discount_percentage: float = 0) -> tuple[float, float]:
         subtotal = 0
         for order_item in order_items:
             quantity = order_item["quantity"]
@@ -55,7 +68,7 @@ class OrderFeature:
                     item = await self.item_repo.get_by_id(item_id)
                     price += item.price
             subtotal += price * quantity
-        return subtotal
+        return (subtotal, subtotal * (1 - discount_percentage / 100))
 
     async def calculate_order_quantities(self, order_items: list[dict]) -> tuple[dict, dict]:
         bag_quantities = {}

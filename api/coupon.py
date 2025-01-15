@@ -21,7 +21,7 @@ class CouponRequestHandler(RequestHandler):
         code = req.params.get('code')
         coupon = await self.coupon_feature.get_coupon_by_code(code)
         if coupon is None or datetime.now(timezone.utc) > coupon.expiry_date or coupon.used:
-            resp.media = {"isValid": False, "discountPercentage": 0}
+            resp.media = {"couponCode": code, "isValid": False, "discountPercentage": 0}
         else:
-            resp.media = {"isValid": True, "discountPercentage": coupon.discount_percentage}
+            resp.media = {"couponCode": code, "isValid": True, "discountPercentage": coupon.discount_percentage}
         resp.status = HTTP_OK
