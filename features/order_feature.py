@@ -68,7 +68,7 @@ class OrderFeature:
                     item = await self.item_repo.get_by_id(item_id)
                     price += item.price
             subtotal += price * quantity
-        return (subtotal, subtotal * (1 - discount_percentage / 100))
+        return (subtotal, round(subtotal * (1 - discount_percentage / 100), 2))
 
     async def calculate_order_quantities(self, order_items: list[dict]) -> tuple[dict, dict]:
         bag_quantities = {}

@@ -77,6 +77,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         
         # Calculate subtotal and make the payment
         subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items, coupon.discount_percentage if coupon else 0)
+        discount = round(subtotal - subtotal_after_discount, 2)
         shipping_cost = await self.order_feature.calculate_shipping_cost(shipping_method, subtotal)
         order_total = subtotal_after_discount + shipping_cost
         await self.payment_method_feature.create_payment_intent(payment_method_id, order_total)
@@ -92,7 +93,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         order_id, order_number = await self.order_feature.create_order(
             customer_id=customer_id,
             subtotal=subtotal,
-            discount=(subtotal - subtotal_after_discount) if coupon else None,
+            discount=discount if coupon else None,
             subtotal_after_discount=subtotal_after_discount if coupon else None,
             shipping_cost=shipping_cost,
             shipping_method=shipping_method,
@@ -116,7 +117,6 @@ class CompleteOrderRequestHandler(RequestHandler):
             order_item_ids.append(order_item_id)
             print('!! created order item id:', order_item_id)
 
-        discount = subtotal - subtotal_after_discount
         order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, discount, shipping_cost, order_total)
 
         # Send the successful order email to customer and myself
