@@ -78,7 +78,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         # Calculate subtotal and make the payment
         subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items, coupon.discount_percentage if coupon else 0)
         shipping_cost = await self.order_feature.calculate_shipping_cost(shipping_method, subtotal)
-        order_total = subtotal + shipping_cost
+        order_total = subtotal_after_discount + shipping_cost
         await self.payment_method_feature.create_payment_intent(payment_method_id, order_total)
 
         # If the code reaches here, it means the payment is successful, then we update inventories
@@ -116,7 +116,8 @@ class CompleteOrderRequestHandler(RequestHandler):
             order_item_ids.append(order_item_id)
             print('!! created order item id:', order_item_id)
 
-        order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, shipping_cost, order_total)
+        discount = subtotal - subtotal_after_discount
+        order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, discount, shipping_cost, order_total)
 
         # Send the successful order email to customer and myself
         await self.email_feature.send_order_confirmation_email_to_customer(email, customer_info, order_info)

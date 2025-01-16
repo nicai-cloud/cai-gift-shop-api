@@ -33,6 +33,7 @@ class EmailFeature:
         email.dynamic_template_data = {
             "orderNumber": order_info["order_number"],
             "subtotal": order_info["subtotal"],
+            "discount": order_info["discount"],
             "shippingCost": order_info["shipping_cost"],
             "orderTotal": order_info["order_total"],
             "preselectionItems": order_info["ordered_items"]["preselection_items"],
