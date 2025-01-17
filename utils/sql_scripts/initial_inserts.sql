@@ -8,7 +8,7 @@ SELECT * FROM shipment;
 SELECT * FROM shipping_method;
 SELECT * FROM coupon;
 SELECT * FROM inventory ORDER BY id;
-SELECT * FROM inventory_transaction
+SELECT * FROM inventory_transaction;
 
 DROP TABLE order_item;
 DROP TABLE public.order;
