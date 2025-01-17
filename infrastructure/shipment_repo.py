@@ -1,5 +1,4 @@
 from uuid import UUID
-from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
 from sqlalchemy import and_, select
@@ -54,10 +53,9 @@ class ShipmentRepo(BaseRepository):
         except NoResultFound:
             raise ShipmentRepo.DoesNotExist
     
-    async def create(self, shipment: dict) -> UUID:
-        create_shipment_stmt = insert(ShipmentModel).values(shipment)
-        shipment_entry = await self.session.execute(create_shipment_stmt)
-        return shipment_entry.inserted_primary_key[0]
+    async def add(self, shipment: ShipmentModel):
+        self.session.add(shipment)
+        await self.session.flush()
 
 
 def construct_postgres_shipment_repo(transactable: PostgresTransactable) -> ShipmentRepo:

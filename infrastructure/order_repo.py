@@ -1,5 +1,4 @@
 from uuid import UUID
-from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
 from sqlalchemy import and_, select
@@ -19,10 +18,9 @@ class OrderRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
 
-    async def create(self, order: dict) -> UUID:
-        create_order_stmt = insert(OrderModel).values(order)
-        order_entry = await self.session.execute(create_order_stmt)
-        return order_entry.inserted_primary_key[0]
+    async def add(self, order: OrderModel):
+        self.session.add(order)
+        await self.session.flush()
 
     async def get_all(self):
         orders_query = select(

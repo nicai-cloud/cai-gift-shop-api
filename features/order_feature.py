@@ -2,6 +2,7 @@ import logging
 from uuid import UUID
 
 from api.types import Bag, Item, Order, ShippingMethod
+from models.order_model import OrderModel
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
@@ -35,17 +36,17 @@ class OrderFeature:
     ) -> tuple[UUID, str]:
         try:
             order_number = generate_order_number()
-            order = {
-                "customer_id": customer_id,
-                "subtotal": subtotal,
-                "discount": discount,
-                "subtotal_after_discount": subtotal_after_discount,
-                "shipping_cost": shipping_cost,
-                "order_number": order_number,
-                "shipping_method": shipping_method,
-                "coupon_id": coupon_id
-            }
-            return await self.order_repo.create(order), order_number
+            order = OrderModel()
+            order.customer_id = customer_id
+            order.subtotal = subtotal
+            order.discount = discount
+            order.subtotal_after_discount = subtotal_after_discount
+            order.shipping_cost = shipping_cost
+            order.order_number = order_number
+            order.shipping_method = shipping_method
+            order.coupon_id = coupon_id
+            await self.order_repo.add(order)
+            return order.id, order_number
         except Exception as e:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
 

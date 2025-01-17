@@ -3,6 +3,7 @@ from uuid import UUID
 from datetime import date
 
 from api.types import Customer, Order, Shipment
+from models.shipment_model import ShipmentModel
 from infrastructure.shipment_repo import ShipmentRepo
 from infrastructure.order_repo import OrderRepo
 from infrastructure.customer_repo import CustomerRepo
@@ -59,15 +60,15 @@ class ShipmentFeature:
         except ShipmentRepo.DoesNotExist:
             # This is a happy path, the shipment associated with the order_id is not supposed to exist yet
             try:
-                shipment_dict = {
-                    "volume": volume,
-                    "weight": weight,
-                    "delivery_fee": delivery_fee,
-                    "send_date": date.today(),
-                    "tracking_number": tracking_number,
-                    "order_id": order_id
-                }
-                return await self.shipment_repo.create(shipment_dict)
+                shipment = ShipmentModel()
+                shipment.volume = volume
+                shipment.weight = weight
+                shipment.delivery_fee = delivery_fee
+                shipment.send_date = date.today()
+                shipment.tracking_number = tracking_number
+                shipment.order_id = order_id
+                await self.shipment_repo.add(shipment)
+                return shipment.id
             except IntegrityError as e:
                 raise OrderNotFoundException(order_id)
             except Exception as e:

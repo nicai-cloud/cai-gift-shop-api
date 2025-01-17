@@ -2,6 +2,7 @@ import logging
 from uuid import UUID
 
 from api.types import Customer
+from models.customer_model import CustomerModel
 from infrastructure.customer_repo import CustomerRepo
 from infrastructure.work_management import WorkManager
 
@@ -14,14 +15,14 @@ class CustomerFeature:
     
     async def create_customer(self, first_name: str, last_name: str, email: str, mobile: str, address: str) -> UUID:
         try:
-            customer = {
-                "first_name": first_name,
-                "last_name": last_name,
-                "email": email,
-                "mobile": mobile,
-                "address": address
-            }
-            return await self.customer_repo.create(customer)
+            customer = CustomerModel()
+            customer.first_name = first_name
+            customer.last_name = last_name
+            customer.email = email
+            customer.mobile = mobile
+            customer.address = address
+            await self.customer_repo.add(customer)
+            return customer.id
         except Exception as e:
             LOG.exception("Unable to create customer due to unexpected error", exc_info=e)
 

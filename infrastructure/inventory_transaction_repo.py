@@ -1,5 +1,4 @@
 from uuid import UUID
-from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
 from sqlalchemy import and_, select
@@ -46,10 +45,9 @@ class InventoryTransactionRepo(BaseRepository):
         except NoResultFound:
             raise InventoryTransactionRepo.DoesNotExist
     
-    async def create(self, inventory_transaction: dict):
-        create_inventory_transaction_stmt = insert(InventoryTransactionModel).values(inventory_transaction)
-        inventory_transaction_entry = await self.session.execute(create_inventory_transaction_stmt)
-        return inventory_transaction_entry.inserted_primary_key[0]
+    async def add(self, inventory_transaction: InventoryTransactionModel):
+        self.session.add(inventory_transaction)
+        await self.session.flush()
 
 
 def construct_postgres_inventory_transaction_repo(transactable: PostgresTransactable) -> InventoryTransactionRepo:
