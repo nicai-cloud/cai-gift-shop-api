@@ -1,5 +1,7 @@
+from sqlalchemy import MetaData, Column, select
+from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import Query, declarative_base
-from sqlalchemy import MetaData, Column, DateTime, select
+
 
 class NotDeletedQuery(Query):
     def __init__(self, entities, session=None):
@@ -8,7 +10,7 @@ class NotDeletedQuery(Query):
 
 
 class BaseModel:
-    deleted_at = Column(DateTime(timezone=True), nullable=True)
+    deleted_at = Column(TIMESTAMP(timezone=True), nullable=True)
     query_class = NotDeletedQuery
 
     def to_dict(self):

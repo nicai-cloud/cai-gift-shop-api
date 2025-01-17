@@ -1,6 +1,6 @@
 import uuid
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, CheckConstraint, func
+from sqlalchemy import Column, ForeignKey, Integer, CheckConstraint, func
+from sqlalchemy.dialects.postgresql import ARRAY, UUID, TIMESTAMP
 from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
@@ -18,8 +18,8 @@ class OrderItemModel(Base, SerializerMixin):
 
     order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Adding the CheckConstraint
     __table_args__ = (

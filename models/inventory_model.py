@@ -1,4 +1,5 @@
-from sqlalchemy import Column, DateTime, Integer, String, func
+from sqlalchemy import Column, Integer, String, func
+from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
@@ -13,5 +14,5 @@ class InventoryModel(Base, SerializerMixin):
     current_stock = Column(Integer, nullable=False)
     low_stock_threshold = Column(Integer, nullable=True)
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())

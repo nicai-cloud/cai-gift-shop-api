@@ -1,5 +1,5 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Boolean, Column, Integer, String, func
+from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
 from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
@@ -12,8 +12,8 @@ class CouponModel(Base, SerializerMixin):
     code = Column(String, nullable=False)
     discount_percentage = Column(Integer, nullable=False)
     description = Column(String, nullable=False)
-    expiry_date = Column(DateTime(timezone=True), server_default=func.now())
+    expiry_date = Column(TIMESTAMP(timezone=True), server_default=func.now())
     used = Column(Boolean, nullable=False, server_default='false')
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
