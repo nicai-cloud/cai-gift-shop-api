@@ -1,6 +1,7 @@
 import logging
 from uuid import UUID
 
+from api.input_types import OrderItemInput
 from api.types import Bag, Item, Order, ShippingMethod
 from models.order_model import OrderModel
 from infrastructure.order_repo import OrderRepo
@@ -71,20 +72,20 @@ class OrderFeature:
             subtotal += price * quantity
         return (subtotal, round(subtotal * (1 - discount_percentage / 100), 2))
 
-    async def calculate_order_quantities(self, order_items: list[dict]) -> tuple[dict, dict]:
+    async def calculate_order_quantities(self, order_items: list[OrderItemInput]) -> tuple[dict, dict]:
         bag_quantities = {}
         item_quantities = {}
         for order_item in order_items:
-            quantity = order_item["quantity"]
+            quantity = order_item.quantity
 
-            bag_id = order_item.get("bag_id", None)
-            item_ids = order_item.get("item_ids", None)
+            bag_id = order_item.bag_id
+            item_ids = order_item.item_ids
             if bag_id and item_ids:
                 bag_quantities[bag_id] = bag_quantities.get(bag_id, 0) + quantity
                 for item_id in item_ids:
                     item_quantities[item_id] = item_quantities.get(item_id, 0) + quantity
 
-            preselection_id = order_item.get("preselection_id", None)
+            preselection_id = order_item.preselection_id
             if preselection_id:
                 preselection = await self.preselection_repo.get_by_id(preselection_id)
                 bag_quantities[preselection.bag_id] = bag_quantities.get(preselection.bag_id, 0) + quantity

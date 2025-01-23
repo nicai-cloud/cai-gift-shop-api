@@ -1,6 +1,7 @@
 from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 
 from api.base import RequestHandler, route
+from api.input_types import CompleteOrderInput
 from api.types import PublishableKeyResponse
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
@@ -42,21 +43,24 @@ class CompleteOrderRequestHandler(RequestHandler):
 
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
-        request_body = await req.get_media()
-        print('request_body', request_body)
+        raw_request_body = await req.get_media()
+        print('request_body', raw_request_body)
 
-        customer_info = request_body["customer_info"]
-        order_items = request_body["order_items"]
-        shipping_method = request_body["shipping_method"]
-        payment_method_id = request_body["payment_method_id"]
-        coupon_code = request_body.get("coupon_code", None)
+        request_body = CompleteOrderInput.Schema().load(raw_request_body)
+        print("!!!", request_body)
 
-        first_name = customer_info["first_name"]
-        last_name = customer_info["last_name"]
+        customer_info = request_body.customer_info
+        order_items = request_body.order_items
+        shipping_method = request_body.shipping_method
+        payment_method_id = request_body.payment_method_id
+        coupon_code = request_body.coupon_code
+
+        first_name = customer_info.first_name
+        last_name = customer_info.last_name
         # TODO: sanitisation on email and mobile
-        email = customer_info["email"]
-        mobile = customer_info["mobile"]
-        address = customer_info["address"]
+        email = customer_info.email
+        mobile = customer_info.mobile
+        address = customer_info.address
 
         # Check if the coupon code is valid
         if coupon_code is None:
@@ -108,10 +112,10 @@ class CompleteOrderRequestHandler(RequestHandler):
         # Create each of the order items
         order_item_ids = []
         for order_item in order_items:
-            quantity = order_item["quantity"]
-            preselection_id = order_item.get("preselection_id", None)
-            bag_id = order_item.get("bag_id", None)
-            item_ids = order_item.get("item_ids", None)
+            quantity = order_item.quantity
+            preselection_id = order_item.preselection_id
+            bag_id = order_item.bag_id
+            item_ids = order_item.item_ids
 
             order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids, order_id)
             order_item_ids.append(order_item_id)
