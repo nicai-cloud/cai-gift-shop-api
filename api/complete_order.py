@@ -14,6 +14,8 @@ from features.coupon_feature import CouponFeature
 from infrastructure.work_management import WorkManager
 from utils.config import get
 
+import marshmallow
+
 
 class CompleteOrderRequestHandler(RequestHandler):
     def __init__(self, work_manager: WorkManager):
@@ -46,7 +48,10 @@ class CompleteOrderRequestHandler(RequestHandler):
         raw_request_body = await req.get_media()
         print('request_body', raw_request_body)
 
-        request_body = CompleteOrderInput.Schema().load(raw_request_body)
+        try:
+            request_body = CompleteOrderInput.Schema().load(raw_request_body)
+        except marshmallow.exceptions.ValidationError as e:
+            raise HTTPError(status="400", description=str(e))
 
         customer_info = request_body.customer_info
         order_items = request_body.order_items
