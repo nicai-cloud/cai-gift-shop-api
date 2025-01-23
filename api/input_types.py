@@ -1,7 +1,7 @@
 from typing import ClassVar
 
 from dataclasses import field
-from marshmallow import Schema
+from marshmallow import Schema, validate
 from marshmallow_dataclass import dataclass
 
 
@@ -13,7 +13,7 @@ class APISchema(Schema):
 class CustomerInfoInput:
     first_name: str = field(metadata={"data_key": "firstName"})
     last_name: str = field(metadata={"data_key": "lastName"})
-    email: str = field(metadata={"data_key": "email"})
+    email: str = field(metadata={"data_key": "email", "validate": validate.Email(error="Invalid email address")})
     mobile: str = field(metadata={"data_key": "mobile"})
     address: str = field(metadata={"data_key": "address"})
 
