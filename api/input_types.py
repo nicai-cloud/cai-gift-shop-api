@@ -1,5 +1,3 @@
-from typing import ClassVar
-
 from dataclasses import field
 from marshmallow import Schema, validate
 from marshmallow_dataclass import dataclass
@@ -33,5 +31,3 @@ class CompleteOrderInput:
     shipping_method: int = field(metadata={"data_key": "shippingMethod"})
     coupon_code: str | None = field(metadata={"data_key": "couponCode"})
     payment_method_id: str = field(metadata={"data_key": "paymentMethodId"})
-
-    Schema: ClassVar[type["Schema"]] = Schema
