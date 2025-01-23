@@ -1,8 +1,10 @@
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTPBadRequest, HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
+from api.request_payload_types import RefillBagRequestPayload, RefillItemRequestPayload
 from features.inventory_feature import InventoryFeature
 from infrastructure.work_management import WorkManager
+import marshmallow
 
 
 class InventoryRequestHandler(RequestHandler):
@@ -35,16 +37,28 @@ class InventoryRequestHandler(RequestHandler):
 
     @route.post("/refill-bags", auth_exempt=True)
     async def refill_bags(self, req, resp):
-        request_body = await req.get_media()
-        bag_id = request_body["bag_id"]
-        quantity = request_body["quantity"]
+        raw_request_body = await req.get_media()
+
+        try:
+            request_body = RefillBagRequestPayload.Schema().load(raw_request_body)
+        except marshmallow.exceptions.ValidationError as e:
+            raise HTTPBadRequest(title="Invalid request payload", description=str(e))
+
+        bag_id = request_body.bag_id
+        quantity = request_body.quantity
         await self.inventory_feature.refill_bags(bag_id, quantity)
         resp.status = HTTP_OK
 
     @route.post("/refill-items", auth_exempt=True)
     async def refill_items(self, req, resp):
-        request_body = await req.get_media()
-        item_id = request_body["item_id"]
-        quantity = request_body["quantity"]
+        raw_request_body = await req.get_media()
+
+        try:
+            request_body = RefillItemRequestPayload.Schema().load(raw_request_body)
+        except marshmallow.exceptions.ValidationError as e:
+            raise HTTPBadRequest(title="Invalid request payload", description=str(e))
+
+        item_id = request_body.item_id
+        quantity = request_body.quantity
         await self.inventory_feature.refill_items(item_id, quantity)
         resp.status = HTTP_OK

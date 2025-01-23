@@ -2,9 +2,12 @@ from uuid import UUID
 from falcon import HTTPBadRequest, HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
+from api.request_payload_types import CreateShipmentRequestPayload
 from features.shipment_feature import OrderNotFoundException, ShipmentFeature
 from features.email_feature import EmailFeature
 from infrastructure.work_management import WorkManager
+
+import marshmallow
 
 
 class ShipmentRequestHandler(RequestHandler):
@@ -30,13 +33,18 @@ class ShipmentRequestHandler(RequestHandler):
 
     @route.post("/", auth_exempt=True)
     async def create_shipment(self, req, resp):
-        request_body = await req.get_media()
+        raw_request_body = await req.get_media()
 
-        volume = request_body.get("volume", None)
-        weight = request_body["weight"]
-        delivery_fee = request_body["delivery_fee"]
-        tracking_number = request_body["tracking_number"]
-        order_id = request_body["order_id"]
+        try:
+            request_body = CreateShipmentRequestPayload.Schema().load(raw_request_body)
+        except marshmallow.exceptions.ValidationError as e:
+            raise HTTPBadRequest(title="Invalid request payload", description=str(e))
+
+        volume = request_body.volume
+        weight = request_body.weight
+        delivery_fee = request_body.delivery_fee
+        tracking_number = request_body.tracking_number
+        order_id = request_body.order_id
 
         try:
             # TODO: maybe change check on order_number instead of order_id?
@@ -44,7 +52,7 @@ class ShipmentRequestHandler(RequestHandler):
         except OrderNotFoundException:
             raise HTTPBadRequest(
                 title="order id not found",
-                description="Unable to create shipment for an order whose order_id that is not found."
+                description="Unable to create shipment for an order whose order_id is not found."
             )
 
         if shipment_id is None:

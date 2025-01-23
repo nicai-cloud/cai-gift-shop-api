@@ -1,7 +1,7 @@
 from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 
 from api.base import RequestHandler, route
-from api.input_types import CompleteOrderInput
+from api.request_payload_types import CompleteOrderRequestPayload, OrderItemsRequestPayload
 from api.types import PublishableKeyResponse
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
@@ -31,10 +31,15 @@ class CompleteOrderRequestHandler(RequestHandler):
 
     @route.post("/calculate-subtotal", auth_exempt=True)
     async def calculate_subtotal(self, req, resp):
-        request_body = await req.get_media()
-        print('request_body', request_body)
+        raw_request_body = await req.get_media()
+        print('request_body', raw_request_body)
 
-        order_items = request_body["order_items"]
+        try:
+            request_body = OrderItemsRequestPayload.Schema().load(raw_request_body)
+        except marshmallow.exceptions.ValidationError as e:
+            raise HTTPBadRequest(title="Invalid request payload", description=str(e))
+
+        order_items = request_body.order_items
         resp.media = await self.order_feature.calculate_subtotal(order_items=order_items)
     
     @route.get("/publishable-key", auth_exempt=True)
@@ -49,9 +54,9 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('request_body', raw_request_body)
 
         try:
-            request_body = CompleteOrderInput.Schema().load(raw_request_body)
+            request_body = CompleteOrderRequestPayload.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
-            raise HTTPError(status="400", description=str(e))
+            raise HTTPBadRequest(title="Invalid request payload", description=str(e))
 
         customer_info = request_body.customer_info
         order_items = request_body.order_items

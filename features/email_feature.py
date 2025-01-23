@@ -6,7 +6,7 @@ from uuid import UUID
 import sendgrid
 from sendgrid.helpers.mail import Mail
 from api.types import Customer
-from api.input_types import CustomerInfoInput
+from api.request_payload_types import CustomerInfoRequestPayload
 
 from utils.config import get
 
@@ -22,7 +22,7 @@ class EmailFeature:
         super().__init__()
     
     # Use SendGrid, which has a limit of 100 email per day, to send order confirmation email to customer
-    async def send_order_confirmation_email_to_customer(self, customer_info: CustomerInfoInput, order_info: dict):
+    async def send_order_confirmation_email_to_customer(self, customer_info: CustomerInfoRequestPayload, order_info: dict):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),

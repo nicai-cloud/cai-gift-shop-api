@@ -1,7 +1,7 @@
 import logging
 from uuid import UUID
 
-from api.input_types import OrderItemInput
+from api.request_payload_types import OrderItemRequetsPayload
 from api.types import Bag, Item, Order, ShippingMethod
 from models.order_model import OrderModel
 from infrastructure.order_repo import OrderRepo
@@ -73,7 +73,7 @@ class OrderFeature:
             subtotal += price * quantity
         return (subtotal, round(subtotal * (1 - discount_percentage / 100), 2))
 
-    async def calculate_order_quantities(self, order_items: list[OrderItemInput]) -> tuple[dict, dict]:
+    async def calculate_order_quantities(self, order_items: list[OrderItemRequetsPayload]) -> tuple[dict, dict]:
         bag_quantities = {}
         item_quantities = {}
         for order_item in order_items:
