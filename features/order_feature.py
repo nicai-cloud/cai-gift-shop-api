@@ -54,18 +54,19 @@ class OrderFeature:
     async def calculate_subtotal(self, order_items: list[dict], discount_percentage: float = 0) -> tuple[float, float]:
         subtotal = 0
         for order_item in order_items:
-            quantity = order_item["quantity"]
+            quantity = order_item.quantity
             price = 0
-            if "preselection_id" in order_item:
-                preselection_id = order_item["preselection_id"]
+            preselection_id = order_item.preselection_id
+            bag_id = order_item.bag_id
+            item_ids = order_item.item_ids
+
+            if preselection_id:
                 preselection = await self.preselection_repo.get_by_id(preselection_id)
                 price = preselection.price
-            elif "bag_id" in order_item and "item_ids" in order_item:
-                bag_id = order_item["bag_id"]
+            if bag_id and item_ids:
                 bag = await self.bag_repo.get_by_id(bag_id)
                 price = bag.price
 
-                item_ids = order_item["item_ids"]
                 for item_id in item_ids:
                     item = await self.item_repo.get_by_id(item_id)
                     price += item.price
@@ -153,10 +154,10 @@ class OrderFeature:
         ordered_custom_items = []
         preselection_index, custom_index = 1, 1
         for order_item in order_items:
-            quantity = order_item["quantity"]
-            preselection_id = order_item.get("preselection_id", None)
-            bag_id = order_item.get("bag_id", None)
-            item_ids = order_item.get("item_ids", None)
+            quantity = order_item.quantity
+            preselection_id = order_item.preselection_id
+            bag_id = order_item.bag_id
+            item_ids = order_item.item_ids
 
             if preselection_id:
                 preselection_item = await self.generate_preselection_item_payload(preselection_index, quantity, preselection_id)

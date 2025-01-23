@@ -47,7 +47,6 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('request_body', raw_request_body)
 
         request_body = CompleteOrderInput.Schema().load(raw_request_body)
-        print("!!!", request_body)
 
         customer_info = request_body.customer_info
         order_items = request_body.order_items
@@ -124,7 +123,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, discount, shipping_cost, order_total)
 
         # Send the successful order email to customer and myself
-        await self.email_feature.send_order_confirmation_email_to_customer(email, customer_info, order_info)
+        await self.email_feature.send_order_confirmation_email_to_customer(customer_info, order_info)
         await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
         resp.media = {"order_number": order_number}
