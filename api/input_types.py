@@ -31,7 +31,7 @@ class CompleteOrderInput:
     customer_info: CustomerInfoInput = field(metadata={"data_key": "customerInfo"})
     order_items: list[OrderItemInput] = field(metadata={"data_key": "orderItems"})
     shipping_method: int = field(metadata={"data_key": "shippingMethod"})
-    coupon_code: str = field(metadata={"data_key": "couponCode"})
+    coupon_code: str | None = field(metadata={"data_key": "couponCode"})
     payment_method_id: str = field(metadata={"data_key": "paymentMethodId"})
 
     Schema: ClassVar[type["Schema"]] = Schema

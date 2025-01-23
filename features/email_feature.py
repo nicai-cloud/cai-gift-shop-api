@@ -26,7 +26,7 @@ class EmailFeature:
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
-            to_emails=customer_info.to_email
+            to_emails=customer_info.email
         )
 
         email.template_id = get("ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
