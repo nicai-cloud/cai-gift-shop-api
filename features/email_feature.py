@@ -31,7 +31,7 @@ class EmailFeature:
 
         email.template_id = get("ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
 
-        email.dynamic_template_data = {
+        template_data = {
             "orderNumber": order_info["order_number"],
             "subtotal": order_info["subtotal"],
             "shippingCost": order_info["shipping_cost"],
@@ -46,9 +46,11 @@ class EmailFeature:
 
         # Only append subtotalAfterDiscount if there is a discount
         if order_info["subtotal_after_discount"] < order_info["subtotal"]:
-            email.dynamic_template_data.update({
+            template_data.update({
                 "subtotalAfterDiscount": order_info["subtotal_after_discount"]
             })
+
+        email.dynamic_template_data = template_data
 
         # Send the email
         try:
