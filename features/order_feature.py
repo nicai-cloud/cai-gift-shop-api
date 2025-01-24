@@ -71,7 +71,7 @@ class OrderFeature:
                     item = await self.item_repo.get_by_id(item_id)
                     price += item.price
             subtotal += price * quantity
-        return (subtotal, round(subtotal * (1 - discount_percentage / 100), 2))
+        return (round(subtotal, 2), round(subtotal * (1 - discount_percentage / 100), 2))
 
     async def calculate_order_quantities(self, order_items: list[OrderItemRequetsPayload]) -> tuple[dict, dict]:
         bag_quantities = {}
@@ -99,7 +99,7 @@ class OrderFeature:
         free_shipping_threshold = int(get("FREE_SHIPPING_THRESHOLD"))
         shipping_method_obj = await self.shipping_method_repo.get_by_id(shipping_method_id)
         shipping_method = ShippingMethod(**shipping_method_obj)
-        return shipping_method.discount_fee if subtotal >= free_shipping_threshold else shipping_method.fee
+        return round(shipping_method.discount_fee, 2) if subtotal >= free_shipping_threshold else round(shipping_method.fee, 2)
 
     async def get_orders(self) -> list[Order]:
         try:

@@ -92,7 +92,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items, coupon.discount_percentage if coupon else 0)
         discount = round(subtotal - subtotal_after_discount, 2)
         shipping_cost = await self.order_feature.calculate_shipping_cost(shipping_method, subtotal)
-        order_total = subtotal_after_discount + shipping_cost
+        order_total = round(subtotal_after_discount + shipping_cost, 2)
         await self.payment_method_feature.create_payment_intent(payment_method_id, order_total)
 
         # If the code reaches here, it means the payment is successful, then we update inventories
