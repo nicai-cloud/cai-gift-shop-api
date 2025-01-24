@@ -130,7 +130,7 @@ class CompleteOrderRequestHandler(RequestHandler):
             order_item_ids.append(order_item_id)
             print('!! created order item id:', order_item_id)
 
-        order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, discount, shipping_cost, order_total)
+        order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, subtotal_after_discount, shipping_cost, order_total)
 
         # Send the successful order email to customer and myself
         await self.email_feature.send_order_confirmation_email_to_customer(customer_info, order_info)

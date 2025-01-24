@@ -149,7 +149,7 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to get custom item due to unexpected error", exc_info=e)
 
-    async def generate_order_info(self, order_number: str, order_items: dict,  subtotal: float, discount: float, shipping_cost: float, order_total: float) -> dict:
+    async def generate_order_info(self, order_number: str, order_items: dict,  subtotal: float, subtotal_after_discount: float, shipping_cost: float, order_total: float) -> dict:
         ordered_preselection_items = []
         ordered_custom_items = []
         preselection_index, custom_index = 1, 1
@@ -171,7 +171,7 @@ class OrderFeature:
         order_info = {
             "order_number": order_number,
             "subtotal": subtotal,
-            "discount": discount,
+            "subtotal_after_discount": subtotal_after_discount,
             "shipping_cost": shipping_cost,
             "order_total": order_total,
             "ordered_items": {

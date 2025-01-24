@@ -34,7 +34,6 @@ class EmailFeature:
         email.dynamic_template_data = {
             "orderNumber": order_info["order_number"],
             "subtotal": order_info["subtotal"],
-            "discount": order_info["discount"],
             "shippingCost": order_info["shipping_cost"],
             "orderTotal": order_info["order_total"],
             "preselectionItems": order_info["ordered_items"]["preselection_items"],
@@ -44,6 +43,12 @@ class EmailFeature:
             "mobile": customer_info.mobile,
             "email": customer_info.email
         }
+
+        # Only append subtotalAfterDiscount if there is a discount
+        if order_info["subtotal_after_discount"] < order_info["subtotal"]:
+            email.dynamic_template_data.update({
+                "subtotalAfterDiscount": order_info["subtotal_after_discount"]
+            })
 
         # Send the email
         try:
