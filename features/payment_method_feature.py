@@ -1,6 +1,7 @@
 from falcon import HTTPError
 import logging
 import stripe
+from decimal import Decimal
 from utils.config import get
 
 LOG = logging.getLogger(__name__)
@@ -12,7 +13,7 @@ class PaymentMethodFeature:
     def __init__(self):
         super().__init__()
     
-    async def create_payment_intent(self, payment_method_id: str, amount_in_dollars: float):
+    async def create_payment_intent(self, payment_method_id: str, amount_in_dollars: Decimal):
         try:
             # Create and confirm a PaymentIntent
             payment_intent = stripe.PaymentIntent.create(

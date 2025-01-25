@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String, func
+from sqlalchemy import Column, ForeignKey, Integer, Numeric, String, func
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 from sqlalchemy_serializer import SerializerMixin
 
@@ -14,7 +14,7 @@ class PreselectionModel(Base, SerializerMixin):
     name = Column(String, nullable=False, index=True)
     gender = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    price = Column(Float, nullable=False)
+    price = Column(Numeric(10, 2), nullable=False)
 
     bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
     item_ids = Column(ARRAY(Integer), nullable=False)

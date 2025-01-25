@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, Float, ForeignKey, String, func
+from sqlalchemy import Column, Float, ForeignKey, Numeric, String, func
 from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
 from sqlalchemy_serializer import SerializerMixin
 
@@ -12,7 +12,7 @@ class ShipmentModel(Base, SerializerMixin):
     id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False, default=uuid.uuid4)
     volume = Column(Float, nullable=True)
     weight = Column(Float, nullable=False)
-    delivery_fee = Column(Float, nullable=False)
+    delivery_fee = Column(Numeric(10, 2), nullable=False)
     send_date = Column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
     receive_date = Column(TIMESTAMP(timezone=True), nullable=True)
     tracking_number = Column(String, nullable=False)

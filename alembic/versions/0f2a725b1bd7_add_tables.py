@@ -1,8 +1,8 @@
 """Add tables
 
-Revision ID: def8b2b8a08c
+Revision ID: 0f2a725b1bd7
 Revises: 
-Create Date: 2025-01-24 07:55:29.905776
+Create Date: 2025-01-25 16:52:50.281220
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'def8b2b8a08c'
+revision: str = '0f2a725b1bd7'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('video_url', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
-    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('price', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -79,7 +79,7 @@ def upgrade() -> None:
     sa.Column('product', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
-    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('price', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -89,8 +89,8 @@ def upgrade() -> None:
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('fee', sa.Float(), nullable=False),
-    sa.Column('discount_fee', sa.Float(), nullable=False),
+    sa.Column('fee', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('discount_fee', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -111,10 +111,10 @@ def upgrade() -> None:
     op.create_table('order',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('customer_id', postgresql.UUID(as_uuid=True), nullable=False),
-    sa.Column('subtotal', sa.Float(), nullable=False),
-    sa.Column('discount', sa.Float(), nullable=True),
-    sa.Column('subtotal_after_discount', sa.Float(), nullable=True),
-    sa.Column('shipping_cost', sa.Float(), nullable=False),
+    sa.Column('subtotal', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('discount', sa.Numeric(precision=10, scale=2), nullable=True),
+    sa.Column('subtotal_after_discount', sa.Numeric(precision=10, scale=2), nullable=True),
+    sa.Column('shipping_cost', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('order_number', sa.String(), nullable=False),
     sa.Column('shipping_method', sa.Integer(), nullable=False),
     sa.Column('coupon_id', postgresql.UUID(as_uuid=True), nullable=True),
@@ -136,7 +136,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('gender', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
-    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('price', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('bag_id', sa.Integer(), nullable=False),
     sa.Column('item_ids', postgresql.ARRAY(sa.Integer()), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
@@ -168,7 +168,7 @@ def upgrade() -> None:
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('volume', sa.Float(), nullable=True),
     sa.Column('weight', sa.Float(), nullable=False),
-    sa.Column('delivery_fee', sa.Float(), nullable=False),
+    sa.Column('delivery_fee', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('send_date', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('receive_date', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.Column('tracking_number', sa.String(), nullable=False),

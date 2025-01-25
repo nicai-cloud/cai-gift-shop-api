@@ -7,7 +7,7 @@ import sendgrid
 from sendgrid.helpers.mail import Mail
 from api.types import Customer
 from api.request_payload_types import CustomerInfoRequestPayload
-from babel.numbers import format_number
+from utils.format_number import format_number
 
 from utils.config import get
 
@@ -34,9 +34,9 @@ class EmailFeature:
 
         template_data = {
             "orderNumber": order_info["order_number"],
-            "subtotal": format_number(order_info["subtotal"], locale='en_AU'),
-            "shippingCost": format_number(order_info["shipping_cost"], locale='en_AU'),
-            "orderTotal": format_number(order_info["order_total"], locale='en_AU'),
+            "subtotal": f'${format_number(order_info["subtotal"])}',
+            "shippingCost": "Free" if order_info["shipping_cost"] == 0 else f'${format_number(order_info["shipping_cost"])}',
+            "orderTotal": f'${format_number(order_info["order_total"])}',
             "preselectionItems": order_info["ordered_items"]["preselection_items"],
             "customItems": order_info["ordered_items"]["custom_items"],
             "firstName": customer_info.first_name,
@@ -48,7 +48,7 @@ class EmailFeature:
         # Only append subtotalAfterDiscount if there is a discount
         if order_info["subtotal_after_discount"] < order_info["subtotal"]:
             template_data.update({
-                "subtotalAfterDiscount": format_number(order_info["subtotal_after_discount"], locale='en_AU')
+                "subtotalAfterDiscount": f'${format_number(order_info["subtotal_after_discount"])}'
             })
 
         email.dynamic_template_data = template_data

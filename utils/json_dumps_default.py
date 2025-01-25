@@ -2,6 +2,7 @@ import dataclasses
 import datetime
 import enum
 import uuid
+from decimal import Decimal
 from utils.camelize import camelize
 
 
@@ -14,5 +15,7 @@ def json_dumps_default(o):
         return str(o)
     elif isinstance(o, enum.Enum):
         return o.value
+    elif isinstance(o, Decimal):
+        return f"{o:.2f}"
 
     raise TypeError("Object of type %s is not JSON serializable" % type(o))

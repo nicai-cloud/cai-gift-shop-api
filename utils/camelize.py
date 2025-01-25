@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 def camelize(data: dict | list):
     if isinstance(data, list):
         new_data = []
@@ -5,6 +7,9 @@ def camelize(data: dict | list):
         for v in data:
             if isinstance(v, dict | list):
                 v = camelize(v)
+
+            if isinstance(v, Decimal):
+                v = f"{v:.2f}"
 
             new_data.append(v)
     else:
@@ -16,6 +21,9 @@ def camelize(data: dict | list):
 
             if isinstance(v, dict | list):
                 v = camelize(v)
+
+            if isinstance(v, Decimal):
+                v = f"{v:.2f}"
 
             new_data[k] = v
 

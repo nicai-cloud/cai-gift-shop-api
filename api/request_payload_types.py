@@ -1,4 +1,5 @@
 from dataclasses import field
+from decimal import Decimal
 from marshmallow import Schema, validate
 from marshmallow_dataclass import dataclass
 
@@ -11,14 +12,14 @@ class APISchema(Schema):
 class CustomerInfoRequestPayload:
     first_name: str = field(metadata={"data_key": "firstName"})
     last_name: str = field(metadata={"data_key": "lastName"})
-    email: str = field(metadata={"data_key": "email", "validate": validate.Email(error="Invalid email address")})
-    mobile: str = field(metadata={"data_key": "mobile"})
-    address: str = field(metadata={"data_key": "address"})
+    email: str = field(metadata={"validate": validate.Email(error="Invalid email address")})
+    mobile: str
+    address: str
 
 
 @dataclass(base_schema=APISchema)
 class OrderItemRequetsPayload:
-    quantity: int = field(metadata={"data_key": "quantity"})
+    quantity: int
     preselection_id: int | None = field(metadata={"data_key": "preselectionId"})
     bag_id: int | None = field(metadata={"data_key": "bagId"})
     item_ids: list[int] | None = field(metadata={"data_key": "itemIds"})
@@ -41,19 +42,19 @@ class OrderItemsRequestPayload:
 @dataclass(base_schema=APISchema)
 class RefillBagRequestPayload:
     bag_id: int = field(metadata={"data_key": "bagId"})
-    quantity: int = field(metadata={"data_key": "quantity"})
+    quantity: int
 
 
 @dataclass(base_schema=APISchema)
 class RefillItemRequestPayload:
     item_id: int = field(metadata={"data_key": "itemId"})
-    quantity: int = field(metadata={"data_key": "quantity"})
+    quantity: int
 
 
 @dataclass(base_schema=APISchema)
 class CreateShipmentRequestPayload:
-    volume: float | None = field(metadata={"data_key": "volume"})
-    weight: float = field(metadata={"data_key": "weight"})
-    delivery_fee: float = field(metadata={"data_key": "deliveryFee"})
+    volume: float | None
+    weight: float
+    delivery_fee: Decimal = field(metadata={"data_key": "deliveryFee"})
     tracking_number: str = field(metadata={"data_key": "trackingNumber"})
     order_id: str = field(metadata={"data_key": "orderId"})

@@ -40,7 +40,11 @@ class CompleteOrderRequestHandler(RequestHandler):
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
 
         order_items = request_body.order_items
-        resp.media = await self.order_feature.calculate_subtotal(order_items=order_items)
+        subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items=order_items)
+        resp.media = {
+            "subtotal": subtotal,
+            "subtotalAfterDiscount": subtotal_after_discount
+        }
     
     @route.get("/publishable-key", auth_exempt=True)
     async def get_publishable_key(self, req, resp):

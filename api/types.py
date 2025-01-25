@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import date
+from decimal import Decimal
 
 
 @dataclass
@@ -10,7 +11,7 @@ class Preselection:
     name: str
     gender: str
     description: str
-    price: float
+    price: Decimal
     bag_id: int
     item_ids: list[int]
 
@@ -22,7 +23,7 @@ class Bag:
     video_url: str
     name: str
     description: str
-    price: float
+    price: Decimal
 
 
 @dataclass
@@ -33,7 +34,7 @@ class Item:
     product: str
     name: str
     description: str
-    price: float
+    price: Decimal
 
 
 @dataclass
@@ -50,7 +51,7 @@ class Shipment:
     id: str
     volume: float | None
     weight: float
-    delivery_fee: float
+    delivery_fee: Decimal
     send_date: date
     receive_date: date | None
     tracking_number: str
@@ -61,8 +62,8 @@ class Shipment:
 class ShippingMethod:
     id: int
     name: str
-    fee: float
-    discount_fee: float
+    fee: Decimal
+    discount_fee: Decimal
 
 
 @dataclass
@@ -97,10 +98,10 @@ class Customer:
 class Order:
     id: str
     customer_id: str
-    subtotal: float
-    discount: float
-    subtotal_after_discount: float
-    shipping_cost: float
+    subtotal: Decimal
+    discount: Decimal
+    subtotal_after_discount: Decimal
+    shipping_cost: Decimal
     order_number: str
     shipping_method: int
     coupon_id: str | None

@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 from uuid import UUID
 
 from api.request_payload_types import OrderItemRequetsPayload
@@ -13,6 +14,7 @@ from infrastructure.coupon_repo import CouponRepo
 from infrastructure.work_management import WorkManager
 from utils.generate_order_number import generate_order_number
 from utils.config import get
+from utils.format_number import format_number
 
 LOG = logging.getLogger(__name__)
 
@@ -28,10 +30,10 @@ class OrderFeature:
     
     async def create_order(self,
         customer_id: UUID,
-        subtotal: float,
-        discount: float | None,
-        subtotal_after_discount: float | None,
-        shipping_cost: float,
+        subtotal: Decimal,
+        discount: Decimal | None,
+        subtotal_after_discount: Decimal | None,
+        shipping_cost: Decimal,
         shipping_method: int,
         coupon_id: str | None
     ) -> tuple[UUID, str]:
@@ -51,27 +53,20 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to create order due to unexpected error", exc_info=e)
 
-    async def calculate_subtotal(self, order_items: list[dict], discount_percentage: float = 0) -> tuple[float, float]:
-        subtotal = 0
-        for order_item in order_items:
-            quantity = order_item.quantity
-            price = 0
-            preselection_id = order_item.preselection_id
-            bag_id = order_item.bag_id
-            item_ids = order_item.item_ids
-
-            if preselection_id:
-                preselection = await self.preselection_repo.get_by_id(preselection_id)
+    async def calculate_subtotal(self, order_items: list[dict], discount_percentage: int = 0) -> tuple[Decimal, Decimal]:
+        subtotal = Decimal(0)
+        for order_item in order_items:            
+            if order_item.preselection_id:
+                preselection = await self.preselection_repo.get_by_id(order_item.preselection_id)
                 price = preselection.price
-            if bag_id and item_ids:
-                bag = await self.bag_repo.get_by_id(bag_id)
+            else:
+                bag = await self.bag_repo.get_by_id(order_item.bag_id)
                 price = bag.price
-
-                for item_id in item_ids:
+                for item_id in order_item.item_ids:
                     item = await self.item_repo.get_by_id(item_id)
                     price += item.price
-            subtotal += price * quantity
-        return (round(subtotal, 2), round(subtotal * (1 - discount_percentage / 100), 2))
+            subtotal += price * order_item.quantity
+        return (subtotal, subtotal * (Decimal(1) - Decimal(discount_percentage) / Decimal(100)))
 
     async def calculate_order_quantities(self, order_items: list[OrderItemRequetsPayload]) -> tuple[dict, dict]:
         bag_quantities = {}
@@ -79,27 +74,23 @@ class OrderFeature:
         for order_item in order_items:
             quantity = order_item.quantity
 
-            bag_id = order_item.bag_id
-            item_ids = order_item.item_ids
-            if bag_id and item_ids:
-                bag_quantities[bag_id] = bag_quantities.get(bag_id, 0) + quantity
-                for item_id in item_ids:
-                    item_quantities[item_id] = item_quantities.get(item_id, 0) + quantity
-
-            preselection_id = order_item.preselection_id
-            if preselection_id:
-                preselection = await self.preselection_repo.get_by_id(preselection_id)
+            if order_item.preselection_id:
+                preselection = await self.preselection_repo.get_by_id(order_item.preselection_id)
                 bag_quantities[preselection.bag_id] = bag_quantities.get(preselection.bag_id, 0) + quantity
                 for preselection_item_id in preselection.item_ids:
                     item_quantities[preselection_item_id] = item_quantities.get(preselection_item_id, 0) + quantity
+            else:
+                bag_quantities[order_item.bag_id] = bag_quantities.get(order_item.bag_id, 0) + quantity
+                for item_id in order_item.item_ids:
+                    item_quantities[item_id] = item_quantities.get(item_id, 0) + quantity
         
         return bag_quantities, item_quantities
 
-    async def calculate_shipping_cost(self, shipping_method_id: int, subtotal: float) -> float:
+    async def calculate_shipping_cost(self, shipping_method_id: int, subtotal: Decimal) -> Decimal:
         free_shipping_threshold = int(get("FREE_SHIPPING_THRESHOLD"))
         shipping_method_obj = await self.shipping_method_repo.get_by_id(shipping_method_id)
         shipping_method = ShippingMethod(**shipping_method_obj)
-        return round(shipping_method.discount_fee, 2) if subtotal >= free_shipping_threshold else round(shipping_method.fee, 2)
+        return shipping_method.discount_fee if subtotal >= free_shipping_threshold else shipping_method.fee
 
     async def get_orders(self) -> list[Order]:
         try:
@@ -124,47 +115,40 @@ class OrderFeature:
                 "index": index,
                 "image_url": preselection["image_url"],
                 "name": preselection["name"],
-                "price": preselection["price"] * quantity,
+                "price": f'${format_number(preselection["price"] * quantity)}',
                 "quantity": quantity
             }
         except Exception as e:
             LOG.exception("Unable to get preselection item due to unexpected error", exc_info=e)
 
-    async def _calculate_customer_gift_unit_price(self, bag: Bag, items: list[Item]):
-        return bag.price + sum(item.price for item in items)
-    
-    async def _generate_custom_gift_name(self, bag: Bag, items: list[Item]):
-        return bag.name + ' + ' + ' + '.join([f"{item.name} {item.product}" for item in items])
-
     async def generate_custom_item_payload(self, index: int, quantity: int, bag_id: int, item_ids: list[int]):
         try:
             bag = Bag(**(await self.bag_repo.get_by_id(bag_id)))
             items = [Item(**(await self.item_repo.get_by_id(item_id))) for item_id in item_ids]
+            unit_price = bag.price + sum(item.price for item in items)
+            name = bag.name + ' + ' + ' + '.join([f"{item.name} {item.product}" for item in items])
             return {
                 "index": index,
-                "name": await self._generate_custom_gift_name(bag, items),
+                "name": name,
                 "quantity": quantity,
-                "price": (await self._calculate_customer_gift_unit_price(bag, items)) * quantity
+                "price": f"${format_number(unit_price * quantity)}"
             }
         except Exception as e:
             LOG.exception("Unable to get custom item due to unexpected error", exc_info=e)
 
-    async def generate_order_info(self, order_number: str, order_items: dict,  subtotal: float, subtotal_after_discount: float, shipping_cost: float, order_total: float) -> dict:
+    async def generate_order_info(self, order_number: str, order_items: dict,  subtotal: Decimal, subtotal_after_discount: Decimal, shipping_cost: Decimal, order_total: Decimal) -> dict:
         ordered_preselection_items = []
         ordered_custom_items = []
         preselection_index, custom_index = 1, 1
         for order_item in order_items:
             quantity = order_item.quantity
-            preselection_id = order_item.preselection_id
-            bag_id = order_item.bag_id
-            item_ids = order_item.item_ids
 
-            if preselection_id:
-                preselection_item = await self.generate_preselection_item_payload(preselection_index, quantity, preselection_id)
+            if order_item.preselection_id:
+                preselection_item = await self.generate_preselection_item_payload(preselection_index, quantity, order_item.preselection_id)
                 preselection_index += 1
                 ordered_preselection_items.append(preselection_item)
-            if bag_id and item_ids:
-                custom_item = await self.generate_custom_item_payload(custom_index, quantity, bag_id, item_ids)
+            else:
+                custom_item = await self.generate_custom_item_payload(custom_index, quantity, order_item.bag_id, order_item.item_ids)
                 custom_index += 1
                 ordered_custom_items.append(custom_item)
 

@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, Float, ForeignKey, Index, Integer, String, func
+from sqlalchemy import Column, ForeignKey, Index, Integer, Numeric, String, func
 from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
 from sqlalchemy_serializer import SerializerMixin
 
@@ -12,10 +12,10 @@ class OrderModel(Base, SerializerMixin):
     id = Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False, default=uuid.uuid4)
 
     customer_id = Column(UUID(as_uuid=True), ForeignKey("customer.id"), nullable=False)
-    subtotal = Column(Float, nullable=False)
-    discount = Column(Float, nullable=True)
-    subtotal_after_discount = Column(Float, nullable=True)
-    shipping_cost = Column(Float, nullable=False)
+    subtotal = Column(Numeric(10, 2), nullable=False)
+    discount = Column(Numeric(10, 2), nullable=True)
+    subtotal_after_discount = Column(Numeric(10, 2), nullable=True)
+    shipping_cost = Column(Numeric(10, 2), nullable=False)
     order_number = Column(String, nullable=False)
     shipping_method = Column(Integer, ForeignKey("shipping_method.id"), nullable=False)
     coupon_id = Column(UUID(as_uuid=True), ForeignKey("coupon.id"), nullable=True)
