@@ -22,6 +22,7 @@ from api.order_item import OrderItemRequestHandler
 from api.shipment import ShipmentRequestHandler
 from api.shipping_method import ShippingMethodRequestHandler
 from api.coupon import CouponRequestHandler
+from api.image import ImageRequestHandler
 from utils.json_dumps_default import json_dumps_default
 
 from infrastructure.postgres import PostgresTransactable
@@ -157,6 +158,11 @@ def create_api():
     app.add_sink(
         CouponRequestHandler(work_manager),
         prefix=re.compile("^/coupons(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        ImageRequestHandler(work_manager),
+        prefix=re.compile("^/images(?P<path>/?.*)$"),
     )
 
     return app
