@@ -125,6 +125,10 @@ Steps to create a new backend API in AWS:
     1. sudo mkdir -p /etc/certs
     2. sudo cp /etc/letsencrypt/archive/giftoz.duckdns.org/fullchain1.pem /etc/certs/fullchain.pem
     3. sudo cp /etc/letsencrypt/archive/giftoz.duckdns.org/privkey1.pem /etc/certs/privkey.pem
+7a. To check the expiry date of a certificate, run
+    openssl x509 -in /etc/certs/fullchain.pem -noout -enddate
+7b. If required, re-run steps 6 & 7 above to generate new certificates
+7c. IMPORTANT! - Check the certificate's expiry date every 60 days
 8. Create a new Programmatic Access key for the user:
     1. Inside IAM, select the user, under “Security credentials” tab, click on “Create access key”, then select “Command Line Interface (CLI)”, and click “Next”
     2. Download the .csv file
