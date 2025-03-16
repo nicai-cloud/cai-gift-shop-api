@@ -125,6 +125,7 @@ Steps to create a new backend API in AWS:
     1. sudo mkdir -p /etc/certs
     2. sudo cp /etc/letsencrypt/archive/giftoz.duckdns.org/fullchain1.pem /etc/certs/fullchain.pem
     3. sudo cp /etc/letsencrypt/archive/giftoz.duckdns.org/privkey1.pem /etc/certs/privkey.pem
+    4. (for certificate renewals only) sudo mv /etc/letsencrypt/archive/giftoz.duckdns.org/ /etc/letsencrypt/archive/16-03-2025-giftoz.duckdns.org/
 7a. To check the expiry date of a certificate, run
     openssl x509 -in /etc/certs/fullchain.pem -noout -enddate
 7b. If required, re-run steps 6 & 7 above to generate new certificates
