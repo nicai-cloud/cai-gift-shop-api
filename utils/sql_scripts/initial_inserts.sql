@@ -23,11 +23,11 @@ DROP TABLE item cascade;
 DROP TABLE bag cascade;
 Truncate alembic_version;
 
-INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/bag1.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag1', 'bag', 1);
-INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/bag2.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag2', 'bag', 1);
-INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (3, 'https://giftoz.netlify.app/images/custom/bag3.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag3', 'bag', 1);
-INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (4, 'https://giftoz.netlify.app/images/custom/bag4.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag4', 'bag', 1);
-INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (5, 'https://giftoz.netlify.app/images/custom/bag5.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bag5', 'bag', 1);
+INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/bag1.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'Pompompurin bag', 'bag', 1);
+INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/bag2.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'Hello Kitty bag', 'bag', 1);
+INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (3, 'https://giftoz.netlify.app/images/custom/bag3.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'Kuromi bag', 'bag', 1);
+INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (4, 'https://giftoz.netlify.app/images/custom/bag4.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'Cinnamoroll bag', 'bag', 1);
+INSERT INTO bag (id, image_url, video_url, name, description, price) VALUES (5, 'https://giftoz.netlify.app/images/custom/bag5.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'My Melody bag', 'bag', 1);
 
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (1, 'https://giftoz.netlify.app/images/custom/bricks1.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bricks', 'bricks1', 'bricks', 2.5);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (2, 'https://giftoz.netlify.app/images/custom/bricks2.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'bricks', 'bricks2', 'bricks', 2.5);
@@ -61,11 +61,11 @@ INSERT INTO item (id, image_url, video_url, product, name, description, price) V
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (255, 'https://giftoz.netlify.app/images/custom/squishy5.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'squishy', 'squishy5', 'squishy', 1);
 INSERT INTO item (id, image_url, video_url, product, name, description, price) VALUES (256, 'https://giftoz.netlify.app/images/custom/squishy6.jpeg', 'https://www.w3schools.com/html/mov_bbb.mp4', 'squishy', 'squishy6', 'squishy', 1);
 
-INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (1, 'https://giftoz.netlify.app/images/preselections/preselection1.jpeg', 'preselection1', 'girls', 'Preselection gift bag 1', 11, 2, '{151, 105, 252, 2, 51}');
-INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (2, 'https://giftoz.netlify.app/images/preselections/preselection2.jpeg', 'preselection2', 'boys', 'Preselection gift bag 2', 12, 4, '{152, 104, 8, 52, 201}');
-INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (3, 'https://giftoz.netlify.app/images/preselections/preselection3.jpeg', 'preselection3', 'boys', 'Preselection gift bag 3', 12, 1, '{152, 101, 253, 7, 202}');
-INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (4, 'https://giftoz.netlify.app/images/preselections/preselection4.jpeg', 'preselection4', 'girls', 'Preselection gift bag 4', 11, 5, '{151, 103, 254, 2, 51}');
-INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (5, 'https://giftoz.netlify.app/images/preselections/preselection5.jpeg', 'preselection5', 'girls', 'Preselection gift bag 5', 10, 3, '{106, 251, 10, 53, 202}');
+INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (1, 'https://giftoz.netlify.app/images/preselections/preselection1.jpeg', 'Hello Kitty bag', 'girls', 'Preselection gift bag 1', 11, 2, '{151, 105, 252, 2, 51}');
+INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (2, 'https://giftoz.netlify.app/images/preselections/preselection2.jpeg', 'Cinnamoroll bag', 'boys', 'Preselection gift bag 2', 12, 4, '{152, 104, 8, 52, 201}');
+INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (3, 'https://giftoz.netlify.app/images/preselections/preselection3.jpeg', 'Pompompurin bag', 'boys', 'Preselection gift bag 3', 12, 1, '{152, 101, 253, 7, 202}');
+INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (4, 'https://giftoz.netlify.app/images/preselections/preselection4.jpeg', 'My Melody bag', 'girls', 'Preselection gift bag 4', 11, 5, '{151, 103, 254, 2, 51}');
+INSERT INTO preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (5, 'https://giftoz.netlify.app/images/preselections/preselection5.jpeg', 'Kuromi bag', 'girls', 'Preselection gift bag 5', 10, 3, '{106, 251, 10, 53, 202}');
 
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (1, 'bag', 1, 500, 50);
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (2, 'bag', 2, 500, 50);
