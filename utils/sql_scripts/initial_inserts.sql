@@ -83,27 +83,26 @@ INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_thre
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (14, 'item', 9, 100, 10);
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (15, 'item', 10, 100, 10);
 INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (16, 'item', 11, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (17, 'item', 12, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (18, 'item', 13, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (19, 'item', 14, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (20, 'item', 15, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (21, 'item', 16, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (22, 'item', 17, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (23, 'item', 18, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (24, 'item', 19, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (25, 'item', 20, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (26, 'item', 21, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (27, 'item', 22, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (28, 'item', 23, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (29, 'item', 24, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (30, 'item', 25, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (31, 'item', 26, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (32, 'item', 27, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (33, 'item', 28, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (34, 'item', 29, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (35, 'item', 30, 100, 10);
-INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (36, 'item', 31, 100, 10);
-
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (17, 'item', 51, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (18, 'item', 52, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (19, 'item', 53, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (20, 'item', 54, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (21, 'item', 101, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (22, 'item', 102, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (23, 'item', 103, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (24, 'item', 104, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (25, 'item', 105, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (26, 'item', 106, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (27, 'item', 151, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (28, 'item', 152, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (29, 'item', 201, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (30, 'item', 202, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (31, 'item', 251, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (32, 'item', 252, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (33, 'item', 253, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (34, 'item', 254, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (35, 'item', 255, 100, 10);
+INSERT INTO inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (36, 'item', 256, 100, 10);
 
 
 INSERT INTO coupon (code, discount_percentage, description, expiry_date, used) VALUES ('ABC123', 2, '2% discount on subtotal', '2025-10-04', false);
