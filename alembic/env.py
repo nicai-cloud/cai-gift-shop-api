@@ -3,6 +3,7 @@ from logging.config import fileConfig
 
 from models.base import Base
 from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import text
 
 from alembic import context
 from utils.config import get
@@ -53,7 +54,7 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection):
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(connection=connection, target_metadata=target_metadata, version_table_schema="gift")
 
     with context.begin_transaction():
         context.run_migrations()
@@ -72,7 +73,8 @@ async def run_migrations_online() -> None:
 
     connectable = engine
 
-    async with connectable.connect() as connection:
+    async with connectable.begin() as connection:
+        await connection.execute(text("CREATE SCHEMA IF NOT EXISTS gift"))
         await connection.run_sync(do_run_migrations)
 
 

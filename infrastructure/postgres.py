@@ -9,7 +9,7 @@ from .work_management import Transactable, current_request_task
 LOG = logging.getLogger(__name__)
 
 
-metadata = MetaData()
+metadata = MetaData(schema='gift')
 
 
 class PostgresTransactable(Transactable):

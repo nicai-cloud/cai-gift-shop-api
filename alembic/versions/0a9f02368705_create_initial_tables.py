@@ -1,8 +1,8 @@
-"""Add tables
+"""Create initial tables
 
-Revision ID: 0f2a725b1bd7
+Revision ID: 0a9f02368705
 Revises: 
-Create Date: 2025-01-25 16:52:50.281220
+Create Date: 2025-03-26 14:40:31.845828
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '0f2a725b1bd7'
+revision: str = '0a9f02368705'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,7 +31,8 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('coupon',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
@@ -44,7 +45,8 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('customer',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
@@ -57,7 +59,8 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('inventory',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
@@ -69,7 +72,8 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('item',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
@@ -83,7 +87,8 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('shipping_method',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
@@ -94,7 +99,8 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('inventory_transaction',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
@@ -104,9 +110,10 @@ def upgrade() -> None:
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.ForeignKeyConstraint(['inventory_id'], ['inventory.id'], ),
+    sa.ForeignKeyConstraint(['inventory_id'], ['gift.inventory.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('order',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
@@ -121,13 +128,14 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
-    sa.ForeignKeyConstraint(['coupon_id'], ['coupon.id'], ),
-    sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),
-    sa.ForeignKeyConstraint(['shipping_method'], ['shipping_method.id'], ),
+    sa.ForeignKeyConstraint(['coupon_id'], ['gift.coupon.id'], ),
+    sa.ForeignKeyConstraint(['customer_id'], ['gift.customer.id'], ),
+    sa.ForeignKeyConstraint(['shipping_method'], ['gift.shipping_method.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
-    op.create_index('idx_order_number_unique_if_not_deleted', 'order', ['order_number'], unique=True, postgresql_where=False)
+    op.create_index('idx_order_number_unique_if_not_deleted', 'order', ['order_number'], unique=True, schema='gift', postgresql_where=False)
     op.create_table('preselection',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
@@ -141,11 +149,12 @@ def upgrade() -> None:
     sa.Column('item_ids', postgresql.ARRAY(sa.Integer()), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.ForeignKeyConstraint(['bag_id'], ['bag.id'], ),
+    sa.ForeignKeyConstraint(['bag_id'], ['gift.bag.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
-    op.create_index(op.f('ix_preselection_name'), 'preselection', ['name'], unique=False)
+    op.create_index(op.f('ix_gift_preselection_name'), 'preselection', ['name'], unique=False, schema='gift')
     op.create_table('order_item',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
@@ -157,11 +166,12 @@ def upgrade() -> None:
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.CheckConstraint('preselection_id IS NOT NULL OR (bag_id IS NOT NULL AND item_ids IS NOT NULL)', name='check_preselection_id_or_bag_id_and_item_ids_not_null'),
-    sa.ForeignKeyConstraint(['bag_id'], ['bag.id'], ),
-    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
-    sa.ForeignKeyConstraint(['preselection_id'], ['preselection.id'], ),
+    sa.ForeignKeyConstraint(['bag_id'], ['gift.bag.id'], ),
+    sa.ForeignKeyConstraint(['order_id'], ['gift.order.id'], ),
+    sa.ForeignKeyConstraint(['preselection_id'], ['gift.preselection.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     op.create_table('shipment',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
@@ -175,26 +185,27 @@ def upgrade() -> None:
     sa.Column('order_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
+    sa.ForeignKeyConstraint(['order_id'], ['gift.order.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id')
+    sa.UniqueConstraint('id'),
+    schema='gift'
     )
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_table('shipment')
-    op.drop_table('order_item')
-    op.drop_index(op.f('ix_preselection_name'), table_name='preselection')
-    op.drop_table('preselection')
-    op.drop_index('idx_order_number_unique_if_not_deleted', table_name='order', postgresql_where=False)
-    op.drop_table('order')
-    op.drop_table('inventory_transaction')
-    op.drop_table('shipping_method')
-    op.drop_table('item')
-    op.drop_table('inventory')
-    op.drop_table('customer')
-    op.drop_table('coupon')
-    op.drop_table('bag')
+    op.drop_table('shipment', schema='gift')
+    op.drop_table('order_item', schema='gift')
+    op.drop_index(op.f('ix_gift_preselection_name'), table_name='preselection', schema='gift')
+    op.drop_table('preselection', schema='gift')
+    op.drop_index('idx_order_number_unique_if_not_deleted', table_name='order', schema='gift', postgresql_where=False)
+    op.drop_table('order', schema='gift')
+    op.drop_table('inventory_transaction', schema='gift')
+    op.drop_table('shipping_method', schema='gift')
+    op.drop_table('item', schema='gift')
+    op.drop_table('inventory', schema='gift')
+    op.drop_table('customer', schema='gift')
+    op.drop_table('coupon', schema='gift')
+    op.drop_table('bag', schema='gift')
     # ### end Alembic commands ###

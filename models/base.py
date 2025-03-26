@@ -20,7 +20,7 @@ class BaseModel:
         return {column.name: getattr(self, column.name) for column in self.__table__.columns if column.name not in ('deleted_at', 'created_at', 'updated_at')}
 
 
-metadata = MetaData()
+metadata = MetaData(schema='gift')
 Base = declarative_base(metadata=metadata, cls=BaseModel)
 
 
