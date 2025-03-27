@@ -113,8 +113,9 @@ Steps to create a new backend API in AWS:
         2. Allow HTTPS traffic from the internet
         3. Allow HTTP traffic from the internet
     7. Default storage
-    8. Create a new EC2-role called “ec2-role” which has the permission “AmazonEC2ContainerServiceForEC2Role” and "AmazonSESFullAccess" so that the EC2 can be registered under the ECS cluster which will be created later on
-    9. In the Security Groups section, for the security group “launch-wizard-2”, which is used by the created EC2, add Inbound rule of “Allow All traffic from All”
+    8. Create a new EC2-role called “ec2-role” which has the permission “AmazonEC2ContainerServiceForEC2Role” and "AmazonSESFullAccess"
+    9. In EC2 console, click on Actions -> Security -> Modify IAM role, choose "ec2-role" as the IAM role so that the EC2 can be registered under the ECS cluster which will be created later on
+    10. In the Security Groups section, for the security group “launch-wizard-2”, which is used by the created EC2, add Inbound rule of “Allow All traffic from All”
 3. Launch EC2
 4. Create a new subdomain in DuckDNS
     1. Create a new subdomain called giftoz.duckdns.org
@@ -158,7 +159,7 @@ Steps to create a new backend API in AWS:
         2. Architecture - Linux/X86_64
         3. Network mode - host
         4. CPU - 1 vCPU
-        5. Memory - 3GB
+        5. Memory - 0.8GB
         6. Task role -
         7. Task execution role - Create new role
         8. Container - 1:
@@ -168,7 +169,7 @@ Steps to create a new backend API in AWS:
             4. Port name: cai-gift-shop-8080-tcp
             5. Resource allocation limits:
                 1. CPU - 0.8
-                2. Memory - 0.8
+                2. Memory hard limit - 0.8
             6. Add environment variables
             7. De-select "Use log collection"
         9. Add volume:
