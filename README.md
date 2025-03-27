@@ -113,10 +113,12 @@ Steps to create a new backend API in AWS:
         2. Allow HTTPS traffic from the internet
         3. Allow HTTP traffic from the internet
     7. Default storage
-    8. Create a new EC2-role called “ec2-role” which has the permission “AmazonEC2ContainerServiceForEC2Role” so that the EC2 can be registered under the ECS cluster which will be created later on
+    8. Create a new EC2-role called “ec2-role” which has the permission “AmazonEC2ContainerServiceForEC2Role” and "AmazonSESFullAccess" so that the EC2 can be registered under the ECS cluster which will be created later on
     9. In the Security Groups section, for the security group “launch-wizard-2”, which is used by the created EC2, add Inbound rule of “Allow All traffic from All”
 3. Launch EC2
 4. Create a new subdomain in DuckDNS
+    1. Create a new subdomain called giftoz.duckdns.org
+    2. Update IP address of the subdomain to be that of the above EC2's public IP address, which can be found from AWS console's EC2 attribute
 5. Install certbot - Inside EC2, run
     1. sudo yum install certbot
 6. Generate Certs for EC2 - Inside EC2, run
