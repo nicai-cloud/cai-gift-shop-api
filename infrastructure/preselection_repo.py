@@ -33,7 +33,7 @@ class PreselectionRepo(BaseRepository):
         result = await self.session.execute(preselections_query)
         return result.all()
 
-    async def get_by_id(self, preselection_id: id):
+    async def get_by_id(self, preselection_id: int):
         try:
             preselection_query = select(
                 PreselectionModel.id,
