@@ -190,4 +190,6 @@ Steps to create a new backend API in AWS:
 12. To use SES to send email:
     1. Go to SES and create an entity with "nicai.goodyhub@gmail.com", verify it when receiving email
     2. Go to IAM role ec2-role and attach AmazonSESFullAccess policy to it
- 
+13. To use sendGrid to send email:
+    1. Setup email templates: In SendGrid, go to Email API -> Dynamic Templates -> Click on button "Create a Dynamic Template"
+    2. Add a new email sender: In SendGrid, go to Settings -> Sender Authentication -> Click on button "Verify a Single Sender"
