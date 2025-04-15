@@ -156,8 +156,8 @@ Steps to create a new backend API in AWS:
         8. Container - 1:
             1. Name: Cai-gift-shop
             2. Image URI: 476114150599.dkr.ecr.ap-southeast-2.amazonaws.com/cai-gift-shop-api:1.0
-            3. Container port: 8080
-            4. Port name: cai-gift-shop-8080-tcp
+            3. Container port: 443
+            4. Port name: cai-gift-shop-443-tcp
             5. Resource allocation limits:
                 1. CPU - 0.8
                 2. Memory hard limit - 0.8

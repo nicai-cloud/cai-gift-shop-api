@@ -14,8 +14,5 @@ RUN mkdir -p /app/certs
 # Copy the app code
 COPY . .
 
-# Expose port 8080 (default for Cloud Run)
-EXPOSE 8080
-
 # Command to run the app
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8080", "--ssl-certfile", "/app/certs/fullchain.pem", "--ssl-keyfile", "/app/certs/privkey.pem", "main:create_api"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "443", "--ssl-certfile", "/app/certs/fullchain.pem", "--ssl-keyfile", "/app/certs/privkey.pem", "main:create_api"]
