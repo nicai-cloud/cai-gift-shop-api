@@ -51,9 +51,11 @@ then I was able to generate certs for the subdomain.
 
 To generate certs for the domain on EC2:
 First EC2:
-sudo certbot certonly --standalone -d goodyhub.duckdns.org
+For subdomain on duckdns: sudo certbot certonly --standalone -d goodyhub.duckdns.org
+For my own subdomain: sudo certbot certonly --standalone -d api.giftoz.com.au
 Second EC2:
-sudo certbot certonly --standalone -d giftoz.duckdns.org
+For subdomain on duckdns: sudo certbot certonly --standalone -d giftoz.duckdns.org
+For my own subdomain: sudo certbot certonly --standalone -d api2.giftoz.com.au
 
 By default, when the certs are generated, they are located on EC2:
 /etc/letsencrypt/live/goodyhub.duckdns.org/fullchain.pem and
@@ -115,15 +117,22 @@ Steps to create a new backend API in AWS:
     1. sudo yum install certbot
 6. Generate Certs for EC2 - Inside EC2, run
     1. sudo certbot certonly --standalone -d giftoz.duckdns.org
-7. Copy certificate files - Inside EC2, run the following commands:
+7. Copy certificate files (for subdomain on duckdns.org) - Inside EC2, run the following commands:
     1. sudo mkdir -p /etc/certs
     2. sudo cp /etc/letsencrypt/archive/giftoz.duckdns.org/fullchain1.pem /etc/certs/fullchain.pem
     3. sudo cp /etc/letsencrypt/archive/giftoz.duckdns.org/privkey1.pem /etc/certs/privkey.pem
     4. (for certificate renewals only) sudo mv /etc/letsencrypt/archive/giftoz.duckdns.org/ /etc/letsencrypt/archive/16-03-2025-giftoz.duckdns.org/
-7a. To check the expiry date of a certificate, run
+7a. Copy certificate files (for my own subdomain):
+    1. Inside Netlify -> Domains -> giftoz.com.au -> DNS settings, add a new A record, whose name is api.giftoz.com.au, and value is the public IP address of the EC2
+    2 Inside EC2, run the following commands:
+    3. sudo mkdir -p /etc/certs
+    4. sudo cp /etc/letsencrypt/archive/api.giftoz.com.au/fullchain1.pem /etc/certs/fullchain.pem
+    5. sudo cp /etc/letsencrypt/archive/api.giftoz.com.au/privkey1.pem /etc/certs/privkey.pem
+    6. (for certificate renewals only) sudo mv /etc/letsencrypt/archive/api.giftoz.com.au/ /etc/letsencrypt/archive/16-03-2025-api.giftoz.com.au/
+7b. To check the expiry date of a certificate, run
     openssl x509 -in /etc/certs/fullchain.pem -noout -enddate
-7b. If required, re-run steps 6 & 7 above to generate new certificates
-7c. IMPORTANT! - Check the certificate's expiry date every 60 days
+7c. If required, re-run steps 6 & 7 above to generate new certificates
+7d. IMPORTANT! - Check the certificate's expiry date every 60 days
 8. Create a new Programmatic Access key for the user:
     1. Inside IAM, select the user, under “Security credentials” tab, click on “Create access key”, then select “Command Line Interface (CLI)”, and click “Next”
     2. Download the .csv file
