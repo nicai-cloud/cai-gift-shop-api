@@ -8,15 +8,6 @@ Useful stripe CLI commands:
 stripe login --interactive
 stripe payment_intents list --limit 3
 
-To use Amazon Location Service to address auto-complete:
-1. Log into AWS console
-2. Go to Amazon Location Service
-3. On the left menu, click on "Maps, places, routes"
-4. Click on the "Places" tab
-5. Click on the "Create place index" button and name it "AustraliaAddressIndex" and select "HERE" as Data Provider and create the place index
-6. After the index is created, reference it in the python code
-7. Attach an inline-policy to EC2 role so that it is allowed for Action "geo:SearchPlaceIndexForSuggestions" on the above created resource "arn:aws:geo:ap-southeast-2:940482453018:place-index/AustraliaAddressIndex", remember to update the account id here for the particular account.
-
 To build and run docker container locally:
 docker build -t cai-gift-shop-api .
 docker run --env-file .env -p 8888:8080 cai-gift-shop-api
@@ -184,7 +175,6 @@ Steps to create a new backend API in AWS:
         10. Create the task definition
         11. Create a new service with the above task definition
         12. If the deployment failed, go to Cluster -> Cai-gift-shop-cluster -> Services -> cai-gift-shop-api -> Deployments -> See the Events at the bottom for error logs
-        13. Address auto-complete uses Amazon Location Service. To use it, from AWS console, go to Amazon Location Service, from the left panel, go to “Manage Resources” -> “Maps, Places, routes” -> “Places” tab, then click on “Create place index”, choose “HERE” as Data Provider, once it is created, add “address-lookup” policy in ec2-role in IAM.
 11. Create a Budget alert in the admin account:
     1. Go to "Billing and Cost Management" -> "Budgets" -> Click on "Create budget" -> Choose "Zero-Spend Budget"
 12. To use SES to send email:
