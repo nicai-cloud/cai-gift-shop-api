@@ -109,5 +109,6 @@ INSERT INTO gift.coupon (code, discount_percentage, description, expiry_date, us
 INSERT INTO gift.coupon (code, discount_percentage, description, expiry_date, used) VALUES ('DEF456', 5, '5% discount on subtotal', '2025-10-04', false);
 INSERT INTO gift.coupon (code, discount_percentage, description, expiry_date, used) VALUES ('OPQ789', 10, '10% discount on subtotal', '2025-10-04', false);
 
+INSERT INTO gift.fulfillment_method (id, name, fee, discount_fee) VALUES (0, 'pickup', 0, 0);
 INSERT INTO gift.fulfillment_method (name, fee, discount_fee) VALUES ('standard', 17.95, 0);
 INSERT INTO gift.fulfillment_method (name, fee, discount_fee) VALUES ('express', 22.95, 9.95);
