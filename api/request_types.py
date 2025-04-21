@@ -9,16 +9,15 @@ class APISchema(Schema):
 
 
 @dataclass(base_schema=APISchema)
-class CustomerInfoRequestPayload:
+class CustomerInfoRequest:
     first_name: str = field(metadata={"data_key": "firstName"})
     last_name: str = field(metadata={"data_key": "lastName"})
     email: str = field(metadata={"validate": validate.Email(error="Invalid email address")})
     mobile: str
-    address: str
 
 
 @dataclass(base_schema=APISchema)
-class OrderItemRequetsPayload:
+class OrderItemRequets:
     quantity: int
     preselection_id: int | None = field(metadata={"data_key": "preselectionId"})
     bag_id: int | None = field(metadata={"data_key": "bagId"})
@@ -26,33 +25,34 @@ class OrderItemRequetsPayload:
 
 
 @dataclass(base_schema=APISchema)
-class CompleteOrderRequestPayload:
-    customer_info: CustomerInfoRequestPayload = field(metadata={"data_key": "customerInfo"})
-    order_items: list[OrderItemRequetsPayload] = field(metadata={"data_key": "orderItems"})
-    shipping_method: int = field(metadata={"data_key": "shippingMethod"})
+class CompleteOrderRequest:
+    customer_info: CustomerInfoRequest = field(metadata={"data_key": "customerInfo"})
+    order_items: list[OrderItemRequets] = field(metadata={"data_key": "orderItems"})
+    fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
+    delivery_address: str | None = field(metadata={"data_key": "deliveryAddress"})
     coupon_code: str | None = field(metadata={"data_key": "couponCode"})
     payment_method_id: str = field(metadata={"data_key": "paymentMethodId"})
 
 
 @dataclass(base_schema=APISchema)
-class OrderItemsRequestPayload:
-    order_items: list[OrderItemRequetsPayload] = field(metadata={"data_key": "orderItems"})
+class OrderItemsRequest:
+    order_items: list[OrderItemRequets] = field(metadata={"data_key": "orderItems"})
 
 
 @dataclass(base_schema=APISchema)
-class RefillBagRequestPayload:
+class RefillBagRequest:
     bag_id: int = field(metadata={"data_key": "bagId"})
     quantity: int
 
 
 @dataclass(base_schema=APISchema)
-class RefillItemRequestPayload:
+class RefillItemRequest:
     item_id: int = field(metadata={"data_key": "itemId"})
     quantity: int
 
 
 @dataclass(base_schema=APISchema)
-class CreateShipmentRequestPayload:
+class CreateShipmentRequest:
     volume: float | None
     weight: float
     delivery_fee: Decimal = field(metadata={"data_key": "deliveryFee"})

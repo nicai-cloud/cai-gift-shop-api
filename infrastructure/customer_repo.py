@@ -28,8 +28,7 @@ class CustomerRepo(BaseRepository):
             CustomerModel.first_name,
             CustomerModel.last_name,
             CustomerModel.mobile,
-            CustomerModel.email,
-            CustomerModel.address
+            CustomerModel.email
         ).where(CustomerModel.deleted_at.is_(None))
 
         result = await self.session.execute(customers_query)
@@ -42,8 +41,7 @@ class CustomerRepo(BaseRepository):
                 CustomerModel.first_name,
                 CustomerModel.last_name,
                 CustomerModel.mobile,
-                CustomerModel.email,
-                CustomerModel.address
+                CustomerModel.email
             ).where(and_(CustomerModel.deleted_at.is_(None), CustomerModel.id == customer_id))
 
             result = await self.session.execute(customer_query)

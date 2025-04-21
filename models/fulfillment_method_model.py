@@ -5,8 +5,8 @@ from sqlalchemy_serializer import SerializerMixin
 from models.base import Base
 
 
-class ShippingMethodModel(Base, SerializerMixin):
-    __tablename__ = "shipping_method"
+class FulfillmentMethodModel(Base, SerializerMixin):
+    __tablename__ = "fulfillment_method"
 
     id = Column(Integer, primary_key=True, unique=True, nullable=False)
     name = Column(String, nullable=False)

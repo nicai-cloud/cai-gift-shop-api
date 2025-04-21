@@ -2,7 +2,7 @@ from uuid import UUID
 from falcon import HTTPBadRequest, HTTP_OK, HTTPNotFound
 
 from api.base import RequestHandler, route
-from api.request_payload_types import CreateShipmentRequestPayload
+from api.request_types import CreateShipmentRequest
 from features.shipment_feature import OrderNotFoundException, ShipmentFeature
 from features.email_feature import EmailFeature
 from infrastructure.work_management import WorkManager
@@ -36,7 +36,7 @@ class ShipmentRequestHandler(RequestHandler):
         raw_request_body = await req.get_media()
 
         try:
-            request_body = CreateShipmentRequestPayload.Schema().load(raw_request_body)
+            request_body = CreateShipmentRequest.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
 

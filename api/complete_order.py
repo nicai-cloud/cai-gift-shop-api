@@ -1,7 +1,7 @@
 from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 
 from api.base import RequestHandler, route
-from api.request_payload_types import CompleteOrderRequestPayload, OrderItemsRequestPayload
+from api.request_types import CompleteOrderRequest, OrderItemsRequest
 from api.types import PublishableKeyResponse
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
@@ -35,7 +35,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('request_body', raw_request_body)
 
         try:
-            request_body = OrderItemsRequestPayload.Schema().load(raw_request_body)
+            request_body = OrderItemsRequest.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
 
@@ -58,13 +58,14 @@ class CompleteOrderRequestHandler(RequestHandler):
         print('request_body', raw_request_body)
 
         try:
-            request_body = CompleteOrderRequestPayload.Schema().load(raw_request_body)
+            request_body = CompleteOrderRequest.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
 
         customer_info = request_body.customer_info
         order_items = request_body.order_items
-        shipping_method = request_body.shipping_method
+        fulfillment_method = request_body.fulfillment_method
+        delivery_address = request_body.delivery_address
         payment_method_id = request_body.payment_method_id
         coupon_code = request_body.coupon_code
 
@@ -73,7 +74,6 @@ class CompleteOrderRequestHandler(RequestHandler):
         # TODO: sanitisation on email and mobile
         email = customer_info.email
         mobile = customer_info.mobile
-        address = customer_info.address
 
         # Check if the coupon code is valid
         if coupon_code is None:
@@ -95,7 +95,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         # Calculate subtotal and make the payment
         subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items, coupon.discount_percentage if coupon else 0)
         discount = round(subtotal - subtotal_after_discount, 2)
-        shipping_cost = await self.order_feature.calculate_shipping_cost(shipping_method, subtotal)
+        shipping_cost = await self.order_feature.calculate_shipping_cost(fulfillment_method, subtotal)
         order_total = round(subtotal_after_discount + shipping_cost, 2)
         await self.payment_method_feature.create_payment_intent(payment_method_id, order_total)
 
@@ -103,7 +103,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         await self.inventory_feature.update_inventories(bag_quantities, item_quantities)
         
         # Create customer
-        customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile, address)
+        customer_id = await self.customer_feature.create_customer(first_name, last_name, email, mobile)
         print('!! created customer id:', customer_id)
 
         # Create an order against the customer
@@ -113,7 +113,8 @@ class CompleteOrderRequestHandler(RequestHandler):
             discount=discount if coupon else None,
             subtotal_after_discount=subtotal_after_discount if coupon else None,
             shipping_cost=shipping_cost,
-            shipping_method=shipping_method,
+            fulfillment_method=fulfillment_method,
+            delivery_address=delivery_address,
             coupon_id=coupon.id if coupon else None
         )
         print('!! created order id:', order_id)
@@ -137,7 +138,7 @@ class CompleteOrderRequestHandler(RequestHandler):
         order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, subtotal_after_discount, shipping_cost, order_total)
 
         # Send the successful order email to customer and myself
-        await self.email_feature.send_order_confirmation_email_to_customer(customer_info, order_info)
+        await self.email_feature.send_order_confirmation_email_to_customer(customer_info, order_info, fulfillment_method)
         await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
         resp.media = {"order_number": order_number}

@@ -5,7 +5,7 @@ SELECT * FROM gift.bag;
 SELECT * FROM gift.item;
 SELECT * FROM gift.preselection;
 SELECT * FROM gift.shipment;
-SELECT * FROM gift.shipping_method;
+SELECT * FROM gift.fulfillment_method;
 SELECT * FROM gift.coupon;
 SELECT * FROM gift.inventory ORDER BY id;
 SELECT * FROM gift.inventory_transaction;
@@ -14,7 +14,7 @@ DROP TABLE gift.order_item cascade;
 DROP TABLE gift.order cascade;
 DROP TABLE gift.customer cascade;
 DROP TABLE gift.shipment cascade;
-DROP TABLE gift.shipping_method cascade;
+DROP TABLE gift.fulfillment_method cascade;
 DROP TABLE gift.inventory_transaction cascade;
 DROP TABLE gift.inventory cascade;
 DROP TABLE gift.coupon cascade;
@@ -109,5 +109,5 @@ INSERT INTO gift.coupon (code, discount_percentage, description, expiry_date, us
 INSERT INTO gift.coupon (code, discount_percentage, description, expiry_date, used) VALUES ('DEF456', 5, '5% discount on subtotal', '2025-10-04', false);
 INSERT INTO gift.coupon (code, discount_percentage, description, expiry_date, used) VALUES ('OPQ789', 10, '10% discount on subtotal', '2025-10-04', false);
 
-INSERT INTO gift.shipping_method (name, fee, discount_fee) VALUES ('standard', 17.95, 0);
-INSERT INTO gift.shipping_method (name, fee, discount_fee) VALUES ('express', 22.95, 9.95);
+INSERT INTO gift.fulfillment_method (name, fee, discount_fee) VALUES ('standard', 17.95, 0);
+INSERT INTO gift.fulfillment_method (name, fee, discount_fee) VALUES ('express', 22.95, 9.95);

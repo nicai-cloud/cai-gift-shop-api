@@ -1,0 +1,27 @@
+from falcon import HTTP_OK, HTTPNotFound
+
+from api.base import RequestHandler, route
+from features.fulfillment_method_feature import FulfillmentMethodFeature
+from infrastructure.work_management import WorkManager
+from utils.config import get
+
+
+class FulfillmentMethodRequestHandler(RequestHandler):
+    def __init__(self, work_manager: WorkManager):
+        super().__init__()
+        self.fulfillment_method_feature = FulfillmentMethodFeature(work_manager)
+
+    @route.get("/", auth_exempt=True)
+    async def get_fulfillment_methods(self, req, resp):
+        fulfillment_methods = await self.fulfillment_method_feature.get_fulfillment_methods()
+        resp.media = {"fulfillmentMethods": fulfillment_methods, "freeShippingThreshold": f'{get("FREE_SHIPPING_THRESHOLD")}'}
+        resp.status = HTTP_OK
+
+    @route.get("/{id:int}", auth_exempt=True)
+    async def get_fulfillment_method_by_id(self, req, resp, id):
+        fulfillment_method = await self.fulfillment_method_feature.get_fulfillment_method_by_id(id)
+        if fulfillment_method is None:
+            raise HTTPNotFound(description="Fulfillment method not found")
+        
+        resp.media = fulfillment_method
+        resp.status = HTTP_OK

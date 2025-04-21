@@ -6,7 +6,7 @@ from uuid import UUID
 import sendgrid
 from sendgrid.helpers.mail import Mail
 from api.types import Customer
-from api.request_payload_types import CustomerInfoRequestPayload
+from api.request_types import CustomerInfoRequest
 from utils.format_number import format_number
 
 from utils.config import get
@@ -23,33 +23,48 @@ class EmailFeature:
         super().__init__()
     
     # Use SendGrid, which has a limit of 100 email per day, to send order confirmation email to customer
-    async def send_order_confirmation_email_to_customer(self, customer_info: CustomerInfoRequestPayload, order_info: dict):
+    async def send_order_confirmation_email_to_customer(self, customer_info: CustomerInfoRequest, order_info: dict, fulfillment_method: int):
         # Create the email
         email = Mail(
             from_email=get("FROM_EMAIL"),
             to_emails=customer_info.email
         )
 
-        email.template_id = get("ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
+        if fulfillment_method == 0: # Pickup
+            email.template_id = get("PICKUP_ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
 
-        template_data = {
-            "orderNumber": order_info["order_number"],
-            "subtotal": f'${format_number(order_info["subtotal"])}',
-            "shippingCost": "Free" if order_info["shipping_cost"] == 0 else f'${format_number(order_info["shipping_cost"])}',
-            "orderTotal": f'${format_number(order_info["order_total"])}',
-            "preselectionItems": order_info["ordered_items"]["preselection_items"],
-            "customItems": order_info["ordered_items"]["custom_items"],
-            "firstName": customer_info.first_name,
-            "lastName": customer_info.last_name,
-            "mobile": customer_info.mobile,
-            "email": customer_info.email
-        }
+            template_data = {
+                "orderNumber": order_info["order_number"],
+                "subtotal": f'${format_number(order_info["subtotal"])}',
+                "orderTotal": f'${format_number(order_info["order_total"])}',
+                "preselectionItems": order_info["ordered_items"]["preselection_items"],
+                "customItems": order_info["ordered_items"]["custom_items"],
+                "firstName": customer_info.first_name,
+                "lastName": customer_info.last_name,
+                "mobile": customer_info.mobile,
+                "email": customer_info.email
+            }
+        else:   # Delivery
+            email.template_id = get("ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
 
-        # Only append subtotalAfterDiscount if there is a discount
-        if order_info["subtotal_after_discount"] < order_info["subtotal"]:
-            template_data.update({
-                "subtotalAfterDiscount": f'${format_number(order_info["subtotal_after_discount"])}'
-            })
+            template_data = {
+                "orderNumber": order_info["order_number"],
+                "subtotal": f'${format_number(order_info["subtotal"])}',
+                "shippingCost": "Free" if order_info["shipping_cost"] == 0 else f'${format_number(order_info["shipping_cost"])}',
+                "orderTotal": f'${format_number(order_info["order_total"])}',
+                "preselectionItems": order_info["ordered_items"]["preselection_items"],
+                "customItems": order_info["ordered_items"]["custom_items"],
+                "firstName": customer_info.first_name,
+                "lastName": customer_info.last_name,
+                "mobile": customer_info.mobile,
+                "email": customer_info.email
+            }
+
+            # Only append subtotalAfterDiscount if there is a discount
+            if order_info["subtotal_after_discount"] < order_info["subtotal"]:
+                template_data.update({
+                    "subtotalAfterDiscount": f'${format_number(order_info["subtotal_after_discount"])}'
+                })
 
         email.dynamic_template_data = template_data
 

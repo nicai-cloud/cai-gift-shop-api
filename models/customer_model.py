@@ -14,7 +14,6 @@ class CustomerModel(Base, SerializerMixin):
     last_name = Column(String, nullable=False)
     mobile = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    address = Column(String, nullable=False)
 
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())

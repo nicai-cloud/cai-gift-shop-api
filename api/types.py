@@ -59,7 +59,7 @@ class Shipment:
 
 
 @dataclass
-class ShippingMethod:
+class FulfillmentMethod:
     id: int
     name: str
     fee: Decimal
@@ -91,7 +91,6 @@ class Customer:
     last_name: str
     mobile: str
     email: str
-    address: str
 
 
 @dataclass
@@ -103,7 +102,8 @@ class Order:
     subtotal_after_discount: Decimal
     shipping_cost: Decimal
     order_number: str
-    shipping_method: int
+    fulfillment_method: int
+    delivery_address: str | None
     coupon_id: str | None
 
 

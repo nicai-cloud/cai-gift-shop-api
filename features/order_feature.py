@@ -2,14 +2,14 @@ import logging
 from decimal import Decimal
 from uuid import UUID
 
-from api.request_payload_types import OrderItemRequetsPayload
-from api.types import Bag, Item, Order, ShippingMethod
+from api.request_types import OrderItemRequets
+from api.types import Bag, Item, Order, FulfillmentMethod
 from models.order_model import OrderModel
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
-from infrastructure.shipping_method_repo import ShippingMethodRepo
+from infrastructure.fulfillment_method_repo import FulfillmentMethodRepo
 from infrastructure.coupon_repo import CouponRepo
 from infrastructure.work_management import WorkManager
 from utils.generate_order_number import generate_order_number
@@ -25,7 +25,7 @@ class OrderFeature:
         self.preselection_repo = work_manager.get(PreselectionRepo)
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
-        self.shipping_method_repo = work_manager.get(ShippingMethodRepo)
+        self.fulfillment_method_repo = work_manager.get(FulfillmentMethodRepo)
         self.coupon_repo = work_manager.get(CouponRepo)
     
     async def create_order(self,
@@ -34,7 +34,8 @@ class OrderFeature:
         discount: Decimal | None,
         subtotal_after_discount: Decimal | None,
         shipping_cost: Decimal,
-        shipping_method: int,
+        fulfillment_method: int,
+        delivery_address: str | None,
         coupon_id: str | None
     ) -> tuple[UUID, str]:
         try:
@@ -46,7 +47,8 @@ class OrderFeature:
             order.subtotal_after_discount = subtotal_after_discount
             order.shipping_cost = shipping_cost
             order.order_number = order_number
-            order.shipping_method = shipping_method
+            order.fulfillment_method = fulfillment_method
+            order.delivery_address = delivery_address
             order.coupon_id = coupon_id
             await self.order_repo.add(order)
             return order.id, order_number
@@ -68,7 +70,7 @@ class OrderFeature:
             subtotal += price * order_item.quantity
         return (subtotal, subtotal * (Decimal(1) - Decimal(discount_percentage) / Decimal(100)))
 
-    async def calculate_order_quantities(self, order_items: list[OrderItemRequetsPayload]) -> tuple[dict, dict]:
+    async def calculate_order_quantities(self, order_items: list[OrderItemRequets]) -> tuple[dict, dict]:
         bag_quantities = {}
         item_quantities = {}
         for order_item in order_items:
@@ -86,11 +88,11 @@ class OrderFeature:
         
         return bag_quantities, item_quantities
 
-    async def calculate_shipping_cost(self, shipping_method_id: int, subtotal: Decimal) -> Decimal:
+    async def calculate_shipping_cost(self, fulfillment_method_id: int, subtotal: Decimal) -> Decimal:
         free_shipping_threshold = int(get("FREE_SHIPPING_THRESHOLD"))
-        shipping_method_obj = await self.shipping_method_repo.get_by_id(shipping_method_id)
-        shipping_method = ShippingMethod(**shipping_method_obj)
-        return shipping_method.discount_fee if subtotal >= free_shipping_threshold else shipping_method.fee
+        fulfillment_method_obj = await self.fulfillment_method_repo.get_by_id(fulfillment_method_id)
+        fulfillment_method = FulfillmentMethod(**fulfillment_method_obj)
+        return fulfillment_method.discount_fee if subtotal >= free_shipping_threshold else fulfillment_method.fee
 
     async def get_orders(self) -> list[Order]:
         try:

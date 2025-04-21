@@ -20,7 +20,7 @@ from api.customer import CustomerRequestHandler
 from api.order import OrderRequestHandler
 from api.order_item import OrderItemRequestHandler
 from api.shipment import ShipmentRequestHandler
-from api.shipping_method import ShippingMethodRequestHandler
+from api.fulfillment_method import FulfillmentMethodRequestHandler
 from api.coupon import CouponRequestHandler
 from api.image import ImageRequestHandler
 from utils.json_dumps_default import json_dumps_default
@@ -35,7 +35,7 @@ from infrastructure.item_repo import ItemRepo, construct_postgres_item_repo
 from infrastructure.inventory_repo import InventoryRepo, construct_postgres_inventory_repo
 from infrastructure.inventory_transaction_repo import InventoryTransactionRepo, construct_postgres_inventory_transaction_repo
 from infrastructure.shipment_repo import ShipmentRepo, construct_postgres_shipment_repo
-from infrastructure.shipping_method_repo import ShippingMethodRepo, construct_postgres_shipping_method_repo
+from infrastructure.fulfillment_method_repo import FulfillmentMethodRepo, construct_postgres_fulfillment_method_repo
 from infrastructure.coupon_repo import CouponRepo, construct_postgres_coupon_repo
 from infrastructure.work_management import WorkManager, WorkManagementMiddleware
 
@@ -58,7 +58,7 @@ def create_api():
     work_manager.register(InventoryRepo, construct_postgres_inventory_repo)
     work_manager.register(InventoryTransactionRepo, construct_postgres_inventory_transaction_repo)
     work_manager.register(ShipmentRepo, construct_postgres_shipment_repo)
-    work_manager.register(ShippingMethodRepo, construct_postgres_shipping_method_repo)
+    work_manager.register(FulfillmentMethodRepo, construct_postgres_fulfillment_method_repo)
     work_manager.register(CouponRepo, construct_postgres_coupon_repo)
     
     cors_allowed_origins = get("CORS_ALLOWED_ORIGINS").split(";")
@@ -151,8 +151,8 @@ def create_api():
     )
 
     app.add_sink(
-        ShippingMethodRequestHandler(work_manager),
-        prefix=re.compile("^/shipping-methods(?P<path>/?.*)$"),
+        FulfillmentMethodRequestHandler(work_manager),
+        prefix=re.compile("^/fulfillment-methods(?P<path>/?.*)$"),
     )
 
     app.add_sink(

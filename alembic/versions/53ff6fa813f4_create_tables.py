@@ -1,8 +1,8 @@
-"""Create initial tables
+"""Create tables
 
-Revision ID: 0a9f02368705
+Revision ID: 53ff6fa813f4
 Revises: 
-Create Date: 2025-03-26 14:40:31.845828
+Create Date: 2025-04-21 19:47:12.164372
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '0a9f02368705'
+revision: str = '53ff6fa813f4'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -55,7 +55,18 @@ def upgrade() -> None:
     sa.Column('last_name', sa.String(), nullable=False),
     sa.Column('mobile', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
-    sa.Column('address', sa.String(), nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('id'),
+    schema='gift'
+    )
+    op.create_table('fulfillment_method',
+    sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('fee', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('discount_fee', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -90,18 +101,6 @@ def upgrade() -> None:
     sa.UniqueConstraint('id'),
     schema='gift'
     )
-    op.create_table('shipping_method',
-    sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('fee', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('discount_fee', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('id'),
-    schema='gift'
-    )
     op.create_table('inventory_transaction',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
@@ -123,14 +122,15 @@ def upgrade() -> None:
     sa.Column('subtotal_after_discount', sa.Numeric(precision=10, scale=2), nullable=True),
     sa.Column('shipping_cost', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('order_number', sa.String(), nullable=False),
-    sa.Column('shipping_method', sa.Integer(), nullable=False),
+    sa.Column('fulfillment_method', sa.Integer(), nullable=False),
+    sa.Column('delivery_address', sa.String(), nullable=True),
     sa.Column('coupon_id', postgresql.UUID(as_uuid=True), nullable=True),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['coupon_id'], ['gift.coupon.id'], ),
     sa.ForeignKeyConstraint(['customer_id'], ['gift.customer.id'], ),
-    sa.ForeignKeyConstraint(['shipping_method'], ['gift.shipping_method.id'], ),
+    sa.ForeignKeyConstraint(['fulfillment_method'], ['gift.fulfillment_method.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id'),
     schema='gift'
@@ -202,9 +202,9 @@ def downgrade() -> None:
     op.drop_index('idx_order_number_unique_if_not_deleted', table_name='order', schema='gift', postgresql_where=False)
     op.drop_table('order', schema='gift')
     op.drop_table('inventory_transaction', schema='gift')
-    op.drop_table('shipping_method', schema='gift')
     op.drop_table('item', schema='gift')
     op.drop_table('inventory', schema='gift')
+    op.drop_table('fulfillment_method', schema='gift')
     op.drop_table('customer', schema='gift')
     op.drop_table('coupon', schema='gift')
     op.drop_table('bag', schema='gift')

@@ -31,7 +31,8 @@ class OrderRepo(BaseRepository):
             OrderModel.subtotal_after_discount,
             OrderModel.shipping_cost,
             OrderModel.order_number,
-            OrderModel.shipping_method,
+            OrderModel.fulfillment_method,
+            OrderModel.delivery_address,
             OrderModel.coupon_id
         ).where(OrderModel.deleted_at.is_(None))
         result = await self.session.execute(orders_query)
@@ -48,7 +49,8 @@ class OrderRepo(BaseRepository):
                 OrderModel.subtotal_after_discount,
                 OrderModel.shipping_cost,
                 OrderModel.order_number,
-                OrderModel.shipping_method,
+                OrderModel.fulfillment_method,
+                OrderModel.delivery_address,
                 OrderModel.coupon_id
             ).where(and_(OrderModel.deleted_at.is_(None), OrderModel.id == order_id))
             

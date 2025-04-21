@@ -13,14 +13,13 @@ class CustomerFeature:
     def __init__(self, work_manager: WorkManager):
         self.customer_repo = work_manager.get(CustomerRepo)
     
-    async def create_customer(self, first_name: str, last_name: str, email: str, mobile: str, address: str) -> UUID:
+    async def create_customer(self, first_name: str, last_name: str, email: str, mobile: str) -> UUID:
         try:
             customer = CustomerModel()
             customer.first_name = first_name
             customer.last_name = last_name
             customer.email = email
             customer.mobile = mobile
-            customer.address = address
             await self.customer_repo.add(customer)
             return customer.id
         except Exception as e:
