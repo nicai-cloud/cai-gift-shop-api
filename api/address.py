@@ -16,5 +16,4 @@ class AddressRequestHandler(RequestHandler):
             raise HTTPInternalServerError(description="Missing search")
         
         query = request_body["search"]
-        suggestions = await self.address_feature.get_address_suggestions(partial_text=query)
-        resp.media = {"addresses": suggestions}
+        resp.media = await self.address_feature.get_address_suggestions(partial_text=query)

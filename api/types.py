@@ -118,5 +118,10 @@ class OrderItem:
 
 
 @dataclass
+class AddressSuggestions:
+    addresses: list[str]
+
+
+@dataclass
 class PublishableKeyResponse:
     publishable_key: str
