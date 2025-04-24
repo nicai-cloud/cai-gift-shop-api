@@ -35,6 +35,13 @@ class CompleteOrderRequest:
 
 
 @dataclass(base_schema=APISchema)
+class CompletePickupOrderRequest:
+    customer_info: CustomerInfoRequest = field(metadata={"data_key": "customerInfo"})
+    order_items: list[OrderItemRequets] = field(metadata={"data_key": "orderItems"})
+    fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
+
+
+@dataclass(base_schema=APISchema)
 class OrderItemsRequest:
     order_items: list[OrderItemRequets] = field(metadata={"data_key": "orderItems"})
 

@@ -11,6 +11,7 @@ from api.health_check import HealthCheckRequestHandler
 from api.address import AddressRequestHandler
 from api.bag import BagRequestHandler
 from api.complete_order import CompleteOrderRequestHandler
+from api.complete_pickup_order import CompletePickupOrderRequestHandler
 from api.item import ItemRequestHandler
 from api.payment_method import PaymentMethodRequestHandler
 from api.preselection import PreselectionRequestHandler
@@ -98,6 +99,11 @@ def create_api():
     app.add_sink(
         CompleteOrderRequestHandler(work_manager),
         prefix=re.compile("^/complete-order(?P<path>/?.*)$"),
+    )
+
+    app.add_sink(
+        CompletePickupOrderRequestHandler(work_manager),
+        prefix=re.compile("^/complete-pickup-order(?P<path>/?.*)$"),
     )
 
     app.add_sink(
