@@ -168,7 +168,7 @@ Steps to create a new backend API in AWS:
             3. Container port: 443
             4. Port name: cai-gift-shop-443-tcp
             5. Resource allocation limits:
-                1. CPU - 0.8
+                1. CPU - 1
                 2. Memory hard limit - 0.8
             6. Add environment variables
             7. De-select "Use log collection"
