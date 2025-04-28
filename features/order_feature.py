@@ -15,6 +15,7 @@ from infrastructure.work_management import WorkManager
 from utils.generate_order_number import generate_order_number
 from utils.config import get
 from utils.format_number import format_number
+from utils.media import get_full_image_url
 
 LOG = logging.getLogger(__name__)
 
@@ -115,9 +116,9 @@ class OrderFeature:
             preselection = await self.preselection_repo.get_by_id(preselection_id)
             return {
                 "index": index,
-                "image_url": preselection["image_url"],
-                "name": preselection["name"],
-                "price": f'${format_number(preselection["price"] * quantity)}',
+                "image_url": get_full_image_url(preselection.image_url),
+                "name": preselection.name,
+                "price": f'${format_number(preselection.price * quantity)}',
                 "quantity": quantity
             }
         except Exception as e:

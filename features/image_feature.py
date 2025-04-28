@@ -1,10 +1,10 @@
 import logging
 
-from api.types import Bag, Item, Preselection
 from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.work_management import WorkManager
+from utils.media import get_full_image_url
 
 LOG = logging.getLogger(__name__)
 
@@ -19,13 +19,13 @@ class ImageFeature:
         images = []
         try:
             bags = await self.bag_repo.get_all()
-            images.extend(Bag(**bag).image_url for bag in bags)
+            images.extend(get_full_image_url(bag.image_url) for bag in bags)
 
             items = await self.item_repo.get_all()
-            images.extend(Item(**item).image_url for item in items)
+            images.extend(get_full_image_url(item.image_url) for item in items)
 
             preselections = await self.preselection_repo.get_all()
-            images.extend(Preselection(**preselection).image_url for preselection in preselections)
+            images.extend(get_full_image_url(preselection.image_url) for preselection in preselections)
 
             return images
         except Exception as e:
@@ -35,7 +35,7 @@ class ImageFeature:
         images = []
         try:
             preselections = await self.preselection_repo.get_all()
-            images.extend(Preselection(**preselection).image_url for preselection in preselections)
+            images.extend(get_full_image_url(preselection.image_url) for preselection in preselections)
 
             return images
         except Exception as e:
@@ -45,10 +45,10 @@ class ImageFeature:
         images = []
         try:
             bags = await self.bag_repo.get_all()
-            images.extend(Bag(**bag).image_url for bag in bags)
+            images.extend(get_full_image_url(bag.image_url) for bag in bags)
 
             items = await self.item_repo.get_all()
-            images.extend(Item(**item).image_url for item in items)
+            images.extend(get_full_image_url(item.image_url) for item in items)
 
             return images
         except Exception as e:
