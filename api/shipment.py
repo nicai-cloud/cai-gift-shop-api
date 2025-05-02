@@ -1,7 +1,8 @@
 from uuid import UUID
-from falcon import HTTPBadRequest, HTTP_OK, HTTPNotFound
+from falcon import HTTPBadRequest, HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from api.request_types import CreateShipmentRequest
 from features.shipment_feature import OrderNotFoundException, ShipmentFeature
 from features.email_feature import EmailFeature
@@ -26,7 +27,7 @@ class ShipmentRequestHandler(RequestHandler):
         order_id = req.params.get('orderId')
         shipment = await self.shipment_feature.get_shipment_by_order_id(UUID(order_id))
         if shipment is None:
-            raise HTTPNotFound(description="Shipment not found")
+            raise NotFound(detail=f"Shipment for order with order_id {order_id} not found.")
         
         resp.media = shipment
         resp.status = HTTP_OK

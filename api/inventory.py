@@ -1,6 +1,7 @@
-from falcon import HTTPBadRequest, HTTP_OK, HTTPNotFound
+from falcon import HTTPBadRequest, HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from api.request_types import OrderItemsRequest, RefillItemRequest
 from features.inventory_feature import InventoryFeature
 from infrastructure.work_management import WorkManager
@@ -30,7 +31,7 @@ class InventoryRequestHandler(RequestHandler):
             inventory = await self.inventory_feature.get_inventory_by_item_id(int(item_id))
 
         if inventory is None:
-            raise HTTPNotFound(description="Inventory not found")
+            raise NotFound(detail=f"Inventory of id ({id}) or bag_id ({bag_id}) or item_id ({item_id}) not found.")
     
         resp.media = inventory
         resp.status = HTTP_OK

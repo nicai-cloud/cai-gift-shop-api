@@ -1,6 +1,7 @@
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from features.preselection_feature import PreselectionFeature
 from infrastructure.work_management import WorkManager
 
@@ -20,7 +21,7 @@ class PreselectionRequestHandler(RequestHandler):
         preselection_name = req.params.get('name')
         preselection = await self.preselection_feature.get_preselection_by_name(preselection_name)
         if preselection is None:
-            raise HTTPNotFound(description="Preselection not found")
+            raise NotFound(detail=f"Preselection with preselection_name {preselection_name} not found.")
     
         resp.media = preselection
         resp.status = HTTP_OK

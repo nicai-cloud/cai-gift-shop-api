@@ -1,7 +1,8 @@
 from uuid import UUID
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from features.inventory_transaction_feature import InventoryTransactionFeature
 from infrastructure.work_management import WorkManager
 
@@ -21,7 +22,7 @@ class InventoryTransactionRequestHandler(RequestHandler):
         inventory_transaction = await self.inventory_transaction_feature.get_inventory_transaction_by_id(UUID(inventory_transaction_id))
         
         if inventory_transaction is None:
-            raise HTTPNotFound(description="Inventory Transaction not found")
+            raise NotFound(detail=f"Inventory Transaction with inventory_transaction_id {inventory_transaction_id} not found.")
     
         resp.media = inventory_transaction
         resp.status = HTTP_OK

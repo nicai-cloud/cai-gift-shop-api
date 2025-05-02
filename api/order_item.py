@@ -1,7 +1,8 @@
 from uuid import UUID
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from features.order_item_feature import OrderItemFeature
 from infrastructure.work_management import WorkManager
 
@@ -20,7 +21,7 @@ class OrderItemRequestHandler(RequestHandler):
     async def get_order_item(self, req, resp, order_item_id):
         order_item = await self.order_item_feature.get_order_item_by_id(UUID(order_item_id))
         if order_item is None:
-            raise HTTPNotFound(description="Order item not found")
+            raise NotFound(detail=f"Order item with order_item_id {order_item_id} not found.")
 
         resp.media = order_item
         resp.status = HTTP_OK

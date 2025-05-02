@@ -1,6 +1,7 @@
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from features.fulfillment_method_feature import FulfillmentMethodFeature
 from infrastructure.work_management import WorkManager
 from utils.config import get
@@ -21,7 +22,7 @@ class FulfillmentMethodRequestHandler(RequestHandler):
     async def get_fulfillment_method_by_id(self, req, resp, id):
         fulfillment_method = await self.fulfillment_method_feature.get_fulfillment_method_by_id(id)
         if fulfillment_method is None:
-            raise HTTPNotFound(description="Fulfillment method not found")
+            raise NotFound(detail=f"Fulfillment method id {id} not found.")
         
         resp.media = fulfillment_method
         resp.status = HTTP_OK

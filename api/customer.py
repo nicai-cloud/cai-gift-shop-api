@@ -1,7 +1,8 @@
 from uuid import UUID
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from features.customer_feature import CustomerFeature
 from infrastructure.work_management import WorkManager
 
@@ -20,7 +21,7 @@ class CustomerRequestHandler(RequestHandler):
     async def get_customer(self, req, resp, customer_id):
         customer = await self.customer_feature.get_customer_by_id(UUID(customer_id))
         if customer is None:
-            raise HTTPNotFound(description="Customer not found")
+            raise NotFound(detail=f"Customer with customer_id {customer_id} not found.")
 
         resp.media = customer
         resp.status = HTTP_OK

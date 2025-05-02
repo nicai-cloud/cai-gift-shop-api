@@ -1,6 +1,7 @@
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from features.item_feature import ItemFeature
 from infrastructure.work_management import WorkManager
 
@@ -24,7 +25,7 @@ class ItemRequestHandler(RequestHandler):
     async def get_item(self, req, resp, item_id):
         item = await self.item_feature.get_item(int(item_id))
         if item is None:
-            raise HTTPNotFound(description="Item not found")
+            raise NotFound(detail=f"Item with item_id {item_id} not found.")
 
         resp.media = item
         resp.status = HTTP_OK

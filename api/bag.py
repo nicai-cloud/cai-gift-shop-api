@@ -1,6 +1,7 @@
-from falcon import HTTP_OK, HTTPNotFound
+from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
+from api.errors import NotFound
 from features.bag_feature import BagFeature
 from infrastructure.work_management import WorkManager
 
@@ -19,7 +20,7 @@ class BagRequestHandler(RequestHandler):
     async def get_bag(self, req, resp, bag_id):
         bag = await self.bag_feature.get_bag_by_id(int(bag_id))
         if bag is None:
-            raise HTTPNotFound(description="Bag not found")
+            raise NotFound(detail=f"Bag with bag_id {bag_id} not found.")
 
         resp.media = bag
         resp.status = HTTP_OK
