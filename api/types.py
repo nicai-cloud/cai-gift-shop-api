@@ -118,6 +118,39 @@ class OrderItem:
 
 
 @dataclass
+class PreselectionItem:
+    index: int
+    image_url: str
+    name: str
+    price: str
+    quantity: int
+
+
+@dataclass
+class CustomItem:
+    index: int
+    name: str
+    price: str
+    quantity: int
+
+
+@dataclass
+class OrderedItems:
+    preselection_items: list[PreselectionItem]
+    custom_items: list[CustomItem]
+
+
+@dataclass
+class OrderInfo:
+    order_number: str
+    subtotal: Decimal
+    subtotal_after_discount: Decimal
+    shipping_cost: Decimal
+    order_total: Decimal
+    ordered_items: OrderedItems
+
+
+@dataclass
 class AddressSuggestions:
     addresses: list[str]
 

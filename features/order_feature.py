@@ -3,7 +3,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from api.request_types import OrderItemRequets
-from api.types import Bag, Item, Order, FulfillmentMethod
+from api.types import Bag, CustomItem, Item, Order, FulfillmentMethod, OrderInfo, OrderedItems, PreselectionItem
 from models.order_model import OrderModel
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
@@ -111,35 +111,35 @@ class OrderFeature:
         except Exception as e:
             LOG.exception("Unable to get order due to unexpected error", exc_info=e)
 
-    async def generate_preselection_item_payload(self, index: int, quantity: int, preselection_id: int):
+    async def generate_preselection_item(self, index: int, quantity: int, preselection_id: int) -> PreselectionItem:
         try:
             preselection = await self.preselection_repo.get_by_id(preselection_id)
-            return {
-                "index": index,
-                "image_url": get_full_image_url(preselection.image_url),
-                "name": preselection.name,
-                "price": f'${format_number(preselection.price * quantity)}',
-                "quantity": quantity
-            }
+            return PreselectionItem(
+                index=index,
+                image_url=get_full_image_url(preselection.image_url),
+                name=preselection.name,
+                price=f'${format_number(preselection.price * quantity)}',
+                quantity=quantity
+            )
         except Exception as e:
             LOG.exception("Unable to get preselection item due to unexpected error", exc_info=e)
 
-    async def generate_custom_item_payload(self, index: int, quantity: int, bag_id: int, item_ids: list[int]):
+    async def generate_custom_item(self, index: int, quantity: int, bag_id: int, item_ids: list[int]) -> CustomItem:
         try:
             bag = Bag(**(await self.bag_repo.get_by_id(bag_id)))
             items = [Item(**(await self.item_repo.get_by_id(item_id))) for item_id in item_ids]
             unit_price = bag.price + sum(item.price for item in items)
             name = bag.name + ' + ' + ' + '.join([f"{item.name} {item.product}" for item in items])
-            return {
-                "index": index,
-                "name": name,
-                "quantity": quantity,
-                "price": f"${format_number(unit_price * quantity)}"
-            }
+            return CustomItem(
+                index=index,
+                name=name,
+                price=f"${format_number(unit_price * quantity)}",
+                quantity=quantity
+            )
         except Exception as e:
             LOG.exception("Unable to get custom item due to unexpected error", exc_info=e)
 
-    async def generate_order_info(self, order_number: str, order_items: dict,  subtotal: Decimal, subtotal_after_discount: Decimal, shipping_cost: Decimal, order_total: Decimal) -> dict:
+    async def generate_order_info(self, order_number: str, order_items: dict,  subtotal: Decimal, subtotal_after_discount: Decimal, shipping_cost: Decimal, order_total: Decimal) -> OrderInfo:
         ordered_preselection_items = []
         ordered_custom_items = []
         preselection_index, custom_index = 1, 1
@@ -147,23 +147,22 @@ class OrderFeature:
             quantity = order_item.quantity
 
             if order_item.preselection_id:
-                preselection_item = await self.generate_preselection_item_payload(preselection_index, quantity, order_item.preselection_id)
+                preselection_item = await self.generate_preselection_item(preselection_index, quantity, order_item.preselection_id)
                 preselection_index += 1
                 ordered_preselection_items.append(preselection_item)
             else:
-                custom_item = await self.generate_custom_item_payload(custom_index, quantity, order_item.bag_id, order_item.item_ids)
+                custom_item = await self.generate_custom_item(custom_index, quantity, order_item.bag_id, order_item.item_ids)
                 custom_index += 1
                 ordered_custom_items.append(custom_item)
 
-        order_info = {
-            "order_number": order_number,
-            "subtotal": subtotal,
-            "subtotal_after_discount": subtotal_after_discount,
-            "shipping_cost": shipping_cost,
-            "order_total": order_total,
-            "ordered_items": {
-                "preselection_items": ordered_preselection_items,
-                "custom_items": ordered_custom_items
-            }
-        }
-        return order_info
+        return OrderInfo(
+            order_number=order_number,
+            subtotal=subtotal,
+            subtotal_after_discount=subtotal_after_discount,
+            shipping_cost=shipping_cost,
+            order_total=order_total,
+            ordered_items=OrderedItems(
+                preselection_items=ordered_preselection_items,
+                custom_items=ordered_custom_items
+            )
+        )

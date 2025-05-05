@@ -1,3 +1,4 @@
+from dataclasses import asdict
 import boto3
 import logging
 import os
@@ -34,11 +35,11 @@ class EmailFeature:
             email.template_id = get("PICKUP_ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
 
             template_data = {
-                "orderNumber": order_info["order_number"],
-                "subtotal": f'${format_number(order_info["subtotal"])}',
-                "orderTotal": f'${format_number(order_info["order_total"])}',
-                "preselectionItems": order_info["ordered_items"]["preselection_items"],
-                "customItems": order_info["ordered_items"]["custom_items"],
+                "orderNumber": order_info.order_number,
+                "subtotal": f'${format_number(order_info.subtotal)}',
+                "orderTotal": f'${format_number(order_info.order_total)}',
+                "preselectionItems": [asdict(preselection_item) for preselection_item in order_info.ordered_items.preselection_items],
+                "customItems": [asdict(custom_item) for custom_item in order_info.ordered_items.custom_items],
                 "firstName": customer_info.first_name,
                 "lastName": customer_info.last_name,
                 "mobile": customer_info.mobile,
@@ -48,12 +49,12 @@ class EmailFeature:
             email.template_id = get("ORDER_CONFIRMATION_EMAIL_TEMPLATE_ID")
 
             template_data = {
-                "orderNumber": order_info["order_number"],
-                "subtotal": f'${format_number(order_info["subtotal"])}',
-                "shippingCost": "Free" if order_info["shipping_cost"] == 0 else f'${format_number(order_info["shipping_cost"])}',
-                "orderTotal": f'${format_number(order_info["order_total"])}',
-                "preselectionItems": order_info["ordered_items"]["preselection_items"],
-                "customItems": order_info["ordered_items"]["custom_items"],
+                "orderNumber": order_info.order_number,
+                "subtotal": f'${format_number(order_info.subtotal)}',
+                "shippingCost": "Free" if order_info.shipping_cost == 0 else f'${format_number(order_info.shipping_cost)}',
+                "orderTotal": f'${format_number(order_info.order_total)}',
+                "preselectionItems": [asdict(preselection_item) for preselection_item in order_info.ordered_items.preselection_items],
+                "customItems": [asdict(custom_item) for custom_item in order_info.ordered_items.custom_items],
                 "firstName": customer_info.first_name,
                 "lastName": customer_info.last_name,
                 "mobile": customer_info.mobile,
@@ -61,9 +62,9 @@ class EmailFeature:
             }
 
             # Only append subtotalAfterDiscount if there is a discount
-            if order_info["subtotal_after_discount"] < order_info["subtotal"]:
+            if order_info.subtotal_after_discount < order_info.subtotal:
                 template_data.update({
-                    "subtotalAfterDiscount": f'${format_number(order_info["subtotal_after_discount"])}'
+                    "subtotalAfterDiscount": f'${format_number(order_info.subtotal_after_discount)}'
                 })
 
         email.dynamic_template_data = template_data
