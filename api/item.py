@@ -1,4 +1,4 @@
-from falcon import HTTP_OK
+from falcon import HTTPBadRequest, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
@@ -26,7 +26,15 @@ class ItemRequestHandler(RequestHandler):
 
     @route.get("/{item_id}", auth_exempt=True)
     async def get_item(self, req, resp, item_id):
-        item = await self.item_feature.get_item(int(item_id))
+        try:
+            item_id = int(item_id)
+        except ValueError:
+            raise HTTPBadRequest(
+                title="Invalid parameter",
+                description="The 'item_id' must be a valid integer."
+            )
+
+        item = await self.item_feature.get_item(item_id)
         if item is None:
             raise NotFound(detail=f"Item with item_id {item_id} not found.")
 

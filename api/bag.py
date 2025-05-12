@@ -1,4 +1,4 @@
-from falcon import HTTP_OK
+from falcon import HTTPBadRequest, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
@@ -20,7 +20,15 @@ class BagRequestHandler(RequestHandler):
 
     @route.get("/{bag_id}", auth_exempt=True)
     async def get_bag(self, req, resp, bag_id):
-        bag = await self.bag_feature.get_bag_by_id(int(bag_id))
+        try:
+            bag_id = int(bag_id)
+        except ValueError:
+            raise HTTPBadRequest(
+                title="Invalid parameter",
+                description="The 'bag_id' must be a valid integer."
+            )
+
+        bag = await self.bag_feature.get_bag_by_id(bag_id)
         if bag is None:
             raise NotFound(detail=f"Bag with bag_id {bag_id} not found.")
 
