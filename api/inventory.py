@@ -27,11 +27,32 @@ class InventoryRequestHandler(RequestHandler):
         item_id = req.params.get('item-id')
         inventory = None
         if id:
-            inventory = await self.inventory_feature.get_inventory_by_id(int(id))
+            try:
+                id = int(id)
+            except ValueError:
+                raise HTTPBadRequest(
+                    title="Invalid parameter",
+                    description="The 'id' must be a valid integer."
+                )
+            inventory = await self.inventory_feature.get_inventory_by_id(id)
         elif bag_id:
-            inventory = await self.inventory_feature.get_inventory_by_bag_id(int(bag_id))
+            try:
+                bag_id = int(bag_id)
+            except ValueError:
+                raise HTTPBadRequest(
+                    title="Invalid parameter",
+                    description="The 'bag_id' must be a valid integer."
+                )
+            inventory = await self.inventory_feature.get_inventory_by_bag_id(bag_id)
         elif item_id:
-            inventory = await self.inventory_feature.get_inventory_by_item_id(int(item_id))
+            try:
+                item_id = int(item_id)
+            except ValueError:
+                raise HTTPBadRequest(
+                    title="Invalid parameter",
+                    description="The 'item_id' must be a valid integer."
+                )
+            inventory = await self.inventory_feature.get_inventory_by_item_id(item_id)
 
         if inventory is None:
             raise NotFound(detail=f"Inventory of id ({id}) or bag-id ({bag_id}) or item-id ({item_id}) not found.")
