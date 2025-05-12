@@ -1,5 +1,5 @@
 from uuid import UUID
-from falcon import HTTP_OK
+from falcon import HTTPBadRequest, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
@@ -21,7 +21,15 @@ class CustomerRequestHandler(RequestHandler):
 
     @route.get("/{customer_id}", auth_exempt=True)
     async def get_customer(self, req, resp, customer_id):
-        customer = await self.customer_feature.get_customer_by_id(UUID(customer_id))
+        try:
+            customer_id = UUID(customer_id)
+        except ValueError:
+            raise HTTPBadRequest(
+                title="Invalid parameter",
+                description="The 'customer_id' must be a valid UUID."
+            )
+
+        customer = await self.customer_feature.get_customer_by_id(customer_id)
         if customer is None:
             raise NotFound(detail=f"Customer with customer_id {customer_id} not found.")
 

@@ -1,5 +1,5 @@
 from uuid import UUID
-from falcon import HTTP_OK
+from falcon import HTTPBadRequest, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
@@ -21,7 +21,15 @@ class OrderRequestHandler(RequestHandler):
 
     @route.get("/{order_id}", auth_exempt=True)
     async def get_order(self, req, resp, order_id):
-        order = await self.order_feature.get_order_by_id(UUID(order_id))
+        try:
+            order_id = UUID(order_id)
+        except ValueError:
+            raise HTTPBadRequest(
+                title="Invalid parameter",
+                description="The 'order_id' must be a valid UUID."
+            )
+
+        order = await self.order_feature.get_order_by_id(order_id)
         if order is None:
             raise NotFound(detail=f"Order with order_id {order_id} not found.")
     

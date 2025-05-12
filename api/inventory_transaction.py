@@ -1,5 +1,5 @@
 from uuid import UUID
-from falcon import HTTP_OK
+from falcon import HTTPBadRequest, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
@@ -21,7 +21,15 @@ class InventoryTransactionRequestHandler(RequestHandler):
 
     @route.get("/{inventory_transaction_id}", auth_exempt=True)
     async def get_inventory_transaction_by_id(self, req, resp, inventory_transaction_id):
-        inventory_transaction = await self.inventory_transaction_feature.get_inventory_transaction_by_id(UUID(inventory_transaction_id))
+        try:
+            inventory_transaction_id = UUID(inventory_transaction_id)
+        except ValueError:
+            raise HTTPBadRequest(
+                title="Invalid parameter",
+                description="The 'inventory_transaction_id' must be a valid UUID."
+            )
+
+        inventory_transaction = await self.inventory_transaction_feature.get_inventory_transaction_by_id(inventory_transaction_id)
         
         if inventory_transaction is None:
             raise NotFound(detail=f"Inventory Transaction with inventory_transaction_id {inventory_transaction_id} not found.")
