@@ -1,6 +1,7 @@
-from falcon import HTTPInternalServerError
+from falcon import HTTP_OK, HTTPInternalServerError
 
 from api.base import RequestHandler, route
+from api.response_types import GetAddressSuggestionsResponse
 from features.address_feature import AddressFeature
 
 
@@ -16,4 +17,6 @@ class AddressRequestHandler(RequestHandler):
             raise HTTPInternalServerError(description="Missing search")
         
         query = request_body["search"]
-        resp.media = await self.address_feature.get_address_suggestions(partial_text=query)
+        addresses = await self.address_feature.get_address_suggestions(partial_text=query)
+        resp.media = GetAddressSuggestionsResponse(addresses=addresses)
+        resp.status = HTTP_OK

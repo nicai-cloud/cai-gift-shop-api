@@ -3,6 +3,7 @@ from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
+from api.response_types import GetInventoryTransactionsResponse, GetInventoryTransactionResponse
 from features.inventory_transaction_feature import InventoryTransactionFeature
 from infrastructure.work_management import WorkManager
 
@@ -14,7 +15,8 @@ class InventoryTransactionRequestHandler(RequestHandler):
 
     @route.get("/", auth_exempt=True)
     async def get_inventory_transactions(self, req, resp):
-        resp.media = await self.inventory_transaction_feature.get_inventory_transactions()
+        inventory_transactions = await self.inventory_transaction_feature.get_inventory_transactions()
+        resp.media = GetInventoryTransactionsResponse(inventory_transactions=inventory_transactions)
         resp.status = HTTP_OK
 
     @route.get("/{inventory_transaction_id}", auth_exempt=True)
@@ -24,5 +26,5 @@ class InventoryTransactionRequestHandler(RequestHandler):
         if inventory_transaction is None:
             raise NotFound(detail=f"Inventory Transaction with inventory_transaction_id {inventory_transaction_id} not found.")
     
-        resp.media = inventory_transaction
+        resp.media = GetInventoryTransactionResponse(inventory_transaction=inventory_transaction)
         resp.status = HTTP_OK

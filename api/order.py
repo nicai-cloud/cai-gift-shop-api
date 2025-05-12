@@ -3,6 +3,7 @@ from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
+from api.response_types import GetOrderResponse, GetOrdersResponse
 from features.order_feature import OrderFeature
 from infrastructure.work_management import WorkManager
 
@@ -14,7 +15,8 @@ class OrderRequestHandler(RequestHandler):
 
     @route.get("/", auth_exempt=True)
     async def get_orders(self, req, resp):
-        resp.media = await self.order_feature.get_orders()
+        orders = await self.order_feature.get_orders()
+        resp.media = GetOrdersResponse(orders=orders)
         resp.status = HTTP_OK
 
     @route.get("/{order_id}", auth_exempt=True)
@@ -23,5 +25,5 @@ class OrderRequestHandler(RequestHandler):
         if order is None:
             raise NotFound(detail=f"Order with order_id {order_id} not found.")
     
-        resp.media = order
+        resp.media = GetOrderResponse(order=order)
         resp.status = HTTP_OK

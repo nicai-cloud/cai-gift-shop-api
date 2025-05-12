@@ -148,13 +148,3 @@ class OrderInfo:
     shipping_cost: Decimal
     order_total: Decimal
     ordered_items: OrderedItems
-
-
-@dataclass
-class AddressSuggestions:
-    addresses: list[str]
-
-
-@dataclass
-class PublishableKeyResponse:
-    publishable_key: str

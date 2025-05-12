@@ -2,7 +2,7 @@ from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.request_types import CompleteOrderRequest, OrderItemsRequest
-from api.types import PublishableKeyResponse
+from api.response_types import CompleteOrderResponse, GetPublishableKeyResponse
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
 from features.email_feature import EmailFeature
@@ -48,7 +48,7 @@ class CompleteOrderRequestHandler(RequestHandler):
     
     @route.get("/publishable-key", auth_exempt=True)
     async def get_publishable_key(self, req, resp):
-        resp.media = PublishableKeyResponse(
+        resp.media = GetPublishableKeyResponse(
             publishable_key=get("STRIPE_PUBLISHABLE_KEY"),
         )
 
@@ -141,5 +141,5 @@ class CompleteOrderRequestHandler(RequestHandler):
         await self.email_feature.send_order_confirmation_email_to_customer(customer_info, order_info, fulfillment_method)
         await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
 
-        resp.media = {"order_number": order_number}
+        resp.media = CompleteOrderResponse(order_number=order_number)
         resp.status = HTTP_OK

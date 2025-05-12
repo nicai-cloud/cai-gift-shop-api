@@ -1,13 +1,12 @@
 import aiohttp
 from utils.config import get
-from api.types import AddressSuggestions
 
 
 class AddressFeature:
     def __init__(self):
         super().__init__()
 
-    async def get_address_suggestions(self, partial_text: str) -> AddressSuggestions:
+    async def get_address_suggestions(self, partial_text: str) -> list[str]:
         async with aiohttp.ClientSession() as session:
             url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json'
             params = {
@@ -23,6 +22,4 @@ class AddressFeature:
                     print(f"Autocomplete Error: {data.get('status')}")
                     return []
 
-                return AddressSuggestions(
-                    addresses=[p['description'] for p in data['predictions']]
-                )
+                return [p['description'] for p in data['predictions']]

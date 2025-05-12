@@ -48,7 +48,7 @@ class ItemFeature:
                 items_dict[item.product].append(item)
             return dict(items_dict)
         except Exception as e:
-            LOG.exception("Unable to get items due to unexpected error", exc_info=e)
+            LOG.exception("Unable to get items with product due to unexpected error", exc_info=e)
 
     async def get_item(self, item_id: int) -> Item | None:
         try:

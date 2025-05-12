@@ -2,6 +2,7 @@ from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
+from api.response_types import GetItemsResponse, GetItemResponse, GetItemsWithProductResponse
 from features.item_feature import ItemFeature
 from infrastructure.work_management import WorkManager
 
@@ -13,12 +14,14 @@ class ItemRequestHandler(RequestHandler):
 
     @route.get("/", auth_exempt=True)
     async def get_items(self, req, resp):
-        resp.media = await self.item_feature.get_items()
+        items = await self.item_feature.get_items()
+        resp.media = GetItemsResponse(items=items)
         resp.status = HTTP_OK
     
     @route.get("/with-product", auth_exempt=True)
     async def get_items_with_product(self, req, resp):
-        resp.media = await self.item_feature.get_items_with_product()
+        items_with_product = await self.item_feature.get_items_with_product()
+        resp.media = GetItemsWithProductResponse(items_with_product=items_with_product)
         resp.status = HTTP_OK
 
     @route.get("/{item_id}", auth_exempt=True)
@@ -27,5 +30,5 @@ class ItemRequestHandler(RequestHandler):
         if item is None:
             raise NotFound(detail=f"Item with item_id {item_id} not found.")
 
-        resp.media = item
+        resp.media = GetItemResponse(item=item)
         resp.status = HTTP_OK

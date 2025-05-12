@@ -2,6 +2,7 @@ from falcon import HTTP_OK
 
 from api.base import RequestHandler, route
 from api.errors import NotFound
+from api.response_types import GetPreselectionsResponse, GetPreselectionResponse
 from features.preselection_feature import PreselectionFeature
 from infrastructure.work_management import WorkManager
 
@@ -13,7 +14,8 @@ class PreselectionRequestHandler(RequestHandler):
 
     @route.get("/", auth_exempt=True)
     async def get_preselections(self, req, resp):
-        resp.media = await self.preselection_feature.get_preselections()
+        preselections = await self.preselection_feature.get_preselections()
+        resp.media = GetPreselectionsResponse(preselections=preselections)
         resp.status = HTTP_OK
 
     @route.get("/search", auth_exempt=True)
@@ -23,5 +25,5 @@ class PreselectionRequestHandler(RequestHandler):
         if preselection is None:
             raise NotFound(detail=f"Preselection with preselection_name {preselection_name} not found.")
     
-        resp.media = preselection
+        resp.media = GetPreselectionResponse(preselection=preselection)
         resp.status = HTTP_OK

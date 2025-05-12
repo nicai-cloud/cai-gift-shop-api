@@ -16,12 +16,12 @@ class InventoryFeature:
         self.inventory_repo = work_manager.get(InventoryRepo)
         self.inventory_transactoin_repo = work_manager.get(InventoryTransactionRepo)
     
-    async def get_inventories(self):
+    async def get_inventories(self) -> dict[str, dict[str, int]]:
         try:
             inventories = await self.inventory_repo.get_all()
             inventories_dict = defaultdict(dict[str, int])
             for inventory in inventories:
-                inventories_dict[inventory["entity_type"]].update({inventory["entity_id"]: inventory["current_stock"]})
+                inventories_dict[inventory["entity_type"]].update({str(inventory["entity_id"]): inventory["current_stock"]})
             return dict(inventories_dict)
         except Exception as e:
             LOG.exception("Unable to get inventories due to unexpected error", exc_info=e)
