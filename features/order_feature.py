@@ -71,7 +71,7 @@ class OrderFeature:
             subtotal += price * order_item.quantity
         return (subtotal, subtotal * (Decimal(1) - Decimal(discount_percentage) / Decimal(100)))
 
-    async def calculate_order_quantities(self, order_items: list[OrderItemRequets]) -> tuple[dict, dict]:
+    async def calculate_order_quantities(self, order_items: list[OrderItemRequets]) -> tuple[dict[int, int], dict[int, int]]:
         bag_quantities = {}
         item_quantities = {}
         for order_item in order_items:

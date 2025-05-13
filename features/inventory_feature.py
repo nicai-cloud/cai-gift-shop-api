@@ -118,15 +118,18 @@ class InventoryFeature:
         inventories = await self.get_inventories()
         bag_inventories = inventories["bag"]
         item_inventories = inventories["item"]
+
+        bag_id_inventories = {int(bag_id): stock for bag_id, stock in bag_inventories.items()}
+        item_id_inventories = {int(item_id): stock for item_id, stock in item_inventories.items()}
     
         # Check for bag availability
         for bag_id, bag_quantity in bag_quantities.items():
-            if bag_id not in bag_inventories or bag_quantity > bag_inventories[bag_id]:
+            if bag_id not in bag_id_inventories or bag_quantity > bag_id_inventories[bag_id]:
                 return False
         
         # Check for items availability
         for item_id, item_quantity in item_quantities.items():
-            if item_id not in item_inventories or item_quantity > item_inventories[item_id]:
+            if item_id not in item_id_inventories or item_quantity > item_id_inventories[item_id]:
                 return False
         
         return True
