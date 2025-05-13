@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from decimal import Decimal
 from api.types import Bag, Coupon, Customer, FulfillmentMethod, Inventory, InventoryTransaction, Item, Order, OrderItem, Preselection, Shipment
 
 
@@ -138,6 +139,12 @@ class GetCouponResponse:
 @dataclass
 class CompleteOrderResponse:
     order_number: str
+
+
+@dataclass
+class CalculateSubtotalResponse:
+    subtotal: Decimal
+    subtotal_after_discount: Decimal
 
 
 @dataclass

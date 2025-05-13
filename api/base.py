@@ -107,30 +107,6 @@ class AlreadyRegistered(Exception):
 
 
 class route:
-    """A decorator which allows methods of resource classes to be used as view functions
-    for specific routes. By default, all of the routes are authenticated.
-
-    This decorator will only work for classes which inherit from RequestHandler.
-
-    For example:
-
-    class ExampleRequestHandler(RequestHandler):
-        @route.get('/example')
-        async def example_route(self, req, resp):
-            resp.media = {"status": "ok"}
-
-        @route.post('/example')
-        async def example_route_post(self, req, resp):
-            body = await req.get_media()
-
-            await do_something_important(body)
-
-            resp.media = {"status": "ok"}
-
-        @route.get('/example_unauthenticated', auth_exempt=True)
-        async def example_route_unauthenticated(self, req, resp):
-            resp.media = {"status": "unauthenticated"}
-    """
 
     @staticmethod
     def _annotate_method(

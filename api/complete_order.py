@@ -2,7 +2,7 @@ from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 
 from api.base import RequestHandler, route
 from api.request_types import CompleteOrderRequest, OrderItemsRequest
-from api.response_types import CompleteOrderResponse, GetPublishableKeyResponse
+from api.response_types import CalculateSubtotalResponse, CompleteOrderResponse, GetPublishableKeyResponse
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
 from features.email_feature import EmailFeature
@@ -41,16 +41,15 @@ class CompleteOrderRequestHandler(RequestHandler):
 
         order_items = request_body.order_items
         subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items=order_items)
-        resp.media = {
-            "subtotal": subtotal,
-            "subtotalAfterDiscount": subtotal_after_discount
-        }
+        resp.media = CalculateSubtotalResponse(subtotal=subtotal, subtotal_after_discount=subtotal_after_discount)
+        resp.status = HTTP_OK
     
     @route.get("/publishable-key", auth_exempt=True)
     async def get_publishable_key(self, req, resp):
         resp.media = GetPublishableKeyResponse(
             publishable_key=get("STRIPE_PUBLISHABLE_KEY"),
         )
+        resp.status = HTTP_OK
 
     @route.post("/", auth_exempt=True)
     async def complete_order(self, req, resp):
