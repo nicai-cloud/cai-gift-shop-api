@@ -11,7 +11,7 @@ class AddressRequestHandler(RequestHandler):
         self.address_feature = AddressFeature()
 
     @route.post("/auto-complete", auth_exempt=True)
-    async def auto_complete_amazon(self, req, resp):
+    async def auto_complete_google(self, req, resp):
         request_body = await req.get_media()
         if "search" not in request_body:
             raise HTTPInternalServerError(description="Missing search")
