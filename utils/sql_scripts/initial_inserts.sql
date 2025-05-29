@@ -28,8 +28,8 @@ INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES
 INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES (3, '/custom/bag_kuromi.jpeg', NULL, 'Kuromi bag', 'bag', 1);
 INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES (4, '/custom/bag_cinnamoroll.jpeg', NULL, 'Cinnamoroll bag', 'bag', 1);
 INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES (5, '/custom/bag_my_melody.jpeg', NULL, 'My Melody bag', 'bag', 1);
-INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES (6, '/custom/bag_todo1.jpeg', NULL, 'TODO1 bag', 'bag', 1);
-INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES (7, '/custom/bag_todo2.jpeg', NULL, 'TODO2 bag', 'bag', 1);
+INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES (6, '/custom/bag_stella_lou.jpeg', NULL, 'Stella Lou bag', 'bag', 1);
+INSERT INTO gift.bag (id, image_url, video_url, name, description, price) VALUES (7, '/custom/bag_duffy_and_friends.jpeg', NULL, 'Duffy and friends bag', 'bag', 1);
 
 INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (1, '/custom/bricks1.jpeg', NULL, 'bricks', 'bricks1', 'bricks', 2.5);
 INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (2, '/custom/bricks2.jpeg', NULL, 'bricks', 'bricks2', 'bricks', 2.5);
@@ -62,16 +62,16 @@ INSERT INTO gift.item (id, image_url, video_url, product, name, description, pri
 INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (254, '/custom/squishy4.jpeg', NULL, 'squishy', 'squishy4', 'squishy', 1);
 INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (255, '/custom/squishy5.jpeg', NULL, 'squishy', 'squishy5', 'squishy', 1);
 INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (256, '/custom/squishy6.jpeg', NULL, 'squishy', 'squishy6', 'squishy', 1);
-INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (301, '/custom/stamp1.jpeg', NULL, 'stamp', 'stamp1', 'stamp', 3);
-INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (302, '/custom/stamp2.jpeg', NULL, 'stamp', 'stamp2', 'stamp', 3);
+INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (301, '/custom/stamp_pokemon.jpeg', NULL, 'stamp', 'Pokemon', 'stamp', 3);
+INSERT INTO gift.item (id, image_url, video_url, product, name, description, price) VALUES (302, '/custom/stamp_unicorn.jpeg', NULL, 'stamp', 'Unicorn', 'stamp', 3);
 
 INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (1, '/preselections/preselection_hello_kitty.jpeg', 'Hello Kitty bag', 'girls', 'Preselection Hello Kitty bag', 11, 2, '{151, 105, 252, 2, 51}');
 INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (2, '/preselections/preselection_cinnamoroll.jpeg', 'Cinnamoroll bag', 'boys', 'Preselection Cinnamoroll bag', 12, 4, '{152, 104, 8, 52, 201}');
 INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (3, '/preselections/preselection_pompompurin.jpeg', 'Pompompurin bag', 'boys', 'Preselection Pompompurin bag', 12, 1, '{152, 101, 253, 7, 202}');
 INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (4, '/preselections/preselection_my_melody.jpeg', 'My Melody bag', 'girls', 'Preselection My Melody bag', 11, 5, '{151, 103, 254, 2, 51}');
 INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (5, '/preselections/preselection_kuromi.jpeg', 'Kuromi bag', 'girls', 'Preselection Kuromi bag', 10, 3, '{106, 251, 10, 53, 202}');
-INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (6, '/preselections/preselection_todo1.jpeg', 'TODO1', 'girls', 'Preselection TODO1 bag', 10, 3, '{106, 251, 10, 53, 202}');
-INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (7, '/preselections/preselection_todo2.jpeg', 'TODO2', 'girls', 'Preselection TODO2 bag', 10, 3, '{106, 251, 10, 53, 202}');
+INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (6, '/preselections/preselection_stella_lou.jpeg', 'Stella Lou bag', 'girls', 'Preselection Stella Lou bag', 10, 6, '{101, 302, 11, 251, 202}');
+INSERT INTO gift.preselection (id, image_url, name, gender, description, price, bag_id, item_ids) VALUES (7, '/preselections/preselection_duffy_and_friends.jpeg', 'Duffy and friends bag', 'girls', 'Preselection Duffy and friends bag', 10, 7, '{106, 5, 255, 152, 302}');
 
 INSERT INTO gift.inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (1, 'bag', 1, 500, 50);
 INSERT INTO gift.inventory (id, entity_type, entity_id, current_stock, low_stock_threshold) VALUES (2, 'bag', 2, 500, 50);
