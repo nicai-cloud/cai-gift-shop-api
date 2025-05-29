@@ -7,7 +7,7 @@ from api.request_types import CreateShipmentRequest
 from api.response_types import CreateShipmentResponse, GetShipmentResponse, GetShipmentsResponse
 from features.order_feature import OrderFeature
 from features.shipment_feature import OrderNotFoundException, ShipmentFeature
-from features.email_feature import EmailFeature
+from features.resend_email_feature import ResendEmailFeature
 from infrastructure.work_management import WorkManager
 
 import marshmallow
@@ -18,7 +18,7 @@ class ShipmentRequestHandler(RequestHandler):
         super().__init__()
         self.shipment_feature = ShipmentFeature(work_manager)
         self.order_feature = OrderFeature(work_manager)
-        self.email_feature = EmailFeature()
+        self.resend_email_feature = ResendEmailFeature()
 
     @route.get("/", auth_exempt=True)
     async def get_shipments(self, req, resp):
@@ -94,8 +94,8 @@ class ShipmentRequestHandler(RequestHandler):
                 description="The order associated with the provided order_id is not found."
             )
         
-        # Send customer delivery email
-        await self.email_feature.send_delivery_email_to_customer(customer, order.delivery_address, tracking_number)
+        # Send customer order in transit email
+        await self.resend_email_feature.send_delivery_order_in_transit_email(customer, order.delivery_address, tracking_number)
 
         resp.media = CreateShipmentResponse(shipment_id=shipment_id)
         resp.status = HTTP_OK

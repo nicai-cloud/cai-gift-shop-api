@@ -35,7 +35,7 @@ EC2's public IP address.
 
 It is also worth nothing that the task definition's CPU and Memory hard/soft limit
 has to be less than that of EC2's, since the EC2 is almost guaranteed to have run
-something that consumes a bit of CPU and memory. (for example, 0.8 CPU and 0.8 memory
+something that consumes a bit of CPU and memory. (for example, 0.9 CPU and 0.9 memory
 for task definition with 1 CPU and 1 memory for EC2, t2.micro).
 
 1. To run the backend API in http mode, docker build with Dockerfile
@@ -159,20 +159,19 @@ Steps to create a new backend API in AWS:
         2. Architecture - Linux/X86_64
         3. Network mode - host
         4. CPU - 1 vCPU
-        5. Memory - 0.8GB
-        6. Task role -
-        7. Task execution role - Create new role
-        8. Container - 1:
+        5. Task role -
+        6. Task execution role - Create new role
+        7. Container - 1:
             1. Name: Cai-gift-shop
             2. Image URI: 476114150599.dkr.ecr.ap-southeast-2.amazonaws.com/cai-gift-shop-api:1.0
             3. Container port: 443
             4. Port name: cai-gift-shop-443-tcp
             5. Resource allocation limits:
                 1. CPU - 1
-                2. Memory hard limit - 0.8
+                2. Memory hard limit - 0.9
             6. Add environment variables
-            7. De-select "Use log collection"
-        9. Add volume:
+            7. De-select "Use log collection" (Select it will be able to see logs inside CloudWatch)
+        8. Add volume:
             1. Volume name: certs-volume
             2. Configuration type - Configure at task definition creation
             3. Volume type - Bind mount
@@ -181,14 +180,13 @@ Steps to create a new backend API in AWS:
                 1. Container: Cai-gift-shop
                 2. Source volume: certs-volume
                 3. Container path: /app/certs/
-        10. Create the task definition
-        11. Create a new service with the above task definition
-        12. If the deployment failed, go to Cluster -> Cai-gift-shop-cluster -> Services -> cai-gift-shop-api -> Deployments -> See the Events at the bottom for error logs
+        9. Create the task definition
+        10. Create a new service with the above task definition
+        11. If the deployment failed, go to Cluster -> Cai-gift-shop-cluster -> Services -> cai-gift-shop-api -> Deployments -> See the Events at the bottom for error logs
+        12. If there are no obvious error logs in above point 12, then it is likely that it is a runtime error, which we can see inside CloudWatch
+        13. To enable CloudWatch logs, see above point 7.7.7 around "Use log collection"
 11. Create a Budget alert in the admin account:
     1. Go to "Billing and Cost Management" -> "Budgets" -> Click on "Create budget" -> Choose "Zero-Spend Budget"
 12. To use SES to send email:
     1. Go to SES and create an entity with "nicai.goodyhub@gmail.com", verify it when receiving email
     2. Go to IAM role ec2-role and attach AmazonSESFullAccess policy to it
-13. To use sendGrid to send email:
-    1. Setup email templates: In SendGrid, go to Email API -> Dynamic Templates -> Click on button "Create a Dynamic Template"
-    2. Add a new email sender: In SendGrid, go to Settings -> Sender Authentication -> Click on button "Verify a Single Sender"

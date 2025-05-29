@@ -5,14 +5,14 @@ from api.request_types import CompletePickupOrderRequest, OrderItemsRequest
 from api.response_types import CalculateSubtotalResponse, CompleteOrderResponse
 from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
-from features.email_feature import EmailFeature
+from features.resend_email_feature import ResendEmailFeature
+from features.ses_email_feature import SESEmailFeature
 from features.order_feature import OrderFeature
 from features.order_item_feature import OrderItemFeature
 from features.preselection_feature import PreselectionFeature
 from features.inventory_feature import InventoryFeature
 from features.coupon_feature import CouponFeature
 from infrastructure.work_management import WorkManager
-from utils.config import get
 
 import marshmallow
 
@@ -26,7 +26,8 @@ class CompletePickupOrderRequestHandler(RequestHandler):
         self.preselection_feature = PreselectionFeature(work_manager)
         self.inventory_feature = InventoryFeature(work_manager)
         self.payment_method_feature = PaymentMethodFeature()
-        self.email_feature = EmailFeature()
+        self.resend_email_feature = ResendEmailFeature()
+        self.ses_email_feature = SESEmailFeature()
         self.coupon_feature = CouponFeature(work_manager)
 
     @route.post("/calculate-subtotal", auth_exempt=True)
@@ -110,8 +111,8 @@ class CompletePickupOrderRequestHandler(RequestHandler):
         order_info = await self.order_feature.generate_order_info(order_number, order_items, subtotal, subtotal_after_discount, shipping_cost, order_total)
 
         # Send the successful order email to customer and myself
-        await self.email_feature.send_order_confirmation_email_to_customer(customer_info, order_info, fulfillment_method)
-        await self.email_feature.send_email_to_me(customer_id, order_number, order_id)
+        await self.resend_email_feature.send_order_confirmation_email(customer_info, order_info, fulfillment_method)
+        await self.ses_email_feature.send_email_to_me(first_name, last_name, customer_id, order_number, order_id)
 
         resp.media = CompleteOrderResponse(order_number=order_number)
         resp.status = HTTP_OK

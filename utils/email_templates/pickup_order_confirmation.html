@@ -1,0 +1,84 @@
+
+  <html>
+    <head>
+      <title></title>
+    </head>
+    <body>
+      <h1 style="text-align:center">ORDER CONFIRMATION</h1>
+      <p style="text-align:center">Dear {{firstName}} {{lastName}}</p>
+      <p style="text-align:center">Your order has been confirmed.</p>
+      <p style="text-align:center">We will email you as soon as your ordered items are ready for pickup.</p>
+      <hr style="width: 100%; margin-left: 0"/>
+      <h2>Order Summary</h2>
+      <p>Order number: {{orderNumber}}</p>
+      {% if preselectionItems %}
+        <h3>Surprise bags:</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tbody>
+            {% for item in preselectionItems %}
+            <tr>
+              <td>
+                <p>Bag {{item.index}} x {{item.quantity}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td width="100px">
+                <img src="{{item.image_url}}" alt="{{item.name}}" style="width: 80px; height: auto; border: 1px solid #ddd; border-radius: 4px;">
+              </td>
+              <td>{{item.name}}</td>
+              <td style="text-align: right;">{{price}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+      <br />
+      {% if customItems %}
+        <h3>Custom bags:</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tbody>
+          {% for item in customItems %}
+            <tr>
+              <td>
+                <p>Bag {{item.index}} x {{item.quantity}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>{{item.name}}</td>
+              <td style="text-align: right;">{{item.price}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+      <br />
+      <hr style="width: 100%; margin-left: 0"/>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tbody>
+          {% if subtotalAfterDiscount %}
+          <tr>
+            <td></td>
+            <td style="text-align: right; text-decoration: line-through;">{{subtotal}}</td>
+          </tr>
+          <tr>
+            <td><h3>Subtotal</h3></td>
+            <td style="text-align: right;">{{subtotalAfterDiscount}}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td><h3>Subtotal</h3></td>
+            <td style="text-align: right;">{{subtotal}}</td>
+          </tr>
+          {% endif %}
+          <tr>
+            <td><h3>Shipping</h3></td>
+            <td style="text-align: right;">{{shippingCost}}</td>
+          </tr>
+          <tr>
+            <td><h3>Order Total</h3></td>
+            <td style="text-align: right;">{{orderTotal}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </body>
+  </html>
