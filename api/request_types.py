@@ -17,7 +17,7 @@ class CustomerInfoRequest:
 
 
 @dataclass(base_schema=APISchema)
-class OrderItemRequets:
+class OrderItemRequest:
     quantity: int
     preselection_id: int | None = field(metadata={"data_key": "preselectionId"})
     bag_id: int | None = field(metadata={"data_key": "bagId"})
@@ -27,7 +27,7 @@ class OrderItemRequets:
 @dataclass(base_schema=APISchema)
 class CompleteOrderRequest:
     customer_info: CustomerInfoRequest = field(metadata={"data_key": "customerInfo"})
-    order_items: list[OrderItemRequets] = field(metadata={"data_key": "orderItems"})
+    order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
     fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
     delivery_address: str | None = field(metadata={"data_key": "deliveryAddress"})
     coupon_code: str | None = field(metadata={"data_key": "couponCode"})
@@ -37,13 +37,13 @@ class CompleteOrderRequest:
 @dataclass(base_schema=APISchema)
 class CompletePickupOrderRequest:
     customer_info: CustomerInfoRequest = field(metadata={"data_key": "customerInfo"})
-    order_items: list[OrderItemRequets] = field(metadata={"data_key": "orderItems"})
+    order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
     fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
 
 
 @dataclass(base_schema=APISchema)
 class OrderItemsRequest:
-    order_items: list[OrderItemRequets] = field(metadata={"data_key": "orderItems"})
+    order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
 
 
 @dataclass(base_schema=APISchema)

@@ -2,7 +2,7 @@ import logging
 from decimal import Decimal
 from uuid import UUID
 
-from api.request_types import OrderItemRequets
+from api.request_types import OrderItemRequest
 from api.types import Bag, CustomItem, Item, Order, FulfillmentMethod, OrderInfo, OrderedItems, PreselectionItem
 from models.order_model import OrderModel
 from infrastructure.order_repo import OrderRepo
@@ -71,7 +71,7 @@ class OrderFeature:
             subtotal += price * order_item.quantity
         return (subtotal, subtotal * (Decimal(1) - Decimal(discount_percentage) / Decimal(100)))
 
-    async def calculate_order_quantities(self, order_items: list[OrderItemRequets]) -> tuple[dict[int, int], dict[int, int]]:
+    async def calculate_order_quantities(self, order_items: list[OrderItemRequest]) -> tuple[dict[int, int], dict[int, int]]:
         bag_quantities = {}
         item_quantities = {}
         for order_item in order_items:
