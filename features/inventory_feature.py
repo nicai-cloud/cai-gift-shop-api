@@ -114,7 +114,7 @@ class InventoryFeature:
             inventory_transaction.quantity = item_quantity
             await self.inventory_transactoin_repo.add(inventory_transaction)
 
-    async def check_stock_availability(self, bag_quantities, item_quantities):
+    async def check_stock_availability(self, ordered_bag_quantities, ordered_item_quantities):
         inventories = await self.get_inventories()
         bag_inventories = inventories["bag"]
         item_inventories = inventories["item"]
@@ -123,13 +123,13 @@ class InventoryFeature:
         item_id_inventories = {int(item_id): stock for item_id, stock in item_inventories.items()}
     
         # Check for bag availability
-        for bag_id, bag_quantity in bag_quantities.items():
-            if bag_id not in bag_id_inventories or bag_quantity > bag_id_inventories[bag_id]:
+        for ordered_bag_id, ordered_bag_quantity in ordered_bag_quantities.items():
+            if ordered_bag_id not in bag_id_inventories or ordered_bag_quantity > bag_id_inventories[ordered_bag_id]:
                 return False
         
         # Check for items availability
-        for item_id, item_quantity in item_quantities.items():
-            if item_id not in item_id_inventories or item_quantity > item_id_inventories[item_id]:
+        for ordered_item_id, ordered_item_quantity in ordered_item_quantities.items():
+            if ordered_item_id not in item_id_inventories or ordered_item_quantity > item_id_inventories[ordered_item_id]:
                 return False
         
         return True

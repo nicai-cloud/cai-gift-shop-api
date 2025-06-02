@@ -72,22 +72,22 @@ class OrderFeature:
         return (subtotal, subtotal * (Decimal(1) - Decimal(discount_percentage) / Decimal(100)))
 
     async def calculate_order_quantities(self, order_items: list[OrderItemRequest]) -> tuple[dict[int, int], dict[int, int]]:
-        bag_quantities = {}
-        item_quantities = {}
+        ordered_bag_quantities = {}
+        ordered_item_quantities = {}
         for order_item in order_items:
             quantity = order_item.quantity
 
             if order_item.preselection_id:
                 preselection = await self.preselection_repo.get_by_id(order_item.preselection_id)
-                bag_quantities[preselection.bag_id] = bag_quantities.get(preselection.bag_id, 0) + quantity
+                ordered_bag_quantities[preselection.bag_id] = ordered_bag_quantities.get(preselection.bag_id, 0) + quantity
                 for preselection_item_id in preselection.item_ids:
-                    item_quantities[preselection_item_id] = item_quantities.get(preselection_item_id, 0) + quantity
+                    ordered_item_quantities[preselection_item_id] = ordered_item_quantities.get(preselection_item_id, 0) + quantity
             else:
-                bag_quantities[order_item.bag_id] = bag_quantities.get(order_item.bag_id, 0) + quantity
+                ordered_bag_quantities[order_item.bag_id] = ordered_bag_quantities.get(order_item.bag_id, 0) + quantity
                 for item_id in order_item.item_ids:
-                    item_quantities[item_id] = item_quantities.get(item_id, 0) + quantity
+                    ordered_item_quantities[item_id] = ordered_item_quantities.get(item_id, 0) + quantity
         
-        return bag_quantities, item_quantities
+        return ordered_bag_quantities, ordered_item_quantities
 
     async def calculate_shipping_cost(self, fulfillment_method_id: int, subtotal: Decimal) -> Decimal:
         free_shipping_threshold = int(get("FREE_SHIPPING_THRESHOLD"))
