@@ -25,13 +25,24 @@ class OrderItemRequest:
 
 
 @dataclass(base_schema=APISchema)
+class OrderItemsRequest:
+    order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
+
+
+@dataclass(base_schema=APISchema)
+class PaymentIntentRequest:
+    order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
+    fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
+
+
+@dataclass(base_schema=APISchema)
 class CompleteOrderRequest:
     customer_info: CustomerInfoRequest = field(metadata={"data_key": "customerInfo"})
     order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
+    payment_intent_id: str = field(metadata={"data_key": "paymentIntentId"})
     fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
     delivery_address: str | None = field(metadata={"data_key": "deliveryAddress"})
     coupon_code: str | None = field(metadata={"data_key": "couponCode"})
-    payment_method_id: str = field(metadata={"data_key": "paymentMethodId"})
 
 
 @dataclass(base_schema=APISchema)
@@ -40,10 +51,6 @@ class CompletePickupOrderRequest:
     order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
     fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
 
-
-@dataclass(base_schema=APISchema)
-class OrderItemsRequest:
-    order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
 
 
 @dataclass(base_schema=APISchema)

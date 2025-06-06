@@ -137,6 +137,11 @@ class GetCouponResponse:
 
 
 @dataclass
+class PaymentIntentResponse:
+    client_secret: str
+
+
+@dataclass
 class CompleteOrderResponse:
     order_number: str
 

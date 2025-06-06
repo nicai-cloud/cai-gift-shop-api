@@ -1,0 +1,17 @@
+meta {
+  name: Confirm payment intent
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api}}/payment/confirm-payment-intent
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "payment_intent_id": "pi_3RWr2EF9BU8Eu6Qz2Z3t0MRs"
+  }
+}

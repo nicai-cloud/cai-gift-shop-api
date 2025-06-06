@@ -3,8 +3,8 @@ from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 from api.base import RequestHandler, route
 from api.request_types import CompleteOrderRequest, OrderItemsRequest
 from api.response_types import CalculateSubtotalResponse, CompleteOrderResponse, GetPublishableKeyResponse
-from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
+from features.payment_feature import PaymentFeature
 from features.resend_email_feature import ResendEmailFeature
 from features.ses_email_feature import SESEmailFeature
 from features.order_feature import OrderFeature
@@ -21,12 +21,12 @@ import marshmallow
 class CompleteOrderRequestHandler(RequestHandler):
     def __init__(self, work_manager: WorkManager):
         super().__init__()
+        self.payment_feature = PaymentFeature()
         self.customer_feature = CustomerFeature(work_manager)
         self.order_item_feature = OrderItemFeature(work_manager)
         self.order_feature = OrderFeature(work_manager)
         self.preselection_feature = PreselectionFeature(work_manager)
         self.inventory_feature = InventoryFeature(work_manager)
-        self.payment_method_feature = PaymentMethodFeature()
         self.resend_email_feature = ResendEmailFeature()
         self.ses_email_feature = SESEmailFeature()
         self.coupon_feature = CouponFeature(work_manager)
@@ -62,12 +62,15 @@ class CompleteOrderRequestHandler(RequestHandler):
             request_body = CompleteOrderRequest.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
+        
+        # Validate the payment intent before proceeding
+        payment_intent_id = request_body.payment_intent_id
+        await self.payment_feature.validate_payment_intent(payment_intent_id)
 
         customer_info = request_body.customer_info
         order_items = request_body.order_items
         fulfillment_method = request_body.fulfillment_method
         delivery_address = request_body.delivery_address
-        payment_method_id = request_body.payment_method_id
         coupon_code = request_body.coupon_code
 
         first_name = customer_info.first_name
@@ -94,12 +97,11 @@ class CompleteOrderRequestHandler(RequestHandler):
         # if not stocks_available:
         #     raise HTTPError(status="400", description="Out of stock")
         
-        # Calculate subtotal and make the payment
+        # Calculate subtotal
         subtotal, subtotal_after_discount = await self.order_feature.calculate_subtotal(order_items, coupon.discount_percentage if coupon else 0)
         discount = round(subtotal - subtotal_after_discount, 2)
         shipping_cost = await self.order_feature.calculate_shipping_cost(fulfillment_method, subtotal)
         order_total = round(subtotal_after_discount + shipping_cost, 2)
-        await self.payment_method_feature.create_payment_intent(payment_method_id, order_total)
 
         # TODO: re-enable stocks checking when feasible
         # If the code reaches here, it means the payment is successful, then we update inventories

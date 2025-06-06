@@ -3,7 +3,6 @@ from falcon import HTTPBadRequest, HTTPError, HTTP_OK
 from api.base import RequestHandler, route
 from api.request_types import CompletePickupOrderRequest, OrderItemsRequest
 from api.response_types import CalculateSubtotalResponse, CompleteOrderResponse
-from features.payment_method_feature import PaymentMethodFeature
 from features.customer_feature import CustomerFeature
 from features.resend_email_feature import ResendEmailFeature
 from features.ses_email_feature import SESEmailFeature
@@ -25,7 +24,6 @@ class CompletePickupOrderRequestHandler(RequestHandler):
         self.order_feature = OrderFeature(work_manager)
         self.preselection_feature = PreselectionFeature(work_manager)
         self.inventory_feature = InventoryFeature(work_manager)
-        self.payment_method_feature = PaymentMethodFeature()
         self.resend_email_feature = ResendEmailFeature()
         self.ses_email_feature = SESEmailFeature()
         self.coupon_feature = CouponFeature(work_manager)

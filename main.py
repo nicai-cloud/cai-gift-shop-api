@@ -13,7 +13,7 @@ from api.bag import BagRequestHandler
 from api.complete_order import CompleteOrderRequestHandler
 from api.complete_pickup_order import CompletePickupOrderRequestHandler
 from api.item import ItemRequestHandler
-from api.payment_method import PaymentMethodRequestHandler
+from api.payment import PaymentRequestHandler
 from api.preselection import PreselectionRequestHandler
 from api.inventory import InventoryRequestHandler
 from api.inventory_transaction import InventoryTransactionRequestHandler
@@ -107,8 +107,8 @@ def create_api():
     )
 
     app.add_sink(
-        PaymentMethodRequestHandler(),
-        prefix=re.compile("^/payment-methods(?P<path>/?.*)$"),
+        PaymentRequestHandler(work_manager),
+        prefix=re.compile("^/payment(?P<path>/?.*)$"),
     )
 
     app.add_sink(

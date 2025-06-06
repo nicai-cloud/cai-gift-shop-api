@@ -1,23 +1,17 @@
 meta {
-  name: Complete order
+  name: Create payment intent
   type: http
-  seq: 4
+  seq: 3
 }
 
 post {
-  url: {{api}}/complete-order
+  url: {{api}}/payment/payment-intent
   body: json
   auth: none
 }
 
 body:json {
   {
-    "customerInfo": {
-      "firstName": "Cai",
-      "lastName": "Ni",
-      "email": "nicai.msn@gmail.com",
-      "mobile": "0400123456"
-    },
     "orderItems": [
       {
         "quantity": 2,
@@ -42,9 +36,6 @@ body:json {
         ]
       }
     ],
-    "paymentIntentId": "pi_3RWrmMDHKkihrujY1FEgHm2J",
-    "deliveryAddress": "123 King Street, Sydney, NSW",
-    "fulfillmentMethod": 1,
-    "couponCode": "ABC123"
+    "fulfillmentMethod": 1
   }
 }

@@ -115,21 +115,24 @@ class InventoryFeature:
             await self.inventory_transactoin_repo.add(inventory_transaction)
 
     async def check_stock_availability(self, ordered_bag_quantities, ordered_item_quantities):
-        inventories = await self.get_inventories()
-        bag_inventories = inventories["bag"]
-        item_inventories = inventories["item"]
+        try:
+            inventories = await self.get_inventories()
+            bag_inventories = inventories["bag"]
+            item_inventories = inventories["item"]
 
-        bag_id_inventories = {int(bag_id): stock for bag_id, stock in bag_inventories.items()}
-        item_id_inventories = {int(item_id): stock for item_id, stock in item_inventories.items()}
-    
-        # Check for bag availability
-        for ordered_bag_id, ordered_bag_quantity in ordered_bag_quantities.items():
-            if ordered_bag_id not in bag_id_inventories or ordered_bag_quantity > bag_id_inventories[ordered_bag_id]:
-                return False
+            bag_id_inventories = {int(bag_id): stock for bag_id, stock in bag_inventories.items()}
+            item_id_inventories = {int(item_id): stock for item_id, stock in item_inventories.items()}
         
-        # Check for items availability
-        for ordered_item_id, ordered_item_quantity in ordered_item_quantities.items():
-            if ordered_item_id not in item_id_inventories or ordered_item_quantity > item_id_inventories[ordered_item_id]:
-                return False
-        
-        return True
+            # Check for bag availability
+            for ordered_bag_id, ordered_bag_quantity in ordered_bag_quantities.items():
+                if ordered_bag_id not in bag_id_inventories or ordered_bag_quantity > bag_id_inventories[ordered_bag_id]:
+                    return False
+            
+            # Check for items availability
+            for ordered_item_id, ordered_item_quantity in ordered_item_quantities.items():
+                if ordered_item_id not in item_id_inventories or ordered_item_quantity > item_id_inventories[ordered_item_id]:
+                    return False
+            
+            return True
+        except Exception:
+            return False
