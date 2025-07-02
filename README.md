@@ -128,9 +128,11 @@ Steps to create a new backend API in AWS:
     3. sudo mkdir -p /etc/certs
     4. sudo cp /etc/letsencrypt/archive/api.giftoz.com.au/fullchain1.pem /etc/certs/fullchain.pem
     5. sudo cp /etc/letsencrypt/archive/api.giftoz.com.au/privkey1.pem /etc/certs/privkey.pem
-    6. (for certificate renewals only) sudo mv /etc/letsencrypt/archive/api.giftoz.com.au/ /etc/letsencrypt/archive/16-03-2025-api.giftoz.com.au/
+    6. (for certificate renewals only):
+        sudo mv /etc/letsencrypt/archive/api.giftoz.com.au/fullchain1.pem /etc/certs/fullchain.pem, note it is fullchain<x>.pem where x is a number
+        sudo mv /etc/letsencrypt/archive/api.giftoz.com.au/privkey1.pem /etc/certs/privkey.pem, note it is privkey<x>.pem where x is a number
 7b. To check the expiry date of a certificate, run
-    openssl x509 -in /etc/certs/fullchain.pem -noout -enddate
+    sudo openssl x509 -in /etc/certs/fullchain.pem -noout -enddate
 7c. If required, re-run steps 6 & 7 above to generate new certificates
 7d. IMPORTANT! - Check the certificate's expiry date every 60 days
 8. Create a new Programmatic Access key for the user:
