@@ -43,6 +43,7 @@ class CompleteOrderRequest:
     fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
     delivery_address: str | None = field(metadata={"data_key": "deliveryAddress"})
     coupon_code: str | None = field(metadata={"data_key": "couponCode"})
+    recaptcha_token: str = field(metadata={"data_key": "recaptchaToken"})
 
 
 @dataclass(base_schema=APISchema)
@@ -50,7 +51,7 @@ class CompletePickupOrderRequest:
     customer_info: CustomerInfoRequest = field(metadata={"data_key": "customerInfo"})
     order_items: list[OrderItemRequest] = field(metadata={"data_key": "orderItems"})
     fulfillment_method: int = field(metadata={"data_key": "fulfillmentMethod"})
-
+    recaptcha_token: str = field(metadata={"data_key": "recaptchaToken"})
 
 
 @dataclass(base_schema=APISchema)

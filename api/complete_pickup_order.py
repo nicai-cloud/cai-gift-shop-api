@@ -4,6 +4,7 @@ from api.base import RequestHandler, route
 from api.request_types import CompletePickupOrderRequest, OrderItemsRequest
 from api.response_types import CalculateSubtotalResponse, CompleteOrderResponse
 from features.customer_feature import CustomerFeature
+from features.recaptcha_feature import RecaptchaFeature
 from features.resend_email_feature import ResendEmailFeature
 from features.ses_email_feature import SESEmailFeature
 from features.order_feature import OrderFeature
@@ -19,6 +20,7 @@ import marshmallow
 class CompletePickupOrderRequestHandler(RequestHandler):
     def __init__(self, work_manager: WorkManager):
         super().__init__()
+        self.recaptcha_feature = RecaptchaFeature()
         self.customer_feature = CustomerFeature(work_manager)
         self.order_item_feature = OrderItemFeature(work_manager)
         self.order_feature = OrderFeature(work_manager)
@@ -52,6 +54,10 @@ class CompletePickupOrderRequestHandler(RequestHandler):
             request_body = CompletePickupOrderRequest.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
+
+        recaptcha_token = request_body.recaptcha_token
+        if not recaptcha_token or not await self.recaptcha_feature.verify_captcha(recaptcha_token):
+            raise HTTPBadRequest(title="Invalid recaptcha token", description="The 'recaptcha_token' must be a valid token.")
 
         customer_info = request_body.customer_info
         order_items = request_body.order_items

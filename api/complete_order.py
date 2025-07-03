@@ -5,6 +5,7 @@ from api.request_types import CompleteOrderRequest, OrderItemsRequest
 from api.response_types import CalculateSubtotalResponse, CompleteOrderResponse, GetPublishableKeyResponse
 from features.customer_feature import CustomerFeature
 from features.payment_feature import PaymentFeature
+from features.recaptcha_feature import RecaptchaFeature
 from features.resend_email_feature import ResendEmailFeature
 from features.ses_email_feature import SESEmailFeature
 from features.order_feature import OrderFeature
@@ -21,6 +22,7 @@ import marshmallow
 class CompleteOrderRequestHandler(RequestHandler):
     def __init__(self, work_manager: WorkManager):
         super().__init__()
+        self.recaptcha_feature = RecaptchaFeature()
         self.payment_feature = PaymentFeature()
         self.customer_feature = CustomerFeature(work_manager)
         self.order_item_feature = OrderItemFeature(work_manager)
@@ -62,6 +64,10 @@ class CompleteOrderRequestHandler(RequestHandler):
             request_body = CompleteOrderRequest.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
+        
+        recaptcha_token = request_body.recaptcha_token
+        if not recaptcha_token or not await self.recaptcha_feature.verify_captcha(recaptcha_token):
+            raise HTTPBadRequest(title="Invalid recaptcha token", description="The 'recaptcha_token' must be a valid token.")
         
         # Validate the payment intent before proceeding
         payment_intent_id = request_body.payment_intent_id
