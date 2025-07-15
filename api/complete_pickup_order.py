@@ -12,13 +12,13 @@ from features.order_item_feature import OrderItemFeature
 from features.preselection_feature import PreselectionFeature
 from features.inventory_feature import InventoryFeature
 from features.coupon_feature import CouponFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 import marshmallow
 
 
 class CompletePickupOrderRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.recaptcha_feature = RecaptchaFeature()
         self.customer_feature = CustomerFeature(work_manager)

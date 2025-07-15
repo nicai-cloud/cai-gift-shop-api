@@ -4,11 +4,11 @@ from api.base import RequestHandler, route
 from api.errors import NotFound
 from api.response_types import GetPreselectionsResponse, GetPreselectionResponse
 from features.preselection_feature import PreselectionFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 
 class PreselectionRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.preselection_feature = PreselectionFeature(work_manager)
 

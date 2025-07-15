@@ -5,13 +5,13 @@ from api.request_types import PaymentIntentRequest
 from api.response_types import PaymentIntentResponse
 from features.payment_feature import PaymentFeature
 from features.order_feature import OrderFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 import marshmallow
 
 
 class PaymentRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.payment_feature = PaymentFeature()
         self.order_feature = OrderFeature(work_manager)

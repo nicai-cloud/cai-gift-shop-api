@@ -3,14 +3,14 @@ import logging
 
 from api.types import Item
 from infrastructure.item_repo import ItemRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 from utils.media import get_full_image_url, get_full_video_url
 
 LOG = logging.getLogger(__name__)
 
 
 class ItemFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.item_repo = work_manager.get(ItemRepo)
     
     async def get_items(self) -> list[Item]:

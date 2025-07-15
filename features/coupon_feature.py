@@ -2,13 +2,13 @@ import logging
 
 from api.types import Coupon
 from infrastructure.coupon_repo import CouponRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 LOG = logging.getLogger(__name__)
 
 
 class CouponFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.coupon_repo = work_manager.get(CouponRepo)
     
     async def get_coupons(self) -> list[Coupon]:

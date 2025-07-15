@@ -8,13 +8,13 @@ from api.response_types import CreateShipmentResponse, GetShipmentResponse, GetS
 from features.order_feature import OrderFeature
 from features.shipment_feature import OrderNotFoundException, ShipmentFeature
 from features.resend_email_feature import ResendEmailFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 import marshmallow
 
 
 class ShipmentRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.shipment_feature = ShipmentFeature(work_manager)
         self.order_feature = OrderFeature(work_manager)

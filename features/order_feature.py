@@ -11,7 +11,7 @@ from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
 from infrastructure.fulfillment_method_repo import FulfillmentMethodRepo
 from infrastructure.coupon_repo import CouponRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 from utils.generate_order_number import generate_order_number
 from utils.config import get
 from utils.format_number import format_number
@@ -21,7 +21,7 @@ LOG = logging.getLogger(__name__)
 
 
 class OrderFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.order_repo = work_manager.get(OrderRepo)
         self.preselection_repo = work_manager.get(PreselectionRepo)
         self.bag_repo = work_manager.get(BagRepo)

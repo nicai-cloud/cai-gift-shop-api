@@ -4,11 +4,11 @@ from api.base import RequestHandler, route
 from api.errors import NotFound
 from api.response_types import GetBagsResponse, GetBagResponse
 from features.bag_feature import BagFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 
 class BagRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.bag_feature = BagFeature(work_manager)
 

@@ -5,11 +5,11 @@ from api.base import RequestHandler, route
 from api.errors import NotFound
 from api.response_types import GetCouponsResponse, GetCouponResponse
 from features.coupon_feature import CouponFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 
 class CouponRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.coupon_feature = CouponFeature(work_manager)
 

@@ -3,11 +3,11 @@ from falcon import HTTP_OK
 from api.base import RequestHandler, route
 from api.response_types import GetImagesResponse
 from features.image_feature import ImageFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 
 class ImageRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.image_feature = ImageFeature(work_manager)
 

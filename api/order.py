@@ -5,11 +5,11 @@ from api.base import RequestHandler, route
 from api.errors import NotFound
 from api.response_types import GetOrderResponse, GetOrdersResponse
 from features.order_feature import OrderFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 
 class OrderRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.order_feature = OrderFeature(work_manager)
 

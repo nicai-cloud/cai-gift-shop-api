@@ -4,13 +4,13 @@ from uuid import UUID
 from api.types import OrderItem
 from models.order_item_model import OrderItemModel
 from infrastructure.order_item_repo import OrderItemRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 LOG = logging.getLogger(__name__)
 
 
 class OrderItemFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.order_item_repo = work_manager.get(OrderItemRepo)
     
     async def create_order_item(self, quantity: int, preselection_id: int, bag_id: int, item_ids: list[int], order_id: UUID) -> UUID:

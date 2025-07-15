@@ -7,7 +7,7 @@ from models.shipment_model import ShipmentModel
 from infrastructure.shipment_repo import ShipmentRepo
 from infrastructure.order_repo import OrderRepo
 from infrastructure.customer_repo import CustomerRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 from sqlalchemy.exc import IntegrityError
 
 LOG = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ class OrderNotFoundException(Exception):
 
 
 class ShipmentFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.shipment_repo = work_manager.get(ShipmentRepo)
         self.order_repo = work_manager.get(OrderRepo)
         self.customer_repo = work_manager.get(CustomerRepo)

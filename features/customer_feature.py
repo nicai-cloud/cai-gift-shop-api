@@ -4,13 +4,13 @@ from uuid import UUID
 from api.types import Customer
 from models.customer_model import CustomerModel
 from infrastructure.customer_repo import CustomerRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 LOG = logging.getLogger(__name__)
 
 
 class CustomerFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.customer_repo = work_manager.get(CustomerRepo)
     
     async def create_customer(self, first_name: str, last_name: str, email: str, mobile: str) -> UUID:

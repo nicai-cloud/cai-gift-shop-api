@@ -5,12 +5,12 @@ from api.errors import NotFound
 from api.response_types import GetInventoriesResponse, GetInventoryResponse
 from api.request_types import OrderItemsRequest, RefillItemRequest
 from features.inventory_feature import InventoryFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 import marshmallow
 
 
 class InventoryRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.inventory_feature = InventoryFeature(work_manager)
 

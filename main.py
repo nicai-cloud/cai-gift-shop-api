@@ -38,7 +38,7 @@ from infrastructure.inventory_transaction_repo import InventoryTransactionRepo, 
 from infrastructure.shipment_repo import ShipmentRepo, construct_postgres_shipment_repo
 from infrastructure.fulfillment_method_repo import FulfillmentMethodRepo, construct_postgres_fulfillment_method_repo
 from infrastructure.coupon_repo import CouponRepo, construct_postgres_coupon_repo
-from infrastructure.work_management import WorkManager, WorkManagementMiddleware
+from infrastructure.async_work_management import AsyncWorkManager, AsyncWorkManagementMiddleware
 
 
 # Add in falcon setup here
@@ -49,7 +49,7 @@ def create_api():
     if not database_url:
         raise ValueError("DATABASE_URL is not set")
 
-    work_manager = WorkManager(PostgresTransactable(database_url))
+    work_manager = AsyncWorkManager(PostgresTransactable(database_url))
     work_manager.register(CustomerRepo, construct_postgres_customer_repo)
     work_manager.register(OrderItemRepo, construct_postgres_order_item_repo)
     work_manager.register(OrderRepo, construct_postgres_order_repo)
@@ -70,7 +70,7 @@ def create_api():
                 allow_origins=cors_allowed_origins,
                 allow_credentials=cors_allowed_origins,
             ),
-            WorkManagementMiddleware(work_manager)
+            AsyncWorkManagementMiddleware(work_manager)
         ]
     )
 

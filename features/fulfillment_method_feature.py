@@ -2,13 +2,13 @@ import logging
 
 from api.types import FulfillmentMethod
 from infrastructure.fulfillment_method_repo import FulfillmentMethodRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 LOG = logging.getLogger(__name__)
 
 
 class FulfillmentMethodFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.fulfillment_method_repo = work_manager.get(FulfillmentMethodRepo)
     
     async def get_fulfillment_methods(self) -> list[FulfillmentMethod]:

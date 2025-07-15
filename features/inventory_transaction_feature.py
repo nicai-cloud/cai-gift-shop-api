@@ -3,13 +3,13 @@ from uuid import UUID
 
 from api.types import InventoryTransaction
 from infrastructure.inventory_transaction_repo import InventoryTransactionRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 LOG = logging.getLogger(__name__)
 
 
 class InventoryTransactionFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.inventory_transaction_repo = work_manager.get(InventoryTransactionRepo)
     
     async def get_inventory_transactions(self) -> list[InventoryTransaction]:

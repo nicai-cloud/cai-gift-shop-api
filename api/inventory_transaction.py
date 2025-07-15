@@ -5,11 +5,11 @@ from api.base import RequestHandler, route
 from api.errors import NotFound
 from api.response_types import GetInventoryTransactionsResponse, GetInventoryTransactionResponse
 from features.inventory_transaction_feature import InventoryTransactionFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 
 
 class InventoryTransactionRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.inventory_transaction_feature = InventoryTransactionFeature(work_manager)
 

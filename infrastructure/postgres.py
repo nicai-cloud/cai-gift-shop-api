@@ -4,7 +4,7 @@ from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from .work_management import Transactable, current_request_task
+from .async_work_management import AsyncTransactable, current_request_task
 
 LOG = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ LOG = logging.getLogger(__name__)
 metadata = MetaData(schema='gift')
 
 
-class PostgresTransactable(Transactable):
+class PostgresTransactable(AsyncTransactable):
     def __init__(
         self,
         database_url: str,

@@ -5,14 +5,14 @@ from api.types import Inventory
 from models.inventory_transaction_model import InventoryTransactionModel
 from infrastructure.inventory_repo import InventoryRepo
 from infrastructure.inventory_transaction_repo import InventoryTransactionRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 from dataclasses import asdict
 
 LOG = logging.getLogger(__name__)
 
 
 class InventoryFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.inventory_repo = work_manager.get(InventoryRepo)
         self.inventory_transactoin_repo = work_manager.get(InventoryTransactionRepo)
     

@@ -4,12 +4,12 @@ from api.base import RequestHandler, route
 from api.errors import NotFound
 from api.response_types import GetFulfillmentMethodResponse, GetFulfillmentMethodsResponse
 from features.fulfillment_method_feature import FulfillmentMethodFeature
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 from utils.config import get
 
 
 class FulfillmentMethodRequestHandler(RequestHandler):
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         super().__init__()
         self.fulfillment_method_feature = FulfillmentMethodFeature(work_manager)
 

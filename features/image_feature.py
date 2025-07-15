@@ -3,14 +3,14 @@ import logging
 from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
 from infrastructure.preselection_repo import PreselectionRepo
-from infrastructure.work_management import WorkManager
+from infrastructure.async_work_management import AsyncWorkManager
 from utils.media import get_full_image_url
 
 LOG = logging.getLogger(__name__)
 
 
 class ImageFeature:
-    def __init__(self, work_manager: WorkManager):
+    def __init__(self, work_manager: AsyncWorkManager):
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
         self.preselection_repo = work_manager.get(PreselectionRepo)
