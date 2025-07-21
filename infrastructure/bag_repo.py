@@ -1,6 +1,5 @@
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -17,32 +16,17 @@ class BagRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
     
-    async def get_all(self):
-        bags_query = select(
-            BagModel.id,
-            BagModel.image_url,
-            BagModel.video_url,
-            BagModel.name,
-            BagModel.description,
-            BagModel.price
-        ).where(BagModel.deleted_at.is_(None))
-
-        result = await self.session.execute(bags_query)
-        return result.all()
+    async def get_all(self) -> list[BagModel]:
+        query = await self.get_filtered_query(BagModel)
+        result = await self.session.execute(query)
+        return result.scalars().all()
     
-    async def get_by_id(self, bag_id: int):
+    async def get_by_id(self, bag_id: int) -> BagModel:
         try:
-            bag_query = select(
-                BagModel.id,
-                BagModel.image_url,
-                BagModel.video_url,
-                BagModel.name,
-                BagModel.description,
-                BagModel.price
-            ).where(and_(BagModel.deleted_at.is_(None), BagModel.id == bag_id))
-
-            result = await self.session.execute(bag_query)
-            return result.one()
+            query = await self.get_filtered_query(BagModel)
+            query = query.where(BagModel.id == bag_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise BagRepo.MultipleResultsFound
         except NoResultFound:

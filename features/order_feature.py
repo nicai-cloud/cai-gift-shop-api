@@ -3,8 +3,8 @@ from decimal import Decimal
 from uuid import UUID
 
 from api.request_types import OrderItemRequest
-from api.types import Bag, CustomItem, Item, Order, FulfillmentMethod, OrderInfo, OrderedItems, PreselectionItem
-from models.order_model import OrderModel
+from api.types import CustomItem, Order, OrderInfo, OrderedItems, PreselectionItem
+from features.fulfillment_method_feature import construct_fulfillment_method
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.bag_repo import BagRepo
@@ -12,12 +12,32 @@ from infrastructure.item_repo import ItemRepo
 from infrastructure.fulfillment_method_repo import FulfillmentMethodRepo
 from infrastructure.coupon_repo import CouponRepo
 from infrastructure.async_work_management import AsyncWorkManager
+from models.bag_model import BagModel
+from models.fulfillment_method_model import FulfillmentMethodModel
+from models.item_model import ItemModel
+from models.order_model import OrderModel
+from models.preselection_model import PreselectionModel
 from utils.generate_order_number import generate_order_number
 from utils.config import get
 from utils.format_number import format_number
 from utils.media import get_full_image_url
 
 LOG = logging.getLogger(__name__)
+
+
+def construct_order(order: OrderModel) -> Order:
+    return Order(
+        id=order.id,
+        customer_id=order.customer_id,
+        subtotal=order.subtotal,
+        discount=order.discount,
+        subtotal_after_discount=order.subtotal_after_discount,
+        shipping_cost=order.shipping_cost,
+        order_number=order.order_number,
+        fulfillment_method=order.fulfillment_method,
+        delivery_address=order.delivery_address,
+        coupon_id=order.coupon_id
+    )
 
 
 class OrderFeature:
@@ -60,13 +80,13 @@ class OrderFeature:
         subtotal = Decimal(0)
         for order_item in order_items:            
             if order_item.preselection_id:
-                preselection = await self.preselection_repo.get_by_id(order_item.preselection_id)
+                preselection: PreselectionModel = await self.preselection_repo.get_by_id(order_item.preselection_id)
                 price = preselection.price
             else:
-                bag = await self.bag_repo.get_by_id(order_item.bag_id)
+                bag: BagModel = await self.bag_repo.get_by_id(order_item.bag_id)
                 price = bag.price
                 for item_id in order_item.item_ids:
-                    item = await self.item_repo.get_by_id(item_id)
+                    item: ItemModel = await self.item_repo.get_by_id(item_id)
                     price += item.price
             subtotal += price * order_item.quantity
         return (subtotal, subtotal * (Decimal(1) - Decimal(discount_percentage) / Decimal(100)))
@@ -78,7 +98,7 @@ class OrderFeature:
             quantity = order_item.quantity
 
             if order_item.preselection_id:
-                preselection = await self.preselection_repo.get_by_id(order_item.preselection_id)
+                preselection: PreselectionModel = await self.preselection_repo.get_by_id(order_item.preselection_id)
                 ordered_bag_quantities[preselection.bag_id] = ordered_bag_quantities.get(preselection.bag_id, 0) + quantity
                 for preselection_item_id in preselection.item_ids:
                     ordered_item_quantities[preselection_item_id] = ordered_item_quantities.get(preselection_item_id, 0) + quantity
@@ -91,21 +111,21 @@ class OrderFeature:
 
     async def calculate_shipping_cost(self, fulfillment_method_id: int, subtotal: Decimal) -> Decimal:
         free_shipping_threshold = int(get("FREE_SHIPPING_THRESHOLD"))
-        fulfillment_method_obj = await self.fulfillment_method_repo.get_by_id(fulfillment_method_id)
-        fulfillment_method = FulfillmentMethod(**fulfillment_method_obj)
+        fulfillment_method_obj: FulfillmentMethodModel = await self.fulfillment_method_repo.get_by_id(fulfillment_method_id)
+        fulfillment_method = construct_fulfillment_method(fulfillment_method_obj)
         return fulfillment_method.discount_fee if subtotal >= free_shipping_threshold else fulfillment_method.fee
 
     async def get_orders(self) -> list[Order]:
         try:
-            orders = await self.order_repo.get_all()
-            return [Order(**order) for order in orders]
+            orders: list[OrderModel] = await self.order_repo.get_all()
+            return [construct_order(order) for order in orders]
         except Exception as e:
             LOG.exception("Unable to get orders due to unexpected error", exc_info=e)
 
     async def get_order_by_id(self, order_id: UUID) -> Order | None:
         try:
-            order = await self.order_repo.get_by_id(order_id)
-            return Order(**order)
+            order: OrderModel = await self.order_repo.get_by_id(order_id)
+            return construct_order(order)
         except OrderRepo.DoesNotExist:
             return None
         except Exception as e:
@@ -113,7 +133,7 @@ class OrderFeature:
 
     async def generate_preselection_item(self, index: int, quantity: int, preselection_id: int) -> PreselectionItem:
         try:
-            preselection = await self.preselection_repo.get_by_id(preselection_id)
+            preselection: PreselectionModel = await self.preselection_repo.get_by_id(preselection_id)
             return PreselectionItem(
                 index=index,
                 image_url=get_full_image_url(preselection.image_url),
@@ -126,8 +146,8 @@ class OrderFeature:
 
     async def generate_custom_item(self, index: int, quantity: int, bag_id: int, item_ids: list[int]) -> CustomItem:
         try:
-            bag = Bag(**(await self.bag_repo.get_by_id(bag_id)))
-            items = [Item(**(await self.item_repo.get_by_id(item_id))) for item_id in item_ids]
+            bag: BagModel = await self.bag_repo.get_by_id(bag_id)
+            items: list[ItemModel] = [await self.item_repo.get_by_id(item_id) for item_id in item_ids]
             unit_price = bag.price + sum(item.price for item in items)
             name = bag.name + ' + ' + ' + '.join([f"{item.name} {item.product}" for item in items])
             return CustomItem(

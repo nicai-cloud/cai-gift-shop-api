@@ -3,7 +3,7 @@ from falcon import HTTPBadRequest, HTTP_OK
 from api.base import RequestHandler, route
 from api.errors import NotFound
 from api.response_types import GetInventoriesResponse, GetInventoryResponse
-from api.request_types import OrderItemsRequest, RefillItemRequest
+from api.request_types import RefillBagRequest, RefillItemRequest
 from features.inventory_feature import InventoryFeature
 from infrastructure.async_work_management import AsyncWorkManager
 import marshmallow
@@ -65,7 +65,7 @@ class InventoryRequestHandler(RequestHandler):
         raw_request_body = await req.get_media()
 
         try:
-            request_body = OrderItemsRequest.Schema().load(raw_request_body)
+            request_body = RefillBagRequest.Schema().load(raw_request_body)
         except marshmallow.exceptions.ValidationError as e:
             raise HTTPBadRequest(title="Invalid request payload", description=str(e))
 

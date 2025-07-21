@@ -2,11 +2,21 @@ import logging
 from uuid import UUID
 
 from api.types import Customer
-from models.customer_model import CustomerModel
 from infrastructure.customer_repo import CustomerRepo
 from infrastructure.async_work_management import AsyncWorkManager
+from models.customer_model import CustomerModel
 
 LOG = logging.getLogger(__name__)
+
+
+def construct_customer(customer: CustomerModel) -> Customer:
+    return Customer(
+        id=customer.id,
+        first_name=customer.first_name,
+        last_name=customer.last_name,
+        mobile=customer.mobile,
+        email=customer.email
+    )
 
 
 class CustomerFeature:
@@ -27,15 +37,15 @@ class CustomerFeature:
 
     async def get_customers(self) -> list[Customer]:
         try:
-            customers = await self.customer_repo.get_all()
-            return [Customer(**customer) for customer in customers]
+            customers: list[CustomerModel] = await self.customer_repo.get_all()
+            return [construct_customer(customer) for customer in customers]
         except Exception as e:
             LOG.exception("Unable to get customers due to unexpected error", exc_info=e)
 
     async def get_customer_by_id(self, customer_id: UUID) -> Customer | None:
         try:
-            customer = await self.customer_repo.get_by_id(customer_id)
-            return Customer(**customer)
+            customer: CustomerModel = await self.customer_repo.get_by_id(customer_id)
+            return construct_customer(customer)
         except CustomerRepo.DoesNotExist:
             return None
         except Exception as e:

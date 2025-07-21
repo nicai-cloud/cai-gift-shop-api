@@ -1,6 +1,6 @@
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import update, and_, select
+from sqlalchemy import update
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -17,64 +17,39 @@ class InventoryRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
 
-    async def get_all(self):
-        inventories_query = select(
-            InventoryModel.id,
-            InventoryModel.entity_type,
-            InventoryModel.entity_id,
-            InventoryModel.current_stock,
-            InventoryModel.low_stock_threshold
-        ).where(InventoryModel.deleted_at.is_(None))
-        result = await self.session.execute(inventories_query)
-        
-        return result.all()
+    async def get_all(self) -> list[InventoryModel]:
+        query = await self.get_filtered_query(InventoryModel)
+        result = await self.session.execute(query)
+        return result.scalars().all()
 
-    async def get_by_id(self, inventory_id: int):
+    async def get_by_id(self, inventory_id: int) -> InventoryModel:
         try:
-            inventory_query = select(
-                InventoryModel.id,
-                InventoryModel.entity_type,
-                InventoryModel.entity_id,
-                InventoryModel.current_stock,
-                InventoryModel.low_stock_threshold
-            ).where(and_(InventoryModel.deleted_at.is_(None)), InventoryModel.id == inventory_id)
-            
-            result = await self.session.execute(inventory_query)
-            return result.one()
+            query = await self.get_filtered_query(InventoryModel)
+            query = query.where(InventoryModel.id == inventory_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise InventoryRepo.MultipleResultsFound
         except NoResultFound:
             raise InventoryRepo.DoesNotExist
     
-    async def get_by_bag_id(self, bag_id: int):
+    async def get_by_bag_id(self, bag_id: int) -> InventoryModel:
         try:
-            inventory_query = select(
-                InventoryModel.id,
-                InventoryModel.entity_type,
-                InventoryModel.entity_id,
-                InventoryModel.current_stock,
-                InventoryModel.low_stock_threshold
-            ).where(and_(InventoryModel.deleted_at.is_(None)), InventoryModel.entity_type == "bag", InventoryModel.entity_id == bag_id)
-            
-            result = await self.session.execute(inventory_query)
-            return result.one()
+            query = await self.get_filtered_query(InventoryModel)
+            query = query.where(InventoryModel.entity_type == "bag", InventoryModel.entity_id == bag_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise InventoryRepo.MultipleResultsFound
         except NoResultFound:
             raise InventoryRepo.DoesNotExist
 
-    async def get_by_item_id(self, item_id: int):
+    async def get_by_item_id(self, item_id: int) -> InventoryModel:
         try:
-            inventory_query = select(
-                InventoryModel.id,
-                InventoryModel.entity_type,
-                InventoryModel.entity_id,
-                InventoryModel.current_stock,
-                InventoryModel.low_stock_threshold
-            ).where(and_(InventoryModel.deleted_at.is_(None)), InventoryModel.entity_type == "item", InventoryModel.entity_id == item_id)
-            
-            result = await self.session.execute(inventory_query)
-            return result.one()
+            query = await self.get_filtered_query(InventoryModel)
+            query = query.where(InventoryModel.entity_type == "item", InventoryModel.entity_id == item_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise InventoryRepo.MultipleResultsFound
         except NoResultFound:

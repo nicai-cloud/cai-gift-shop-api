@@ -2,7 +2,10 @@ import logging
 from uuid import UUID
 from datetime import date
 
-from api.types import Customer, Order, Shipment
+from api.types import Customer, Shipment
+from features.customer_feature import construct_customer
+from models.customer_model import CustomerModel
+from models.order_model import OrderModel
 from models.shipment_model import ShipmentModel
 from infrastructure.shipment_repo import ShipmentRepo
 from infrastructure.order_repo import OrderRepo
@@ -18,6 +21,19 @@ class OrderNotFoundException(Exception):
         super().__init__(f"Order not found with order_id: {order_id}")
 
 
+def construct_shipment(shipment: ShipmentModel) -> Shipment:
+    return Shipment(
+        id=shipment.id,
+        volume=shipment.volume,
+        weight=shipment.weight,
+        delivery_fee=shipment.delivery_fee,
+        send_date=shipment.send_date,
+        receive_date=shipment.receive_date,
+        tracking_number=shipment.tracking_number,
+        order_id=shipment.order_id
+    )
+
+
 class ShipmentFeature:
     def __init__(self, work_manager: AsyncWorkManager):
         self.shipment_repo = work_manager.get(ShipmentRepo)
@@ -26,15 +42,15 @@ class ShipmentFeature:
     
     async def get_shipments(self) -> list[Shipment]:
         try:
-            shipments = await self.shipment_repo.get_all()
-            return [Shipment(**shipment) for shipment in shipments]
+            shipments: list[ShipmentModel] = await self.shipment_repo.get_all()
+            return [construct_shipment(shipment) for shipment in shipments]
         except Exception as e:
             LOG.exception("Unable to get shipments due to unexpected error", exc_info=e)
 
     async def get_shipment_by_order_id(self, order_id: UUID) -> Shipment | None:
         try:
-            shipment = await self.shipment_repo.get_by_order_id(order_id)
-            return Shipment(**shipment)
+            shipment: ShipmentModel = await self.shipment_repo.get_by_order_id(order_id)
+            return construct_shipment(shipment)
         except ShipmentRepo.DoesNotExist:
             return None
         except Exception as e:
@@ -42,10 +58,9 @@ class ShipmentFeature:
     
     async def get_customer(self, order_id: UUID) -> Customer | None:
         try:
-            order_obj = await self.order_repo.get_by_id(order_id)
-            order = Order(**order_obj)
-            customer_obj = await self.customer_repo.get_by_id(order.customer_id)
-            return Customer(**customer_obj)
+            order: OrderModel = await self.order_repo.get_by_id(order_id)
+            customer: CustomerModel = await self.customer_repo.get_by_id(order.customer_id)
+            return construct_customer(customer)
         except OrderRepo.DoesNotExist:
             return None
         except CustomerRepo.DoesNotExist:

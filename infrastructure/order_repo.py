@@ -1,7 +1,6 @@
 from uuid import UUID
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -22,40 +21,17 @@ class OrderRepo(BaseRepository):
         self.session.add(order)
         await self.session.flush()
 
-    async def get_all(self):
-        orders_query = select(
-            OrderModel.id,
-            OrderModel.customer_id,
-            OrderModel.subtotal,
-            OrderModel.discount,
-            OrderModel.subtotal_after_discount,
-            OrderModel.shipping_cost,
-            OrderModel.order_number,
-            OrderModel.fulfillment_method,
-            OrderModel.delivery_address,
-            OrderModel.coupon_id
-        ).where(OrderModel.deleted_at.is_(None))
-        result = await self.session.execute(orders_query)
-        
-        return result.all()
+    async def get_all(self) -> list[OrderModel]:
+        query = await self.get_filtered_query(OrderModel)
+        result = await self.session.execute(query)
+        return result.scalars().all()
     
-    async def get_by_id(self, order_id: UUID):
+    async def get_by_id(self, order_id: UUID) -> OrderModel:
         try:
-            order_query = select(
-                OrderModel.id,
-                OrderModel.customer_id,
-                OrderModel.subtotal,
-                OrderModel.discount,
-                OrderModel.subtotal_after_discount,
-                OrderModel.shipping_cost,
-                OrderModel.order_number,
-                OrderModel.fulfillment_method,
-                OrderModel.delivery_address,
-                OrderModel.coupon_id
-            ).where(and_(OrderModel.deleted_at.is_(None), OrderModel.id == order_id))
-            
-            result = await self.session.execute(order_query)
-            return result.one()
+            query = await self.get_filtered_query(OrderModel)
+            query = query.where(OrderModel.id == order_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise OrderRepo.MultipleResultsFound
         except NoResultFound:

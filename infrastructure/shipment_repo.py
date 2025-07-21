@@ -1,7 +1,6 @@
 from uuid import UUID
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -18,36 +17,18 @@ class ShipmentRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
     
-    async def get_all(self):
-        shipments_query = select(
-            ShipmentModel.id,
-            ShipmentModel.volume,
-            ShipmentModel.weight,
-            ShipmentModel.delivery_fee,
-            ShipmentModel.send_date,
-            ShipmentModel.receive_date,
-            ShipmentModel.tracking_number,
-            ShipmentModel.order_id
-        ).where(ShipmentModel.deleted_at.is_(None))
-
-        result = await self.session.execute(shipments_query)
-        return result.all()
+    async def get_all(self) -> list[ShipmentModel]:
+        query = await self.get_filtered_query(ShipmentModel)
+        result = await self.session.execute(query)
+        return result.scalars().all()
     
-    async def get_by_order_id(self, order_id: UUID):
+    
+    async def get_by_order_id(self, order_id: UUID) -> ShipmentModel:
         try:
-            shipment_query = select(
-                ShipmentModel.id,
-                ShipmentModel.volume,
-                ShipmentModel.weight,
-                ShipmentModel.delivery_fee,
-                ShipmentModel.send_date,
-                ShipmentModel.receive_date,
-                ShipmentModel.tracking_number,
-                ShipmentModel.order_id
-            ).where(and_(ShipmentModel.deleted_at.is_(None), ShipmentModel.order_id == order_id))
-
-            result = await self.session.execute(shipment_query)
-            return result.one()
+            query = await self.get_filtered_query(ShipmentModel)
+            query = query.where(ShipmentModel.order_id == order_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise ShipmentRepo.MultipleResultsFound
         except NoResultFound:

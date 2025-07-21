@@ -1,7 +1,6 @@
 from uuid import UUID
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -22,30 +21,17 @@ class CustomerRepo(BaseRepository):
         self.session.add(customer)
         await self.session.flush()
 
-    async def get_all(self):
-        customers_query = select(
-            CustomerModel.id,
-            CustomerModel.first_name,
-            CustomerModel.last_name,
-            CustomerModel.mobile,
-            CustomerModel.email
-        ).where(CustomerModel.deleted_at.is_(None))
-
-        result = await self.session.execute(customers_query)
-        return result.all()
+    async def get_all(self) -> list[CustomerModel]:
+        query = await self.get_filtered_query(CustomerModel)
+        result = await self.session.execute(query)
+        return result.scalars().all()
     
-    async def get_by_id(self, customer_id: UUID):
+    async def get_by_id(self, customer_id: UUID) -> CustomerModel:
         try:
-            customer_query = select(
-                CustomerModel.id,
-                CustomerModel.first_name,
-                CustomerModel.last_name,
-                CustomerModel.mobile,
-                CustomerModel.email
-            ).where(and_(CustomerModel.deleted_at.is_(None), CustomerModel.id == customer_id))
-
-            result = await self.session.execute(customer_query)
-            return result.one()
+            query = await self.get_filtered_query(CustomerModel)
+            query = query.where(CustomerModel.id == customer_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise CustomerRepo.MultipleResultsFound
         except NoResultFound:

@@ -1,7 +1,6 @@
 from uuid import UUID
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -22,32 +21,17 @@ class OrderItemRepo(BaseRepository):
         self.session.add(order)
         await self.session.flush()
 
-    async def get_all(self):
-        order_items_query = select(
-            OrderItemModel.id,
-            OrderItemModel.quantity,
-            OrderItemModel.preselection_id,
-            OrderItemModel.bag_id,
-            OrderItemModel.item_ids,
-            OrderItemModel.order_id
-        ).where(OrderItemModel.deleted_at.is_(None))
-
-        result = await self.session.execute(order_items_query)
-        return result.all()
+    async def get_all(self) -> list[OrderItemModel]:
+        query = await self.get_filtered_query(OrderItemModel)
+        result = await self.session.execute(query)
+        return result.scalars().all()
     
-    async def get_by_id(self, order_item_id: UUID):
+    async def get_by_id(self, order_item_id: UUID) -> OrderItemModel:
         try:
-            order_item_query = select(
-                OrderItemModel.id,
-                OrderItemModel.quantity,
-                OrderItemModel.preselection_id,
-                OrderItemModel.bag_id,
-                OrderItemModel.item_ids,
-                OrderItemModel.order_id
-            ).where(and_(OrderItemModel.deleted_at.is_(None), OrderItemModel.id == order_item_id))
-
-            result = await self.session.execute(order_item_query)
-            return result.one()
+            query = await self.get_filtered_query(OrderItemModel)
+            query = query.where(OrderItemModel.id == order_item_id)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise OrderItemRepo.MultipleResultsFound
         except NoResultFound:

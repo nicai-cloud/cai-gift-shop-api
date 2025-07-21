@@ -1,6 +1,6 @@
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select, update
+from sqlalchemy import update
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -17,32 +17,17 @@ class CouponRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
     
-    async def get_all(self):
-        coupons_query = select(
-            CouponModel.id,
-            CouponModel.code,
-            CouponModel.discount_percentage,
-            CouponModel.description,
-            CouponModel.expiry_date,
-            CouponModel.used
-        ).where(CouponModel.deleted_at.is_(None))
-
-        result = await self.session.execute(coupons_query)
-        return result.all()
+    async def get_all(self) -> list[CouponModel]:
+        query = await self.get_filtered_query(CouponModel)
+        result = await self.session.execute(query)
+        return result.scalars().all()
     
-    async def get_by_code(self, code: str):
+    async def get_by_code(self, code: str) -> CouponModel:
         try:
-            coupon_query = select(
-                CouponModel.id,
-                CouponModel.code,
-                CouponModel.discount_percentage,
-                CouponModel.description,
-                CouponModel.expiry_date,
-                CouponModel.used
-            ).where(and_(CouponModel.deleted_at.is_(None), CouponModel.code == code))
-
-            result = await self.session.execute(coupon_query)
-            return result.one()
+            query = await self.get_filtered_query(CouponModel)
+            query = query.where(CouponModel.code == code)
+            result = await self.session.execute(query)
+            return result.scalar_one()
         except MultipleResultsFound:
             raise CouponRepo.MultipleResultsFound
         except NoResultFound:

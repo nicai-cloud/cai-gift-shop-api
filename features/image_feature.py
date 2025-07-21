@@ -4,6 +4,9 @@ from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
 from infrastructure.preselection_repo import PreselectionRepo
 from infrastructure.async_work_management import AsyncWorkManager
+from models.bag_model import BagModel
+from models.item_model import ItemModel
+from models.preselection_model import PreselectionModel
 from utils.media import get_full_image_url
 
 LOG = logging.getLogger(__name__)
@@ -18,13 +21,13 @@ class ImageFeature:
     async def get_all_image_urls(self) -> list[str]:
         images = []
         try:
-            bags = await self.bag_repo.get_all()
+            bags: list[BagModel] = await self.bag_repo.get_all()
             images.extend(get_full_image_url(bag.image_url) for bag in bags)
 
-            items = await self.item_repo.get_all()
+            items: list[ItemModel] = await self.item_repo.get_all()
             images.extend(get_full_image_url(item.image_url) for item in items)
 
-            preselections = await self.preselection_repo.get_all()
+            preselections: list[PreselectionModel] = await self.preselection_repo.get_all()
             images.extend(get_full_image_url(preselection.image_url) for preselection in preselections)
 
             return images
@@ -34,7 +37,7 @@ class ImageFeature:
     async def get_preselection_image_urls(self) -> list[str]:
         images = []
         try:
-            preselections = await self.preselection_repo.get_all()
+            preselections: list[PreselectionModel] = await self.preselection_repo.get_all()
             images.extend(get_full_image_url(preselection.image_url) for preselection in preselections)
 
             return images
@@ -44,10 +47,10 @@ class ImageFeature:
     async def get_custom_image_urls(self) -> list[str]:
         images = []
         try:
-            bags = await self.bag_repo.get_all()
+            bags: list[BagModel] = await self.bag_repo.get_all()
             images.extend(get_full_image_url(bag.image_url) for bag in bags)
 
-            items = await self.item_repo.get_all()
+            items: list[ItemModel] = await self.item_repo.get_all()
             images.extend(get_full_image_url(item.image_url) for item in items)
 
             return images

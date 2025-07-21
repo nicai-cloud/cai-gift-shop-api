@@ -1,6 +1,5 @@
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import async_scoped_session
-from sqlalchemy import and_, select
 
 from infrastructure.postgres import PostgresTransactable
 from models.base import BaseRepository
@@ -17,28 +16,17 @@ class FulfillmentMethodRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
     
-    async def get_all(self):
-        query = select(
-            FulfillmentMethodModel.id,
-            FulfillmentMethodModel.name,
-            FulfillmentMethodModel.fee,
-            FulfillmentMethodModel.discount_fee
-        ).where(FulfillmentMethodModel.deleted_at.is_(None))
-
+    async def get_all(self) -> list[FulfillmentMethodModel]:
+        query = await self.get_filtered_query(FulfillmentMethodModel)
         result = await self.session.execute(query)
-        return result.all()
+        return result.scalars().all()
     
-    async def get_by_id(self, fulfillment_method_id: int):
+    async def get_by_id(self, fulfillment_method_id: int) -> FulfillmentMethodModel:
         try:
-            query = select(
-                FulfillmentMethodModel.id,
-                FulfillmentMethodModel.name,
-                FulfillmentMethodModel.fee,
-                FulfillmentMethodModel.discount_fee
-            ).where(and_(FulfillmentMethodModel.deleted_at.is_(None), FulfillmentMethodModel.id == fulfillment_method_id))
-
+            query = await self.get_filtered_query(FulfillmentMethodModel)
+            query = query.where(FulfillmentMethodModel.id == fulfillment_method_id)
             result = await self.session.execute(query)
-            return result.one()
+            return result.scalar_one()
         except MultipleResultsFound:
             raise FulfillmentMethodRepo.MultipleResultsFound
         except NoResultFound:
