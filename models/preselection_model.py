@@ -16,8 +16,5 @@ class PreselectionModel(Base, SerializerMixin):
     description = Column(String, nullable=False)
     price = Column(Numeric(10, 2), nullable=False)
 
-    bag_id = Column(Integer, ForeignKey("bag.id"), nullable=False)
-    item_ids = Column(ARRAY(Integer), nullable=False)
-
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())

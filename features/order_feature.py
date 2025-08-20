@@ -7,6 +7,7 @@ from api.types import CustomItem, Order, OrderInfo, OrderedItems, PreselectionIt
 from features.fulfillment_method_feature import construct_fulfillment_method
 from infrastructure.order_repo import OrderRepo
 from infrastructure.preselection_repo import PreselectionRepo
+from infrastructure.preselection_bag_items_repo import PreselectionBagItemsRepo
 from infrastructure.bag_repo import BagRepo
 from infrastructure.item_repo import ItemRepo
 from infrastructure.fulfillment_method_repo import FulfillmentMethodRepo
@@ -17,6 +18,7 @@ from models.fulfillment_method_model import FulfillmentMethodModel
 from models.item_model import ItemModel
 from models.order_model import OrderModel
 from models.preselection_model import PreselectionModel
+from models.preselection_bag_items_model import PreselectionBagItemsModel
 from utils.generate_order_number import generate_order_number
 from utils.config import get
 from utils.format_number import format_number
@@ -44,6 +46,7 @@ class OrderFeature:
     def __init__(self, work_manager: AsyncWorkManager):
         self.order_repo = work_manager.get(OrderRepo)
         self.preselection_repo = work_manager.get(PreselectionRepo)
+        self.preselection_bag_items_repo = work_manager.get(PreselectionBagItemsRepo)
         self.bag_repo = work_manager.get(BagRepo)
         self.item_repo = work_manager.get(ItemRepo)
         self.fulfillment_method_repo = work_manager.get(FulfillmentMethodRepo)
@@ -99,9 +102,10 @@ class OrderFeature:
 
             if order_item.preselection_id:
                 preselection: PreselectionModel = await self.preselection_repo.get_by_id(order_item.preselection_id)
-                ordered_bag_quantities[preselection.bag_id] = ordered_bag_quantities.get(preselection.bag_id, 0) + quantity
-                for preselection_item_id in preselection.item_ids:
-                    ordered_item_quantities[preselection_item_id] = ordered_item_quantities.get(preselection_item_id, 0) + quantity
+                preselection_bag_items: list[PreselectionBagItemsModel] = await self.preselection_bag_items_repo.get_by_id(preselection.id)
+                ordered_bag_quantities[preselection_bag_items[0].bag_id] = ordered_bag_quantities.get(preselection_bag_items[0].bag_id, 0) + quantity
+                for pbi in preselection_bag_items:
+                    ordered_item_quantities[pbi.item_id] = ordered_item_quantities.get(pbi.item_id, 0) + quantity
             else:
                 ordered_bag_quantities[order_item.bag_id] = ordered_bag_quantities.get(order_item.bag_id, 0) + quantity
                 for item_id in order_item.item_ids:

@@ -31,6 +31,7 @@ from infrastructure.customer_repo import CustomerRepo, construct_postgres_custom
 from infrastructure.order_repo import OrderRepo, construct_postgres_order_repo
 from infrastructure.order_item_repo import OrderItemRepo, construct_postgres_order_item_repo
 from infrastructure.preselection_repo import PreselectionRepo, construct_postgres_preselection_repo
+from infrastructure.preselection_bag_items_repo import PreselectionBagItemsRepo, construct_postgres_preselection_bag_items_repo
 from infrastructure.bag_repo import BagRepo, construct_postgres_bag_repo
 from infrastructure.item_repo import ItemRepo, construct_postgres_item_repo
 from infrastructure.inventory_repo import InventoryRepo, construct_postgres_inventory_repo
@@ -54,6 +55,7 @@ def create_api():
     work_manager.register(OrderItemRepo, construct_postgres_order_item_repo)
     work_manager.register(OrderRepo, construct_postgres_order_repo)
     work_manager.register(PreselectionRepo, construct_postgres_preselection_repo)
+    work_manager.register(PreselectionBagItemsRepo, construct_postgres_preselection_bag_items_repo)
     work_manager.register(BagRepo, construct_postgres_bag_repo)
     work_manager.register(ItemRepo, construct_postgres_item_repo)
     work_manager.register(InventoryRepo, construct_postgres_inventory_repo)
