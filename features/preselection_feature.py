@@ -35,7 +35,7 @@ class PreselectionFeature:
             preselections: list[PreselectionModel] = await self.preselection_repo.get_all()
             result = []
             for preselection in preselections:
-                preselection_bag_items: list[PreselectionBagItemsModel] = await self.preselection_bag_items_repo.get_by_id(preselection.id)
+                preselection_bag_items: list[PreselectionBagItemsModel] = await self.preselection_bag_items_repo.get_by_preselection_id(preselection.id)
                 result.append(construct_preselection(preselection, preselection_bag_items))
             return result
         except Exception as e:
@@ -44,7 +44,7 @@ class PreselectionFeature:
     async def get_preselection_by_name(self, preselection_name: str) -> Preselection | None:
         try:
             preselection: PreselectionModel = await self.preselection_repo.get_by_name(preselection_name)
-            preselection_bag_items: list[PreselectionBagItemsModel] = await self.preselection_bag_items_repo.get_by_id(preselection.id)
+            preselection_bag_items: list[PreselectionBagItemsModel] = await self.preselection_bag_items_repo.get_by_preselection_id(preselection.id)
             return construct_preselection(preselection, preselection_bag_items)
         except PreselectionRepo.DoesNotExist:
             return None

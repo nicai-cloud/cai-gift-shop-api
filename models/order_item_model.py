@@ -1,6 +1,6 @@
 import uuid
 from sqlalchemy import Column, ForeignKey, Integer, CheckConstraint, func
-from sqlalchemy.dialects.postgresql import ARRAY, UUID, TIMESTAMP
+from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
 from sqlalchemy_serializer import SerializerMixin
 
 from models.base import Base
@@ -13,8 +13,7 @@ class OrderItemModel(Base, SerializerMixin):
     quantity = Column(Integer, nullable=False)
 
     preselection_id = Column(Integer, ForeignKey("preselection.id"))
-    bag_id = Column(Integer, ForeignKey("bag.id"))
-    item_ids = Column(ARRAY(Integer))
+    custom_bag_order_item_id = Column(Integer, ForeignKey("custom_bag_order_item.id"))
 
     order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)
 
@@ -24,7 +23,7 @@ class OrderItemModel(Base, SerializerMixin):
     # Adding the CheckConstraint
     __table_args__ = (
         CheckConstraint(
-            'preselection_id IS NOT NULL OR (bag_id IS NOT NULL AND item_ids IS NOT NULL)',
-            name='check_preselection_id_or_bag_id_and_item_ids_not_null'
+            'preselection_id IS NOT NULL OR custom_bag_order_item_id IS NOT NULL',
+            name='check_preselection_id_or_custom_bag_order_item_id_not_null'
         ),
     )

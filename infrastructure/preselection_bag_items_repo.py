@@ -16,7 +16,7 @@ class PreselectionBagItemsRepo(BaseRepository):
     def __init__(self, session: async_scoped_session):
         self.session = session
 
-    async def get_by_id(self, preselection_id: int) -> list[PreselectionBagItemsModel]:
+    async def get_by_preselection_id(self, preselection_id: int) -> list[PreselectionBagItemsModel]:
         try:
             query = await self.get_filtered_query(PreselectionBagItemsModel)
             query = query.where(PreselectionBagItemsModel.preselection_id == preselection_id)

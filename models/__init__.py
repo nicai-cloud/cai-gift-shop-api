@@ -7,6 +7,8 @@ from models.bag_model import BagModel
 from models.item_model import ItemModel
 from models.preselection_model import PreselectionModel
 from models.preselection_bag_items_model import PreselectionBagItemsModel
+from models.custom_bag_order_item_model import CustomBagOrderItemModel
+from models.custom_bag_items_model import CustomBagItemsModel
 from models.inventory_model import InventoryModel
 from models.inventory_transaction_model import InventoryTransactionModel
 from models.shipment_model import ShipmentModel

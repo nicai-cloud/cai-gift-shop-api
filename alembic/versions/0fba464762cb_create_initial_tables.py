@@ -1,8 +1,8 @@
-"""Initial tables
+"""Create initial tables
 
-Revision ID: f606103c2a55
+Revision ID: 0fba464762cb
 Revises: 
-Create Date: 2025-08-20 20:14:24.773910
+Create Date: 2025-08-21 17:47:05.310313
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'f606103c2a55'
+revision: str = '0fba464762cb'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -46,6 +46,14 @@ def upgrade() -> None:
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id'),
+    schema='gift'
+    )
+    op.create_table('custom_bag_order_item',
+    sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
     schema='gift'
     )
     op.create_table('customer',
@@ -117,6 +125,19 @@ def upgrade() -> None:
     schema='gift'
     )
     op.create_index(op.f('ix_gift_preselection_name'), 'preselection', ['name'], unique=False, schema='gift')
+    op.create_table('custom_bag_items',
+    sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
+    sa.Column('custom_bag_order_item_id', sa.Integer(), nullable=False),
+    sa.Column('bag_id', sa.Integer(), nullable=False),
+    sa.Column('item_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.ForeignKeyConstraint(['bag_id'], ['gift.bag.id'], ),
+    sa.ForeignKeyConstraint(['custom_bag_order_item_id'], ['gift.custom_bag_order_item.id'], ),
+    sa.ForeignKeyConstraint(['item_id'], ['gift.item.id'], ),
+    sa.PrimaryKeyConstraint('custom_bag_order_item_id', 'bag_id', 'item_id'),
+    schema='gift'
+    )
     op.create_table('inventory_transaction',
     sa.Column('deleted_at', postgresql.TIMESTAMP(timezone=True), nullable=True),
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
@@ -170,13 +191,12 @@ def upgrade() -> None:
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('preselection_id', sa.Integer(), nullable=True),
-    sa.Column('bag_id', sa.Integer(), nullable=True),
-    sa.Column('item_ids', postgresql.ARRAY(sa.Integer()), nullable=True),
+    sa.Column('custom_bag_order_item_id', sa.Integer(), nullable=True),
     sa.Column('order_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.CheckConstraint('preselection_id IS NOT NULL OR (bag_id IS NOT NULL AND item_ids IS NOT NULL)', name='check_preselection_id_or_bag_id_and_item_ids_not_null'),
-    sa.ForeignKeyConstraint(['bag_id'], ['gift.bag.id'], ),
+    sa.CheckConstraint('preselection_id IS NOT NULL OR custom_bag_order_item_id IS NOT NULL', name='check_preselection_id_or_custom_bag_order_item_id_not_null'),
+    sa.ForeignKeyConstraint(['custom_bag_order_item_id'], ['gift.custom_bag_order_item.id'], ),
     sa.ForeignKeyConstraint(['order_id'], ['gift.order.id'], ),
     sa.ForeignKeyConstraint(['preselection_id'], ['gift.preselection.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -211,12 +231,14 @@ def downgrade() -> None:
     op.drop_index('idx_order_number_unique_if_not_deleted', table_name='order', schema='gift', postgresql_where=False)
     op.drop_table('order', schema='gift')
     op.drop_table('inventory_transaction', schema='gift')
+    op.drop_table('custom_bag_items', schema='gift')
     op.drop_index(op.f('ix_gift_preselection_name'), table_name='preselection', schema='gift')
     op.drop_table('preselection', schema='gift')
     op.drop_table('item', schema='gift')
     op.drop_table('inventory', schema='gift')
     op.drop_table('fulfillment_method', schema='gift')
     op.drop_table('customer', schema='gift')
+    op.drop_table('custom_bag_order_item', schema='gift')
     op.drop_table('coupon', schema='gift')
     op.drop_table('bag', schema='gift')
     # ### end Alembic commands ###

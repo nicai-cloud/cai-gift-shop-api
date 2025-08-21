@@ -139,10 +139,15 @@ class CompleteOrderRequestHandler(RequestHandler):
         for order_item in order_items:
             quantity = order_item.quantity
             preselection_id = order_item.preselection_id
-            bag_id = order_item.bag_id
-            item_ids = order_item.item_ids
-
-            order_item_id = await self.order_item_feature.create_order_item(quantity, preselection_id, bag_id, item_ids, order_id)
+            if preselection_id:
+                # This is a preselection item
+                order_item_id = await self.order_item_feature.create_preselection_order_item(quantity, preselection_id, order_id)
+            else:
+                # This is a custom item
+                bag_id = order_item.bag_id
+                item_ids = order_item.item_ids
+                order_item_id = await self.order_item_feature.create_custom_order_item(quantity, bag_id, item_ids, order_id)
+            
             order_item_ids.append(order_item_id)
             print('!! created order item id:', order_item_id)
 

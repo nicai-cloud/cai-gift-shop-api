@@ -102,7 +102,7 @@ class OrderFeature:
 
             if order_item.preselection_id:
                 preselection: PreselectionModel = await self.preselection_repo.get_by_id(order_item.preselection_id)
-                preselection_bag_items: list[PreselectionBagItemsModel] = await self.preselection_bag_items_repo.get_by_id(preselection.id)
+                preselection_bag_items: list[PreselectionBagItemsModel] = await self.preselection_bag_items_repo.get_by_preselection_id(preselection.id)
                 ordered_bag_quantities[preselection_bag_items[0].bag_id] = ordered_bag_quantities.get(preselection_bag_items[0].bag_id, 0) + quantity
                 for pbi in preselection_bag_items:
                     ordered_item_quantities[pbi.item_id] = ordered_item_quantities.get(pbi.item_id, 0) + quantity
